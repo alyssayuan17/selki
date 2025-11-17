@@ -23,6 +23,8 @@ import numpy as np
 import librosa
 import whisper
 
+from analyzer.utils.vad import run_vad, vad_to_silence_segments
+
 
 # -----------------------------
 # Data structures
@@ -62,6 +64,7 @@ def audio_to_json(
     whisper_model_name: str = "small",
     target_sr: int = 16000,
     min_pause_s: float = 0.25,
+    enable_vad: bool = True,
 ) -> Dict[str, Any]:
     """
     High-level pipeline:
@@ -77,18 +80,35 @@ def audio_to_json(
 
     # 1) Load raw audio
     y, sr = load_audio(audio_path, target_sr=target_sr)
+    total_duration = len(y) / sr
 
     # 2) Run ASR to get word-level timings
     words = run_whisper_word_timestamps(audio_path, model_name=whisper_model_name)
 
     # 3) Derive pause segments from word timings
-    pauses = derive_pauses_from_words(words, min_pause_s=min_pause_s)
+    word_pauses = derive_pauses_from_words(words, min_pause_s=min_pause_s)
 
     # 4) Extract pitch & energy time series + aggregate stats
     pitch_hz, energy = extract_pitch_and_energy(y, sr)
     audio_summary = summarize_audio(pitch_hz, energy, sr, len(y))
 
-    # 5) Build JSON-serializable dict
+    # 5) NEW — VAD Analysis
+    if enable_vad:
+        try:
+            speech_segments = run_vad(y, sr)  # List[(start,end)]
+            silence_segments = vad_to_silence_segments(speech_segments, total_duration)
+        except Exception:
+            speech_segments = None
+            silence_segments = None
+    else:
+        speech_segments = None
+        silence_segments = None
+
+    # 6) Compute Noise and Mic Quality Heuristics (simple)
+    noise_level = estimate_noise_level(energy)
+    mic_quality = estimate_mic_quality(audio_summary.mean_energy, noise_level)
+
+    # 7) Build JSON-serializable dict
     return {
         "audio_metadata": {
             "sample_rate": audio_summary.sample_rate,
@@ -99,6 +119,8 @@ def audio_to_json(
             "pitch_std_hz": audio_summary.pitch_std_hz,
             "mean_energy": audio_summary.mean_energy,
             "energy_std": audio_summary.energy_std,
+            "noise_level": noise_level,
+            "mic_quality": mic_quality,
         },
         "words": [
             {
@@ -109,14 +131,24 @@ def audio_to_json(
             }
             for w in words
         ],
-        "pauses": [
+        "word_pauses": [
             {
                 "start": p.start,
                 "end": p.end,
                 "duration": p.duration,
             }
-            for p in pauses
+            for p in word_pauses
         ],
+        "vad_speech_segments": (
+            [{"start": float(s), "end": float(e)} for (s, e) in speech_segments]
+            if speech_segments
+            else None
+        ),
+        "vad_silence_segments": (
+            [{"start": float(s), "end": float(e)} for (s, e) in silence_segments]
+            if silence_segments
+            else None
+        ),
         # leave room for future:
         # "vad_segments": [...],
         # "raw_pitch_hz": pitch_hz.tolist() if pitch_hz is not None else None,
@@ -288,6 +320,33 @@ def summarize_audio(
         mean_energy=mean_energy,
         energy_std=energy_std,
     )
+
+# ================================
+# Noise & mic-quality heuristics
+# ================================
+
+def estimate_noise_level(energy: np.ndarray) -> str:
+    """
+    Very naive heuristics for now.
+    Later: use spectral flatness, SNR estimation, etc.
+    """
+    e = float(np.mean(energy))
+    if e < 0.001:
+        return "very_low"
+    if e < 0.01:
+        return "low"
+    if e < 0.05:
+        return "medium"
+    return "high"
+
+
+def estimate_mic_quality(mean_energy: float, noise_level: str) -> str:
+    if mean_energy < 0.001:
+        return "very_quiet"
+    if noise_level == "high":
+        return "noisy"
+    return "ok"
+
 
 
 # -----------------------------
