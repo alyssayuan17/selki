@@ -1,0 +1,20 @@
+{
+    "audio_url": "file://test.wav",
+    "video_url": null,
+    "language": "en",
+    "talk_type": "test",
+    "audience_type": "general",
+    "requested_metrics": [
+        "pace",
+        "pause_quality",
+        "fillers",
+        "intonation",
+        "articulation",
+        "content_structure",
+        "confidence_cv"
+    ],
+    "user_metadata": {
+        "user_id": "user_123",
+        "session_id": "session_456"
+    }
+}
