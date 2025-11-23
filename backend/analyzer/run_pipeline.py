@@ -280,13 +280,12 @@ def run_full_analysis(
     metrics: Dict[str, Any] = {}
     for metric_name in requested:
         if metric_name == "pace":
-            metrics[metric_name] = compute_pace_metric(
-                words=words,
-                duration_sec=duration_sec,
-                noise_summary=audio_json.get("noise_summary", {}),
-            )
+            metrics["pace"] = compute_pace_metric(words, duration_sec)
+
         else:
-            metrics[metric_name] = _build_abstained_metric("metric_not_implemented_yet")
+            metrics[metric_name] = _build_abstained_metric(
+                reason="metric_not_implemented_yet"
+            )
             
     # 5) timeline stub: right now empty, but schema-compatible
     timeline: List[Dict[str, Any]] = []
