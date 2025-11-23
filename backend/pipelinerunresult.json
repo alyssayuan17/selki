@@ -35,25 +35,78 @@
   },
   "metrics": {
     "pace": {
-      "score_0_100": null,
-      "label": "abstained",
-      "confidence": 0.0,
-      "abstained": true,
+      "score_0_100": 40,
+      "label": "too_slow",
+      "confidence": 0.75,
+      "abstained": false,
       "details": {
-        "reason": "metric_not_implemented_yet"
+        "average_wpm": 108.98151476737365,
+        "optimal_range_wpm": [
+          110,
+          170
+        ],
+        "segment_stats": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 30.0,
+            "wpm": 12.0
+          }
+        ]
       },
-      "feedback": []
+      "feedback": [
+        {
+          "start_sec": 0.0,
+          "end_sec": 3.3033125,
+          "message": "Your overall pace is slow (WPM=109.0). Try increasing vocal energy and reducing long pauses.",
+          "tip_type": "pace"
+        },
+        {
+          "start_sec": 0.0,
+          "end_sec": 30.0,
+          "message": "In this segment (WPM=12.0), your pace is slow. Consider increasing energy or reducing long pauses.",
+          "tip_type": "pace"
+        }
+      ]
     },
-    "pause_quality": {
-      "score_0_100": null,
-      "label": "abstained",
-      "confidence": 0.0,
-      "abstained": true,
-      "details": {
-        "reason": "metric_not_implemented_yet"
+    "pause_quality": [
+      {
+        "score_0_100": 45,
+        "label": "too_many_pauses",
+        "confidence": 0.75,
+        "abstained": false,
+        "details": {
+          "total_pauses": 2,
+          "average_pause_duration": 0.96565625,
+          "long_pauses": 1,
+          "short_pauses": 0,
+          "pause_rate": 0.6054528598187425
+        },
+        "feedback": [
+          {
+            "start_sec": 0,
+            "end_sec": 3.3033125,
+            "message": "You pause very frequently. Try connecting ideas more fluidly.",
+            "tip_type": "pause_quality"
+          }
+        ]
       },
-      "feedback": []
-    },
+      [
+        {
+          "start_sec": 0.0,
+          "end_sec": 1.026,
+          "type": "pause",
+          "quality": "long",
+          "source": "vad"
+        },
+        {
+          "start_sec": 2.398,
+          "end_sec": 3.3033125,
+          "type": "pause",
+          "quality": "medium",
+          "source": "vad"
+        }
+      ]
+    ],
     "fillers": {
       "score_0_100": null,
       "label": "abstained",

@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Optional
 
 from .audio_to_json import audio_to_json
 from analyzer.metrics.pace import compute_pace_metric
+from analyzer.metrics.pause_quality import compute_pause_quality_metric
 
 
 # ---- Small helpers / types -------------------------------------------------
@@ -281,6 +282,13 @@ def run_full_analysis(
     for metric_name in requested:
         if metric_name == "pace":
             metrics["pace"] = compute_pace_metric(words, duration_sec)
+        
+        elif metric_name == "pause_quality":
+            metrics["pause_quality"] = compute_pause_quality_metric(
+                                            audio_json.get("word_pauses", []),
+                                            audio_json.get("vad_silence_segments", []),
+                                            duration_sec
+                                        )
 
         else:
             metrics[metric_name] = _build_abstained_metric(
