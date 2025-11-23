@@ -105,8 +105,12 @@ def audio_to_json(
         silence_segments = None
 
     # 6) Compute Noise and Mic Quality Heuristics (NEED TO FIX HOW THESE ARE CALCULATED)
-    noise_level = estimate_noise_level(energy)
-    mic_quality = estimate_mic_quality(audio_summary.mean_energy, noise_level)
+    noise_summary = build_noise_summary(
+                        energy=energy,
+                        speech_segments=speech_segments,
+                        total_duration=total_duration,
+                        audio_summary=audio_summary,
+)
 
     # 7) Build JSON-serializable dict
     return {
@@ -119,8 +123,6 @@ def audio_to_json(
             "pitch_std_hz": audio_summary.pitch_std_hz,
             "mean_energy": audio_summary.mean_energy,
             "energy_std": audio_summary.energy_std,
-            "noise_level": noise_level,
-            "mic_quality": mic_quality,
         },
         "words": [
             {
@@ -149,6 +151,7 @@ def audio_to_json(
             if silence_segments
             else None
         ),
+        "noise_summary": noise_summary
         # leave room for future:
         # "vad_segments": [...], done
         # "raw_pitch_hz": pitch_hz.tolist() if pitch_hz is not None else None,
@@ -187,11 +190,12 @@ def run_whisper_word_timestamps(
         verbose=False,
         temperature=0.0, # no sampling randomness i.e. fully deterministic
                          # could use 0.2 for "slightly more robust decoding in noisy conditions" ??? how does that make sense bruh
-        compression_ratio_threshold=2.4, # if a particular speech segment is too hard to decode (has score higher than 2.4), skip it
+        
+        # compression_ratio_threshold=2.4, # if a particular speech segment is too hard to decode (has score higher than 2.4), skip it
                                          # lower e.g. 2.0 = more aggressive skipping, higher e.g. 3.0 more tolerant of repetition/noise
-        logprob_threshold=-1.0, # skip segments with avg logprob below this (i.e. very low confidence)
+        # logprob_threshold=-1.0, # skip segments with avg logprob below this (i.e. very low confidence)
                                 # e.g. -2 = more lenient, -0.5 = more aggressive skipping
-        no_speech_threshold=0.4, # no-speech prob threshold to skip segment
+        #  no_speech_threshold=0.4, # no-speech prob threshold to skip segment
                                  # lower = more aggressive skipping, higher = more tolerant
     )
 
@@ -205,7 +209,8 @@ def run_whisper_word_timestamps(
                 continue
 
             # Skip low-confidence words (GET RID OF GARBAGE HALLUCINATIONS)
-            if w.probability is not None and w.probability < 0.2:
+            prob = w.get("probability", None)
+            if prob is not None and prob < 0.2:
                 continue
 
             # Skip very short tokens (likely punctuation/artifacts)
@@ -341,28 +346,59 @@ def summarize_audio(
 # Noise & mic-quality heuristics
 # ================================
 
-def estimate_noise_level(energy: np.ndarray) -> str:
+def build_noise_summary(
+    energy: np.ndarray,
+    speech_segments: Optional[List[tuple]],
+    total_duration: float,
+    audio_summary: AudioFeatureSummary,
+) -> Dict[str, Any]:
     """
-    Very naive heuristics for now.
-    Later: use spectral flatness, SNR estimation, etc.
+    Produce a structured noise summary block expected by run_pipeline:
+      {
+        "avg_dbfs": float,
+        "noise_dbfs": float,
+        "speech_ratio": float,
+        "mic_quality": str,
+      }
+
+    This is *heuristic*. Replace later with real DSP/spectral noise estimation.
     """
-    e = float(np.mean(energy))
-    if e < 0.001:
-        return "very_low"
-    if e < 0.01:
-        return "low"
-    if e < 0.05:
-        return "medium"
-    return "high"
+    # ------ 1) Convert RMS energy to dBFS-like scale ------
+    # RMS energy is 0..something small. Convert to dB.
+    avg_rms = float(np.mean(energy)) if len(energy) > 0 else 0.0
+    if avg_rms <= 1e-12:
+        avg_dbfs = -100.0
+    else:
+        avg_dbfs = 20 * np.log10(avg_rms)
 
+    # Noise estimate = bottom 20% energy frames
+    bottom = np.percentile(energy, 20) if len(energy) > 0 else 0.0
+    if bottom <= 1e-12:
+        noise_dbfs = -100.0
+    else:
+        noise_dbfs = 20 * np.log10(bottom)
 
-def estimate_mic_quality(mean_energy: float, noise_level: str) -> str:
-    if mean_energy < 0.001:
-        return "very_quiet"
-    if noise_level == "high":
-        return "noisy"
-    return "ok"
+    # ------ 2) Speech ratio from VAD ------
+    if speech_segments:
+        speech_total = sum(e - s for (s, e) in speech_segments)
+        speech_ratio = speech_total / max(total_duration, 1e-6)
+    else:
+        speech_ratio = 0.0
 
+    # ------ 3) Mic quality heuristic ------
+    if audio_summary.mean_energy < 0.001:
+        mic_quality = "very_quiet"
+    elif noise_dbfs > -30:
+        mic_quality = "noisy"
+    else:
+        mic_quality = "ok"
+
+    return {
+        "avg_dbfs": float(avg_dbfs),
+        "noise_dbfs": float(noise_dbfs),
+        "speech_ratio": float(speech_ratio),
+        "mic_quality": mic_quality,
+    }
 
 
 # -----------------------------
