@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from .audio_to_json import audio_to_json
+from analyzer.metrics.pace import compute_pace_metric
 
 
 # ---- Small helpers / types -------------------------------------------------
@@ -278,10 +279,15 @@ def run_full_analysis(
 
     metrics: Dict[str, Any] = {}
     for metric_name in requested:
-        metrics[metric_name] = _build_abstained_metric(
-            reason="metric_not_implemented_yet"
-        )
-
+        if metric_name == "pace":
+            metrics[metric_name] = compute_pace_metric(
+                words=words,
+                duration_sec=duration_sec,
+                noise_summary=audio_json.get("noise_summary", {}),
+            )
+        else:
+            metrics[metric_name] = _build_abstained_metric("metric_not_implemented_yet")
+            
     # 5) timeline stub: right now empty, but schema-compatible
     timeline: List[Dict[str, Any]] = []
 
