@@ -1,11 +1,11 @@
 {
-  "job_id": "pres_test123",
+  "job_id": "job_1",
   "status": "done",
   "input": {
     "audio_url": "file://test.wav",
     "video_url": null,
     "language": "en",
-    "talk_type": "technical_presentation",
+    "talk_type": "test",
     "audience_type": "general",
     "requested_metrics": [
       "pace",
@@ -23,9 +23,9 @@
     "duration_sec": 3.3033125
   },
   "quality_flags": {
-    "asr_confidence": 0.0,
-    "mic_quality": "unknown",
-    "background_noise_level": "unknown",
+    "asr_confidence": 0.9669859210650126,
+    "mic_quality": "ok",
+    "background_noise_level": "low",
     "abstain_reason": null
   },
   "overall_score": {
@@ -98,7 +98,6 @@
       "score_0_100": null,
       "label": "abstained",
       "confidence": 0.0,
-      "abstained": true,
       "details": {
         "reason": "metric_not_implemented_yet"
       },
@@ -108,9 +107,9 @@
   "timeline": [],
   "model_metadata": {
     "asr_model": "whisper-small",
-    "vad_model": "not_configured",
+    "vad_model": "silero-vad",
     "embedding_model": "not_configured",
-    "version": "dev-0.0.1"
+    "version": "dev-0.0.2"
   },
   "transcript": {
     "full_text": "Kids are talking by the door.",
