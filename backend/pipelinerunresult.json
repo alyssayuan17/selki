@@ -48,8 +48,8 @@
         "segment_stats": [
           {
             "start_sec": 0.0,
-            "end_sec": 30.0,
-            "wpm": 12.0
+            "end_sec": 3.3033125,
+            "wpm": 108.98151476737365
           }
         ]
       },
@@ -62,8 +62,8 @@
         },
         {
           "start_sec": 0.0,
-          "end_sec": 30.0,
-          "message": "In this segment (WPM=12.0), your pace is slow. Consider increasing energy or reducing long pauses.",
+          "end_sec": 3.3033125,
+          "message": "In this segment (WPM=109.0), your pace is slow. Consider increasing energy or reducing long pauses.",
           "tip_type": "pace"
         }
       ]

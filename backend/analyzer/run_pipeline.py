@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
@@ -8,6 +9,9 @@ from typing import Any, Dict, List, Optional
 from .audio_to_json import audio_to_json
 from analyzer.metrics.pace import compute_pace_metric
 from analyzer.metrics.pause_quality import compute_pause_quality_metric
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 
 # ---- Small helpers / types -------------------------------------------------
@@ -237,11 +241,55 @@ def run_full_analysis(
       2. Builds transcript, quality flags, and stub metric objects.
       3. Returns a dict that matches the JSON shape for:
          GET /api/v1/presentations/{job_id}/full
+
+    Raises:
+        ValueError: If input payload is invalid or audio file doesn't exist
+        RuntimeError: If audio processing or metric computation fails
     """
-    job_input = PresentationJobInput.from_dict(raw_input_payload)
+    logger.info(f"Starting analysis for job_id={job_id}, audio_path={audio_path}")
+
+    try:
+        # Validate inputs
+        if not isinstance(audio_path, Path):
+            audio_path = Path(audio_path)
+
+        if not audio_path.exists():
+            error_msg = f"Audio file not found: {audio_path}"
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+
+        if not audio_path.is_file():
+            error_msg = f"Audio path is not a file: {audio_path}"
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+
+        # Validate payload
+        if not isinstance(raw_input_payload, dict):
+            error_msg = "Input payload must be a dictionary"
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+
+        job_input = PresentationJobInput.from_dict(raw_input_payload)
+        logger.debug(f"Parsed job input: {job_input}")
+
+    except KeyError as e:
+        error_msg = f"Missing required field in input payload: {e}"
+        logger.error(error_msg)
+        raise ValueError(error_msg) from e
+    except Exception as e:
+        error_msg = f"Error validating inputs: {e}"
+        logger.error(error_msg, exc_info=True)
+        raise ValueError(error_msg) from e
 
     # 1) low-level analysis (Whisper, librosa, etc.)
-    audio_json = audio_to_json(audio_path)
+    try:
+        logger.info("Running audio_to_json processing")
+        audio_json = audio_to_json(audio_path)
+        logger.info("Audio processing completed successfully")
+    except Exception as e:
+        error_msg = f"Audio processing failed: {e}"
+        logger.error(error_msg, exc_info=True)
+        raise RuntimeError(error_msg) from e
 
     # audio_json is expected to look like:
     # {
@@ -255,19 +303,47 @@ def run_full_analysis(
     #   "noise_summary": {...},
     # }
 
-    audio_metadata = audio_json.get("audio_metadata", {})
-    words = audio_json.get("words", []) or []
+    # 2) Extract metadata and validate audio processing results
+    try:
+        audio_metadata = audio_json.get("audio_metadata", {})
+        if not audio_metadata:
+            logger.warning("Audio metadata is empty")
 
-    duration_sec = float(audio_metadata.get("duration", audio_metadata.get("duration_sec", 0.0)))
+        words = audio_json.get("words", []) or []
+        if not words:
+            logger.warning("No words found in transcription - audio may be silent or ASR failed")
 
-    # 2) transcript block (used by both /full and /transcript endpoints)
-    transcript_block = _build_transcript_from_words(words)
+        duration_sec = float(audio_metadata.get("duration", audio_metadata.get("duration_sec", 0.0)))
+        if duration_sec <= 0:
+            logger.warning(f"Invalid or zero duration: {duration_sec}")
 
-    # 3) quality flags & overall score
-    quality_flags = _build_quality_flags(audio_json)
-    overall_score = _build_dummy_overall_score()
+        logger.debug(f"Audio duration: {duration_sec}s, word count: {len(words)}")
 
-    # 4) metrics (right now, all abstained stubs)
+    except (TypeError, ValueError) as e:
+        error_msg = f"Error extracting audio metadata: {e}"
+        logger.error(error_msg)
+        raise RuntimeError(error_msg) from e
+
+    # 3) transcript block (used by both /full and /transcript endpoints)
+    try:
+        logger.debug("Building transcript from words")
+        transcript_block = _build_transcript_from_words(words)
+    except Exception as e:
+        error_msg = f"Error building transcript: {e}"
+        logger.error(error_msg, exc_info=True)
+        raise RuntimeError(error_msg) from e
+
+    # 4) quality flags & overall score
+    try:
+        logger.debug("Computing quality flags")
+        quality_flags = _build_quality_flags(audio_json)
+        overall_score = _build_dummy_overall_score()
+    except Exception as e:
+        error_msg = f"Error computing quality flags: {e}"
+        logger.error(error_msg, exc_info=True)
+        raise RuntimeError(error_msg) from e
+
+    # 5) metrics
     requested = job_input.requested_metrics or [
         "pace",
         "pause_quality",
@@ -278,27 +354,41 @@ def run_full_analysis(
         "confidence_cv",
     ]
 
+    logger.info(f"Computing metrics: {requested}")
     metrics: Dict[str, Any] = {}
-    for metric_name in requested:
-        if metric_name == "pace":
-            metrics["pace"] = compute_pace_metric(words, duration_sec)
-        
-        elif metric_name == "pause_quality":
-            metrics["pause_quality"] = compute_pause_quality_metric(
-                                            audio_json.get("word_pauses", []),
-                                            audio_json.get("vad_silence_segments", []),
-                                            duration_sec
-                                        )
 
-        else:
+    for metric_name in requested:
+        try:
+            if metric_name == "pace":
+                logger.debug("Computing pace metric")
+                metrics["pace"] = compute_pace_metric(words, duration_sec)
+
+            elif metric_name == "pause_quality":
+                logger.debug("Computing pause_quality metric")
+                metrics["pause_quality"] = compute_pause_quality_metric(
+                    audio_json.get("word_pauses", []),
+                    audio_json.get("vad_silence_segments", []),
+                    duration_sec
+                )
+
+            else:
+                logger.debug(f"Metric '{metric_name}' not implemented, abstaining")
+                metrics[metric_name] = _build_abstained_metric(
+                    reason="metric_not_implemented_yet"
+                )
+
+        except Exception as e:
+            error_msg = f"Error computing metric '{metric_name}': {e}"
+            logger.error(error_msg, exc_info=True)
+            # Instead of failing the entire job, abstain this metric
             metrics[metric_name] = _build_abstained_metric(
-                reason="metric_not_implemented_yet"
+                reason=f"metric_computation_failed: {str(e)}"
             )
-            
-    # 5) timeline stub: right now empty, but schema-compatible
+
+    # 6) timeline stub: right now empty, but schema-compatible
     timeline: List[Dict[str, Any]] = []
 
-    # 6) model metadata: stubbed for now; fill with real versions later
+    # 7) model metadata: stubbed for now; fill with real versions later
     model_metadata = {
         "asr_model": "whisper-small",
         "vad_model": "silero-vad",
@@ -306,27 +396,34 @@ def run_full_analysis(
         "version": "dev-0.0.2",
     }
 
-    # 7) Build the final response dict that matches your
+    # 8) Build the final response dict that matches your
     #    GET /api/v1/presentations/{job_id}/full spec.
-    input_block = job_input.to_dict()
-    input_block["duration_sec"] = duration_sec
+    try:
+        input_block = job_input.to_dict()
+        input_block["duration_sec"] = duration_sec
 
-    full_response: Dict[str, Any] = {
-        "job_id": job_id,
-        "status": "done",
-        "input": input_block,
-        "quality_flags": quality_flags,
-        "overall_score": overall_score,
-        "metrics": metrics,
-        "timeline": timeline,
-        "model_metadata": model_metadata,
-        "transcript": {
-            "full_text": transcript_block["full_text"],
-            "language": transcript_block["language"],
-        },
-    }
+        full_response: Dict[str, Any] = {
+            "job_id": job_id,
+            "status": "done",
+            "input": input_block,
+            "quality_flags": quality_flags,
+            "overall_score": overall_score,
+            "metrics": metrics,
+            "timeline": timeline,
+            "model_metadata": model_metadata,
+            "transcript": {
+                "full_text": transcript_block["full_text"],
+                "language": transcript_block["language"],
+            },
+        }
 
-    return full_response
+        logger.info(f"Analysis completed successfully for job_id={job_id}")
+        return full_response
+
+    except Exception as e:
+        error_msg = f"Error building final response: {e}"
+        logger.error(error_msg, exc_info=True)
+        raise RuntimeError(error_msg) from e
 
 
 # ---- Convenience function for /transcript endpoint -------------------------
