@@ -356,6 +356,7 @@ def run_full_analysis(
 
     logger.info(f"Computing metrics: {requested}")
     metrics: Dict[str, Any] = {}
+    timeline: List[Dict[str, Any]] = []  # Initialize timeline here to collect from metrics
 
     for metric_name in requested:
         try:
@@ -365,11 +366,14 @@ def run_full_analysis(
 
             elif metric_name == "pause_quality":
                 logger.debug("Computing pause_quality metric")
-                metrics["pause_quality"] = compute_pause_quality_metric(
+                pause_metric, pause_timeline = compute_pause_quality_metric(
                     audio_json.get("word_pauses", []),
                     audio_json.get("vad_silence_segments", []),
                     duration_sec
                 )
+                metrics["pause_quality"] = pause_metric
+                # Add pause timeline events to the main timeline
+                timeline.extend(pause_timeline)
 
             else:
                 logger.debug(f"Metric '{metric_name}' not implemented, abstaining")
@@ -385,10 +389,7 @@ def run_full_analysis(
                 reason=f"metric_computation_failed: {str(e)}"
             )
 
-    # 6) timeline stub: right now empty, but schema-compatible
-    timeline: List[Dict[str, Any]] = []
-
-    # 7) model metadata: stubbed for now; fill with real versions later
+    # 6) model metadata: stubbed for now; fill with real versions later
     model_metadata = {
         "asr_model": "whisper-small",
         "vad_model": "silero-vad",
@@ -396,7 +397,7 @@ def run_full_analysis(
         "version": "dev-0.0.2",
     }
 
-    # 8) Build the final response dict that matches your
+    # 7) Build the final response dict that matches your
     #    GET /api/v1/presentations/{job_id}/full spec.
     try:
         input_block = job_input.to_dict()
