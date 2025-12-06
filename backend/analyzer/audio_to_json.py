@@ -230,11 +230,10 @@ def audio_to_json(
             if silence_segments
             else None
         ),
-        "noise_summary": noise_summary
-        # leave room for future:
-        # "vad_segments": [...], done
-        # "raw_pitch_hz": pitch_hz.tolist() if pitch_hz is not None else None,
-        # "raw_energy": energy.tolist(),
+        "noise_summary": noise_summary,
+        # Raw timeseries for advanced metrics
+        "raw_pitch_hz": pitch_hz.tolist() if pitch_hz is not None else None,
+        # "raw_energy": energy.tolist(),  # Uncomment if needed
     }
 
 

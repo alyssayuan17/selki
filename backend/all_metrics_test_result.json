@@ -1,0 +1,129 @@
+{
+  "job_id": "test-all-metrics-v2",
+  "status": "done",
+  "input": {
+    "audio_url": "test.wav",
+    "video_url": null,
+    "language": "en",
+    "talk_type": "presentation",
+    "audience_type": "general",
+    "requested_metrics": [
+      "pace",
+      "pause_quality",
+      "fillers",
+      "intonation"
+    ],
+    "user_metadata": {},
+    "duration_sec": 3.3033125
+  },
+  "quality_flags": {
+    "asr_confidence": 0.9669859210650126,
+    "mic_quality": "ok",
+    "background_noise_level": "low",
+    "abstain_reason": null
+  },
+  "overall_score": {
+    "score_0_100": 0,
+    "label": "unknown",
+    "confidence": 0.0
+  },
+  "metrics": {
+    "pace": {
+      "score_0_100": 40,
+      "label": "too_slow",
+      "confidence": 0.75,
+      "abstained": false,
+      "details": {
+        "average_wpm": 108.98151476737365,
+        "optimal_range_wpm": [
+          110,
+          170
+        ],
+        "segment_stats": [
+          {
+            "start_sec": 0.0,
+            "end_sec": 3.3033125,
+            "wpm": 108.98151476737365
+          }
+        ]
+      },
+      "feedback": [
+        {
+          "start_sec": 0.0,
+          "end_sec": 3.3033125,
+          "message": "Your overall pace is slow (WPM=109.0). Try increasing vocal energy and reducing long pauses.",
+          "tip_type": "pace"
+        },
+        {
+          "start_sec": 0.0,
+          "end_sec": 3.3033125,
+          "message": "In this segment (WPM=109.0), your pace is slow. Consider increasing energy or reducing long pauses.",
+          "tip_type": "pace"
+        }
+      ]
+    },
+    "pause_quality": {
+      "score_0_100": null,
+      "label": "abstained",
+      "confidence": 0.0,
+      "abstained": true,
+      "details": {
+        "reason": "no_pauses_detected"
+      },
+      "feedback": []
+    },
+    "fillers": {
+      "score_0_100": 95,
+      "label": "low_filler_rate",
+      "confidence": 0.75,
+      "abstained": false,
+      "details": {
+        "filler_rate_per_min": 0.0,
+        "total_fillers": 0,
+        "top_fillers": []
+      },
+      "feedback": [
+        {
+          "start_sec": 0.0,
+          "end_sec": 3.3033125,
+          "message": "Low filler rate (~0.0/min). Great job keeping your speech clean and focused.",
+          "tip_type": "fillers"
+        }
+      ]
+    },
+    "intonation": {
+      "score_0_100": 85,
+      "label": "dynamic",
+      "confidence": 0.8071874354300754,
+      "abstained": false,
+      "details": {
+        "mean_pitch_hz": 98.78676538270753,
+        "pitch_std_hz": 76.41497687856834,
+        "pitch_range_hz": 164.70079284785578,
+        "pitch_cov": 0.7735345578178497,
+        "energy_mean": 0.0021737448405474424,
+        "energy_std": 0.003347895573824644,
+        "prosody_variance_score": 0.5239581181002515
+      },
+      "feedback": [
+        {
+          "start_sec": 0.0,
+          "end_sec": 3.3033125,
+          "message": "Excellent! Your pitch varies dynamically (std: 76.4 Hz, range: 165 Hz), which helps maintain listener attention. Keep using vocal variety to emphasize structure and key points.",
+          "tip_type": "intonation"
+        }
+      ]
+    }
+  },
+  "timeline": [],
+  "model_metadata": {
+    "asr_model": "whisper-small",
+    "vad_model": "silero-vad",
+    "embedding_model": "not_configured",
+    "version": "dev-0.0.2"
+  },
+  "transcript": {
+    "full_text": "Kids are talking by the door.",
+    "language": "en"
+  }
+}
