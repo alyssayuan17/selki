@@ -27,27 +27,48 @@ def compute_wpm(words: List[Dict[str, Any]], duration_sec: float) -> float:
 
 # ----------------------------------------------------
 # Compute segmented WPM (e.g., 30s windows)
+#   - Uses actual talk duration, not fixed 30s for all segments
+#   - Last segment may be shorter than segment_length
 # ----------------------------------------------------
-def compute_segment_wpm(words: List[Dict[str, Any]], segment_length: float = 30.0):
-    if not words:
+def compute_segment_wpm(
+    words: List[Dict[str, Any]],
+    duration_sec: float,
+    segment_length: float = 30.0,
+) -> List[Dict[str, Any]]:
+    """
+    Split [0, duration_sec] into windows of at most segment_length seconds.
+
+    Example:
+      duration_sec = 20s  -> 1 segment: [0, 20]
+      duration_sec = 105s -> segments:
+          [0, 30], [30, 60], [60, 90], [90, 105]  (last is 15s)
+    """
+    if not words or duration_sec <= 0:
         return []
 
-    segments = []
-    max_time = max(w.get("end", 0.0) for w in words)
+    segments: List[Dict[str, Any]] = []
 
     t = 0.0
-    while t < max_time:
-        segment_end = t + segment_length
+    while t < duration_sec:
+        segment_end = min(t + segment_length, duration_sec)
+        seg_duration = segment_end - t
+        if seg_duration <= 0:
+            break
+
         segment_words = [
             w for w in words
-            if t <= w.get("start", 0) < segment_end
+            if t <= w.get("start", 0.0) < segment_end
         ]
-        wpm = compute_wpm(segment_words, segment_length)
+
+        # Use the actual segment duration, not a fixed 30s
+        wpm = compute_wpm(segment_words, seg_duration)
+
         segments.append({
             "start_sec": t,
             "end_sec": segment_end,
             "wpm": wpm,
         })
+
         t += segment_length
 
     return segments
@@ -74,10 +95,6 @@ def score_from_label(label: str) -> int:
         "too_fast": 50,
     }
     return mapping.get(label, 0)
-
-
-
-# NEED TO FIX WHAT IF SHORTER THAN 30 SECONDS
 
 
 # ----------------------------------------------------
@@ -133,7 +150,7 @@ def compute_pace_metric(words: List[Dict[str, Any]], duration_sec: float) -> Dic
     score = score_from_label(label)
 
     # Per-segment WPM (30-second windows)
-    seg_stats = compute_segment_wpm(words)
+    seg_stats = compute_segment_wpm(words, duration_sec, segment_length=30.0)
 
     # ------------------------------------------------------------------
     # 2. Build overall feedback
