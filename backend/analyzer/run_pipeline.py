@@ -9,6 +9,7 @@ from typing import Any, Dict, List, Optional
 from .audio_to_json import audio_to_json
 from analyzer.metrics.pace import compute_pace_metric
 from analyzer.metrics.pause_quality import compute_pause_quality_metric
+from analyzer.metrics.fillers import compute_fillers_metric
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -374,6 +375,10 @@ def run_full_analysis(
                 metrics["pause_quality"] = pause_metric
                 # Add pause timeline events to the main timeline
                 timeline.extend(pause_timeline)
+
+            elif metric_name == "fillers":
+                logger.debug("Computing fillers metric")
+                metrics["fillers"] = compute_fillers_metric(words, duration_sec)
 
             else:
                 logger.debug(f"Metric '{metric_name}' not implemented, abstaining")

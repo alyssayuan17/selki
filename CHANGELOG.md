@@ -1,6 +1,18 @@
 # Changelog - Triple TS Speaks
 
-## 2025-12-05 - Pause Quality & Error Handling Updates
+## 2025-12-05 - Pause Quality, Error Handling & Fillers Metric
+
+### Summary
+
+Today's updates include:
+1. **Comprehensive error handling** throughout the pipeline
+2. **Intelligent pause overlap merging** (VAD priority over ASR)
+3. **Fillers metric implementation** (um, uh, like detection)
+4. All metrics now integrated and tested
+
+---
+
+## Updates
 
 ### Added
 
@@ -27,6 +39,19 @@
   - Suppression of verbose third-party loggers
   - Easy setup: `setup_logging(level="INFO")`
 
+#### Fillers Metric (NEW)
+
+- **[fillers.py](backend/analyzer/metrics/fillers.py)**: Complete filler word detection implementation
+  - **Filler Lexicon**: Detects um, uh, erm, er, uhm, like, actually, basically, "you know"
+  - **Smart Normalization**: Lowercasing, punctuation removal, space collapsing
+  - **Rate Calculation**: Fillers per minute with thresholds:
+    - `≤3/min` → low_filler_rate (85-95/100)
+    - `3-7/min` → moderate_filler_rate (65/100)
+    - `>7/min` → high_filler_rate (45/100)
+  - **Top Fillers List**: Counter-based ranking of most common fillers
+  - **Actionable Feedback**: Specific tips based on filler rate
+  - **Abstention**: Gracefully handles empty/silent audio
+
 #### Pause Quality Improvements
 
 - **[pause_quality.py](backend/analyzer/metrics/pause_quality.py)**: Implemented intelligent pause overlap merging
@@ -39,10 +64,12 @@
   - **Detailed Logging**: Debug logs show before/after merge statistics
   - **Timeline Integration**: Pause events now populate the main timeline
 
-- **[run_pipeline.py](backend/analyzer/run_pipeline.py)**: Fixed pause_quality return value handling
-  - Now correctly unpacks `(metric, timeline)` tuple from `compute_pause_quality_metric()`
+- **[run_pipeline.py](backend/analyzer/run_pipeline.py)**: Enhanced metric integration
+  - Fixed pause_quality return value handling (unpacks tuple correctly)
+  - **Integrated fillers metric**: Added import and metric computation
   - Timeline events from pause_quality are added to main response timeline
   - Timeline initialized before metric loop to collect events
+  - Now supports 3 working metrics: pace, pause_quality, fillers
 
 ### Tests
 
@@ -67,12 +94,26 @@
   - Validates timeline generation
   - Checks source attribution (ASR vs VAD)
 
+- **[test_fillers.py](backend/test_fillers.py)**: Comprehensive fillers metric test suite
+  - **Unit tests**: Clean speech, low/moderate/high filler rates, abstention
+  - **Integration test**: Real audio file processing
+  - **All metrics test**: Tests pace + pause_quality + fillers together
+  - **Result**: All tests passing ✓
+
 ### Changed
 
-- Pause quality metric now returns deduplicated pauses instead of combined list with duplicates
-- Timeline now includes pause events from pause_quality metric
-- Error messages are more descriptive with specific failure reasons
-- Metric computation failures now abstain gracefully instead of crashing
+- **Pause quality**: Now returns deduplicated pauses instead of combined list with duplicates
+- **Timeline**: Now includes pause events from pause_quality metric
+- **Error messages**: More descriptive with specific failure reasons
+- **Metric failures**: Now abstain gracefully instead of crashing entire pipeline
+- **Implemented metrics**: 3/7 complete (was 2/7)
+  - ✓ pace
+  - ✓ pause_quality
+  - ✓ **fillers (NEW)**
+  - ✗ intonation
+  - ✗ articulation
+  - ✗ content_structure
+  - ✗ confidence_cv
 
 ### Technical Details
 
@@ -123,15 +164,30 @@ try:
             "language": "en",
             "talk_type": "presentation",
             "audience_type": "general",
-            "requested_metrics": ["pace", "pause_quality"],
+            "requested_metrics": ["pace", "pause_quality", "fillers"],
             "user_metadata": {}
         }
     )
 
-    # Check pause quality
-    pause_metric = result['metrics']['pause_quality']
-    print(f"Pause score: {pause_metric['score_0_100']}/100")
-    print(f"Total pauses: {pause_metric['details']['total_pauses']}")
+    # Check all metrics
+    metrics = result['metrics']
+
+    # Pace
+    pace = metrics['pace']
+    print(f"Pace: {pace['score_0_100']}/100 ({pace['label']})")
+    print(f"  WPM: {pace['details']['average_wpm']}")
+
+    # Pause Quality
+    pause_quality = metrics['pause_quality']
+    if not pause_quality['abstained']:
+        print(f"Pauses: {pause_quality['score_0_100']}/100 ({pause_quality['label']})")
+        print(f"  Total: {pause_quality['details']['total_pauses']}")
+
+    # Fillers
+    fillers = metrics['fillers']
+    print(f"Fillers: {fillers['score_0_100']}/100 ({fillers['label']})")
+    print(f"  Rate: {fillers['details']['filler_rate_per_min']:.1f}/min")
+    print(f"  Top fillers: {fillers['details']['top_fillers'][:3]}")
 
     # Check timeline
     timeline = result['timeline']
