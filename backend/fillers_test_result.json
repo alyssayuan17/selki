@@ -1,0 +1,59 @@
+{
+  "job_id": "test-fillers",
+  "status": "done",
+  "input": {
+    "audio_url": "test.wav",
+    "video_url": null,
+    "language": "en",
+    "talk_type": "presentation",
+    "audience_type": "general",
+    "requested_metrics": [
+      "fillers"
+    ],
+    "user_metadata": {},
+    "duration_sec": 3.3033125
+  },
+  "quality_flags": {
+    "asr_confidence": 0.9669859210650126,
+    "mic_quality": "ok",
+    "background_noise_level": "low",
+    "abstain_reason": null
+  },
+  "overall_score": {
+    "score_0_100": 0,
+    "label": "unknown",
+    "confidence": 0.0
+  },
+  "metrics": {
+    "fillers": {
+      "score_0_100": 95,
+      "label": "low_filler_rate",
+      "confidence": 0.75,
+      "abstained": false,
+      "details": {
+        "filler_rate_per_min": 0.0,
+        "total_fillers": 0,
+        "top_fillers": []
+      },
+      "feedback": [
+        {
+          "start_sec": 0.0,
+          "end_sec": 3.3033125,
+          "message": "Low filler rate (~0.0/min). Great job keeping your speech clean and focused.",
+          "tip_type": "fillers"
+        }
+      ]
+    }
+  },
+  "timeline": [],
+  "model_metadata": {
+    "asr_model": "whisper-small",
+    "vad_model": "silero-vad",
+    "embedding_model": "not_configured",
+    "version": "dev-0.0.2"
+  },
+  "transcript": {
+    "full_text": "Kids are talking by the door.",
+    "language": "en"
+  }
+}
