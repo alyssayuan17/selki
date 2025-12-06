@@ -1,0 +1,69 @@
+{
+  "job_id": "test-pause-merge",
+  "status": "done",
+  "input": {
+    "audio_url": "pausetest.mp3",
+    "video_url": null,
+    "language": "en",
+    "talk_type": "presentation",
+    "audience_type": "general",
+    "requested_metrics": [
+      "pause_quality"
+    ],
+    "user_metadata": {},
+    "duration_sec": 3.168
+  },
+  "quality_flags": {
+    "asr_confidence": 0.413365438580513,
+    "mic_quality": "very_quiet",
+    "background_noise_level": "low",
+    "abstain_reason": "low_asr_and_speech_ratio"
+  },
+  "overall_score": {
+    "score_0_100": 0,
+    "label": "unknown",
+    "confidence": 0.0
+  },
+  "metrics": {
+    "pause_quality": {
+      "score_0_100": 45,
+      "label": "too_many_pauses",
+      "confidence": 0.75,
+      "abstained": false,
+      "details": {
+        "total_pauses": 1,
+        "average_pause_duration": 1.252,
+        "long_pauses": 1,
+        "short_pauses": 0,
+        "pause_rate": 0.31565656565656564
+      },
+      "feedback": [
+        {
+          "start_sec": 0.0,
+          "end_sec": 3.168,
+          "message": "You pause very frequently. Try connecting ideas more fluidly.",
+          "tip_type": "pause_quality"
+        }
+      ]
+    }
+  },
+  "timeline": [
+    {
+      "start_sec": 1.118,
+      "end_sec": 2.37,
+      "type": "pause",
+      "quality": "long",
+      "source": "vad"
+    }
+  ],
+  "model_metadata": {
+    "asr_model": "whisper-small",
+    "vad_model": "silero-vad",
+    "embedding_model": "not_configured",
+    "version": "dev-0.0.2"
+  },
+  "transcript": {
+    "full_text": "test test",
+    "language": "en"
+  }
+}

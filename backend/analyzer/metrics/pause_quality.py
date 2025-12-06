@@ -11,10 +11,18 @@ Outputs:
 - confidence
 - details
 - timeline entries for frontend visualization
+
+Algorithm:
+- Combines pauses from both ASR and VAD
+- When pauses overlap, VAD takes priority (more accurate)
+- Boundary silence (start/end) is filtered out
 """
 
 from __future__ import annotations
+import logging
 from typing import List, Dict, Any, Tuple
+
+logger = logging.getLogger(__name__)
 
 
 # --------------------------------------------------------
@@ -31,6 +39,115 @@ def classify_pause(duration: float) -> str:
 
 
 # --------------------------------------------------------
+# Helper: check if two pauses overlap
+# --------------------------------------------------------
+def pauses_overlap(p1: Dict[str, Any], p2: Dict[str, Any], threshold: float = 0.1) -> bool:
+    """
+    Check if two pause segments overlap significantly.
+
+    Args:
+        p1, p2: Pause dictionaries with 'start' and 'end' keys
+        threshold: Minimum overlap duration (seconds) to consider as overlapping
+
+    Returns:
+        True if pauses overlap by at least threshold seconds
+    """
+    # Calculate overlap region
+    overlap_start = max(p1["start"], p2["start"])
+    overlap_end = min(p1["end"], p2["end"])
+    overlap_duration = max(0.0, overlap_end - overlap_start)
+
+    return overlap_duration >= threshold
+
+
+# --------------------------------------------------------
+# Helper: merge overlapping pauses, preferring VAD
+# --------------------------------------------------------
+def merge_overlapping_pauses(pauses: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """
+    Merge overlapping pauses, giving priority to VAD over ASR.
+
+    Algorithm:
+    1. Sort pauses by start time
+    2. For each pause, check if it overlaps with previously added pauses
+    3. If overlap exists:
+       - If one is VAD and one is ASR: keep VAD, discard ASR
+       - If both are same type: merge into single pause
+    4. If no overlap: add as new pause
+
+    Args:
+        pauses: List of pause dicts with 'start', 'end', 'duration', 'source'
+
+    Returns:
+        Deduplicated list of pauses with overlaps resolved
+    """
+    if not pauses:
+        return []
+
+    # Sort by start time
+    sorted_pauses = sorted(pauses, key=lambda x: x["start"])
+    merged: List[Dict[str, Any]] = []
+
+    for current_pause in sorted_pauses:
+        if not merged:
+            # First pause, just add it
+            merged.append(current_pause.copy())
+            continue
+
+        # Check if current pause overlaps with any in merged list
+        overlapped = False
+
+        for i, existing_pause in enumerate(merged):
+            if pauses_overlap(current_pause, existing_pause):
+                overlapped = True
+
+                # Determine which to keep based on source priority
+                current_source = current_pause["source"]
+                existing_source = existing_pause["source"]
+
+                if current_source == "vad" and existing_source == "asr":
+                    # Replace ASR with VAD (VAD is more accurate)
+                    merged[i] = current_pause.copy()
+                    logger.debug(f"Replaced ASR pause [{existing_pause['start']:.2f}-{existing_pause['end']:.2f}] "
+                               f"with overlapping VAD pause [{current_pause['start']:.2f}-{current_pause['end']:.2f}]")
+
+                elif current_source == "asr" and existing_source == "vad":
+                    # Keep VAD, ignore ASR
+                    logger.debug(f"Skipped ASR pause [{current_pause['start']:.2f}-{current_pause['end']:.2f}] "
+                               f"- overlaps with VAD pause [{existing_pause['start']:.2f}-{existing_pause['end']:.2f}]")
+                    pass  # Don't add current pause
+
+                else:
+                    # Both same type - merge into longer/combined interval
+                    merged_start = min(existing_pause["start"], current_pause["start"])
+                    merged_end = max(existing_pause["end"], current_pause["end"])
+                    merged_duration = merged_end - merged_start
+
+                    merged[i] = {
+                        "start": merged_start,
+                        "end": merged_end,
+                        "duration": merged_duration,
+                        "source": existing_source,  # Keep original source
+                    }
+                    logger.debug(f"Merged two {existing_source} pauses: "
+                               f"[{existing_pause['start']:.2f}-{existing_pause['end']:.2f}] + "
+                               f"[{current_pause['start']:.2f}-{current_pause['end']:.2f}] -> "
+                               f"[{merged_start:.2f}-{merged_end:.2f}]")
+
+                break  # Only merge with first overlap found
+
+        if not overlapped:
+            # No overlap, add as new pause
+            merged.append(current_pause.copy())
+
+    # Sort final result by start time
+    merged.sort(key=lambda x: x["start"])
+
+    logger.debug(f"Pause deduplication: {len(pauses)} input pauses -> {len(merged)} merged pauses")
+    return merged
+
+
+# --------------------------------------------------------
 # Build combined pause list
 # --------------------------------------------------------
 def combine_pauses(
@@ -44,17 +161,24 @@ def combine_pauses(
       - Whisper word gaps (word_pauses)
       - VAD silence (vad_silences)
 
-    **Important:** we do NOT treat pure leading/trailing silence as pauses.
-    So any VAD silence segment that is:
-      - near the very start (start < boundary_margin), or
-      - near the very end  (end   > duration_sec - boundary_margin)
-    is ignored.
+    **Important:**
+    1. We do NOT treat pure leading/trailing silence as pauses.
+       - Any VAD silence near the very start (start < boundary_margin)
+       - Any VAD silence near the very end (end > duration_sec - boundary_margin)
+       is ignored.
+
+    2. Overlapping pauses are merged, with VAD taking priority over ASR.
+       - If VAD and ASR overlap: VAD wins (more accurate)
+       - If two of same type overlap: they are merged
+
+    Returns:
+        Deduplicated list of pauses sorted by start time
     """
-    combined: List[Dict[str, Any]] = []
+    all_pauses: List[Dict[str, Any]] = []
 
     # 1) ASR word-based pauses (these are already internal, no need to trim)
     for p in word_pauses or []:
-        combined.append({
+        all_pauses.append({
             "start": float(p["start"]),
             "end": float(p["end"]),
             "duration": float(p["duration"]),
@@ -83,15 +207,25 @@ def combine_pauses(
             if end >= duration_sec - margin:
                 continue
 
-            combined.append({
+            all_pauses.append({
                 "start": start,
                 "end": end,
                 "duration": dur,
                 "source": "vad",
             })
 
-    combined.sort(key=lambda x: x["start"])
-    return combined
+    # 3) Merge overlapping pauses, giving priority to VAD
+    logger.debug(f"Before merging: {len(all_pauses)} pauses "
+                f"({len([p for p in all_pauses if p['source'] == 'asr'])} ASR, "
+                f"{len([p for p in all_pauses if p['source'] == 'vad'])} VAD)")
+
+    merged_pauses = merge_overlapping_pauses(all_pauses)
+
+    logger.debug(f"After merging: {len(merged_pauses)} pauses "
+                f"({len([p for p in merged_pauses if p['source'] == 'asr'])} ASR, "
+                f"{len([p for p in merged_pauses if p['source'] == 'vad'])} VAD)")
+
+    return merged_pauses
 
 
 # --------------------------------------------------------
