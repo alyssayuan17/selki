@@ -106,12 +106,11 @@ Today's updates include:
 - **Timeline**: Now includes pause events from pause_quality metric
 - **Error messages**: More descriptive with specific failure reasons
 - **Metric failures**: Now abstain gracefully instead of crashing entire pipeline
-- **Implemented metrics**: 3/7 complete (was 2/7)
+- **Implemented metrics**: 4/6 complete
   - ✓ pace
   - ✓ pause_quality
-  - ✓ **fillers (NEW)**
-  - ✗ intonation
-  - ✗ articulation
+  - ✓ fillers
+  - ✓ intonation
   - ✗ content_structure
   - ✗ confidence_cv
 

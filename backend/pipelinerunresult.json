@@ -12,7 +12,6 @@
       "pause_quality",
       "fillers",
       "intonation",
-      "articulation",
       "content_structure",
       "confidence_cv"
     ],
@@ -118,16 +117,6 @@
       "feedback": []
     },
     "intonation": {
-      "score_0_100": null,
-      "label": "abstained",
-      "confidence": 0.0,
-      "abstained": true,
-      "details": {
-        "reason": "metric_not_implemented_yet"
-      },
-      "feedback": []
-    },
-    "articulation": {
       "score_0_100": null,
       "label": "abstained",
       "confidence": 0.0,
