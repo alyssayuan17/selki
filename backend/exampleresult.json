@@ -12,7 +12,6 @@
       "pause_quality",
       "fillers",
       "intonation",
-      "articulation",
       "content_structure",
       "confidence_cv"
     ],
@@ -41,17 +40,28 @@
       "abstained": false,
       "details": {
         "average_wpm": 185,
-        "optimal_range_wpm": [130, 170],
+        "optimal_range_wpm": [
+          130,
+          170
+        ],
         "segment_stats": [
-          { "start_sec": 0.0, "end_sec": 60.0, "wpm": 195 },
-          { "start_sec": 60.0, "end_sec": 120.0, "wpm": 178 }
+          {
+            "start_sec": 0.0,
+            "end_sec": 60.0,
+            "wpm": 195
+          },
+          {
+            "start_sec": 60.0,
+            "end_sec": 120.0,
+            "wpm": 178
+          }
         ]
       },
       "feedback": [
         {
           "start_sec": 83.0,
           "end_sec": 101.0,
-          "message": "You spoke at ~195 WPM (fast) with no pauses. Try a 400–700 ms pause after key claims.",
+          "message": "You spoke at ~195 WPM (fast) with no pauses. Try a 400\u00e2\u20ac\u201c700 ms pause after key claims.",
           "tip_type": "pace"
         }
       ]
@@ -65,8 +75,14 @@
         "pause_rate_per_min": 5.2,
         "helpful_pause_ratio": 0.6,
         "awkward_pause_examples": [
-          { "start_sec": 45.2, "end_sec": 46.1 },
-          { "start_sec": 132.0, "end_sec": 132.8 }
+          {
+            "start_sec": 45.2,
+            "end_sec": 46.1
+          },
+          {
+            "start_sec": 132.0,
+            "end_sec": 132.8
+          }
         ]
       },
       "feedback": [
@@ -81,15 +97,24 @@
     "fillers": {
       "score_0_100": 55,
       "label": "high_filler_rate",
-      "confidence": 0.80,
+      "confidence": 0.8,
       "abstained": false,
       "details": {
         "filler_rate_per_min": 9.0,
         "total_fillers": 36,
         "top_fillers": [
-          { "token": "um", "count": 14 },
-          { "token": "like", "count": 10 },
-          { "token": "uh", "count": 7 }
+          {
+            "token": "um",
+            "count": 14
+          },
+          {
+            "token": "like",
+            "count": 10
+          },
+          {
+            "token": "uh",
+            "count": 7
+          }
         ]
       },
       "feedback": [
@@ -120,26 +145,25 @@
         }
       ]
     },
-    "articulation": {
-      "score_0_100": 80,
-      "label": "clear",
-      "confidence": 0.82,
-      "abstained": false,
-      "details": {
-        "clarity_score_raw": 0.78
-      },
-      "feedback": []
-    },
     "content_structure": {
       "score_0_100": 70,
       "label": "mostly_clear_structure",
-      "confidence": 0.70,
+      "confidence": 0.7,
       "abstained": false,
       "details": {
         "detected_signposts": [
-          { "text": "first", "start_sec": 12.3 },
-          { "text": "next", "start_sec": 58.9 },
-          { "text": "in summary", "start_sec": 210.1 }
+          {
+            "text": "first",
+            "start_sec": 12.3
+          },
+          {
+            "text": "next",
+            "start_sec": 58.9
+          },
+          {
+            "text": "in summary",
+            "start_sec": 210.1
+          }
         ],
         "run_on_sentences_estimate": 2,
         "jargon_density": 0.35,
@@ -178,14 +202,18 @@
     {
       "start_sec": 0.0,
       "end_sec": 30.0,
-      "dominant_issues": ["pace"],
+      "dominant_issues": [
+        "pace"
+      ],
       "highlights": []
     },
     {
       "start_sec": 30.0,
       "end_sec": 60.0,
       "dominant_issues": [],
-      "highlights": ["strong_confidence_cv"]
+      "highlights": [
+        "strong_confidence_cv"
+      ]
     }
   ],
   "model_metadata": {

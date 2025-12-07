@@ -351,7 +351,6 @@ def run_full_analysis(
         "pause_quality",
         "fillers",
         "intonation",
-        "articulation",
         "content_structure",
         "confidence_cv",
     ]
