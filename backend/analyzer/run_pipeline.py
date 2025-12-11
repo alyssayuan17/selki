@@ -11,6 +11,7 @@ from analyzer.metrics.pace import compute_pace_metric
 from analyzer.metrics.pause_quality import compute_pause_quality_metric
 from analyzer.metrics.fillers import compute_fillers_metric
 from analyzer.metrics.intonation import compute_intonation_metric
+from analyzer.metrics.content_structure import compute_content_structure_metric
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -386,6 +387,13 @@ def run_full_analysis(
                 raw_pitch_hz = audio_json.get("raw_pitch_hz")  # NEW: pass raw pitch for exact range
                 metrics["intonation"] = compute_intonation_metric(
                     audio_features, duration_sec, raw_pitch_hz=raw_pitch_hz
+                )
+
+            elif metric_name == "content_structure":
+                logger.debug("Computing content_structure metric")
+                transcript_text = transcript_block.get("full_text", "")
+                metrics["content_structure"] = compute_content_structure_metric(
+                    transcript_text
                 )
 
             else:

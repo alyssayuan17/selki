@@ -57,26 +57,97 @@ def _get_nlp():
 # --------------------------------------------------------
 
 _SIGNPOST_PHRASES = [
+    # Ordering/Sequencing
     "first",
     "firstly",
     "second",
     "secondly",
     "third",
     "thirdly",
+    "fourth",
+    "fifth",
     "next",
     "then",
     "after that",
+    "following that",
+    "lastly",
+    "last",
+    "finally",
+
+    # Adding/Continuing
+    "additionally",
+    "furthermore",
+    "moreover",
+    "in addition",
+    "also",
     "another point",
-    "on the other hand",
+    "another thing",
+    "what's more",
+    "besides",
+
+    # Contrasting
     "however",
+    "on the other hand",
     "in contrast",
+    "conversely",
+    "nevertheless",
+    "nonetheless",
+    "although",
+    "but",
+    "yet",
+    "despite this",
+    "even so",
+    "alternatively",
+
+    # Comparing/Similarity
+    "similarly",
+    "likewise",
+    "in the same way",
+    "by the same token",
+
+    # Exemplifying
     "for example",
     "for instance",
+    "such as",
+    "to illustrate",
+    "as an example",
+    "specifically",
+    "namely",
+
+    # Explaining/Clarifying
+    "in other words",
+    "that is",
+    "to put it another way",
+    "to clarify",
+
+    # Cause/Effect
+    "therefore",
+    "thus",
+    "consequently",
+    "as a result",
+    "hence",
+    "accordingly",
+    "for this reason",
+    "because of this",
+
+    # Summarizing/Concluding
     "in summary",
     "to summarize",
     "to sum up",
     "in conclusion",
-    "finally",
+    "to conclude",
+    "in short",
+    "overall",
+    "all in all",
+    "in brief",
+
+    # Emphasizing
+    "indeed",
+    "in fact",
+    "certainly",
+    "obviously",
+    "clearly",
+    "importantly",
 ]
 
 
@@ -156,7 +227,7 @@ def _label_and_score(
     num_sentences: int,
     signpost_count: int,
     long_sentence_count: int,
-) -> (str, int):
+) -> tuple[str, int]:
     """
     Map structure stats to your required labels + scores.
 
