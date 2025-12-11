@@ -1,8 +1,8 @@
 {
-    "audio_url": "file://test.wav",
+    "audio_url": "file://trump.mp3",
     "video_url": null,
     "language": "en",
-    "talk_type": "test",
+    "talk_type": "test",    
     "audience_type": "general",
     "requested_metrics": [
         "pace",
