@@ -64,16 +64,32 @@ class PresentationJobInput:
 # ---- Helper functions to build parts of the final JSON ---------------------
 
 
+def _is_filler_word(text: str) -> bool:
+    """Check if a word is a filler using the same logic as fillers metric."""
+    import string
+    punct_table = str.maketrans("", "", string.punctuation)
+    normalized = text.lower().translate(punct_table).strip()
+    normalized = " ".join(normalized.split())
+    if normalized == "you know":
+        normalized = "youknow"
+
+    filler_tokens = {
+        "um", "uh", "erm", "er", "uhm", "like",
+        "actually", "basically", "youknow"
+    }
+    return normalized in filler_tokens
+
+
 def _build_transcript_from_words(words: List[Dict[str, Any]]) -> Dict[str, Any]:
     """
     Build the transcript block used in:
       - GET /api/v1/presentations/{job_id}/full
       - GET /api/v1/presentations/{job_id}/transcript
 
-    For now this is a very simple version:
-      - full_text is just the concatenation of word texts
-      - segments is a single segment over the whole audio
-      - tokens are word-level tokens with is_filler=False
+    Enhancements:
+      - full_text is the concatenation of word texts
+      - segments groups words into ~10-second chunks for better navigation
+      - tokens are word-level with proper is_filler detection
     """
     if not words:
         return {
@@ -88,40 +104,66 @@ def _build_transcript_from_words(words: List[Dict[str, Any]]) -> Dict[str, Any]:
         w["text"].strip() for w in cleaned_words if isinstance(w.get("text"), str)
     )
 
-    # Get overall min/max times and simple average confidence
-    start_times = [w.get("start") for w in cleaned_words if "start" in w]
-    end_times = [w.get("end") for w in cleaned_words if "end" in w]
-    probs = [w.get("probability") for w in cleaned_words if "probability" in w]
-
-    if start_times and end_times:
-        overall_start = float(min(start_times))
-        overall_end = float(max(end_times))
-    else:
-        overall_start = 0.0
-        overall_end = 0.0
-
-    avg_conf = float(sum(p for p in probs if p is not None) / len(probs)) if probs else 0.0
-
-    segments = [
-        {
-            "start_sec": overall_start,
-            "end_sec": overall_end,
-            "text": full_text,
-            "avg_confidence": avg_conf,
-        }
-    ]
-
+    # Build tokens with filler detection
     tokens = []
     for w in cleaned_words:
+        text = w["text"].strip()
         tokens.append(
             {
-                "text": w["text"].strip(),
+                "text": text,
                 "start_sec": float(w.get("start", 0.0)),
                 "end_sec": float(w.get("end", 0.0)),
-                # TODO: later wire in filler detection here
-                "is_filler": False,
+                "is_filler": _is_filler_word(text),
             }
         )
+
+    # Build segments by grouping words into ~10-second chunks
+    segments = []
+    if cleaned_words:
+        segment_duration = 10.0  # seconds per segment
+        current_segment_words = []
+        segment_start = None
+
+        for w in cleaned_words:
+            w_start = w.get("start", 0.0)
+            w_end = w.get("end", 0.0)
+
+            # Initialize first segment
+            if segment_start is None:
+                segment_start = w_start
+
+            # Check if we should start a new segment
+            if w_start - segment_start >= segment_duration and current_segment_words:
+                # Close current segment
+                segment_text = " ".join(word["text"].strip() for word in current_segment_words)
+                segment_probs = [word.get("probability") for word in current_segment_words if "probability" in word]
+                avg_confidence = float(sum(p for p in segment_probs if p is not None) / len(segment_probs)) if segment_probs else 0.0
+
+                segments.append({
+                    "start_sec": float(segment_start),
+                    "end_sec": float(current_segment_words[-1].get("end", segment_start)),
+                    "text": segment_text,
+                    "avg_confidence": avg_confidence,
+                })
+
+                # Start new segment
+                current_segment_words = []
+                segment_start = w_start
+
+            current_segment_words.append(w)
+
+        # Add final segment
+        if current_segment_words:
+            segment_text = " ".join(word["text"].strip() for word in current_segment_words)
+            segment_probs = [word.get("probability") for word in current_segment_words if "probability" in word]
+            avg_confidence = float(sum(p for p in segment_probs if p is not None) / len(segment_probs)) if segment_probs else 0.0
+
+            segments.append({
+                "start_sec": float(segment_start),
+                "end_sec": float(current_segment_words[-1].get("end", segment_start)),
+                "text": segment_text,
+                "avg_confidence": avg_confidence,
+            })
 
     return {
         "full_text": full_text,
@@ -148,6 +190,71 @@ def _build_abstained_metric(reason: str) -> Dict[str, Any]:
             "reason": reason,
         },
         "feedback": [],
+    }
+
+
+def compute_overall_score(metrics: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Aggregate individual metric scores into overall score.
+
+    Strategy:
+    - Weight metrics by confidence
+    - Skip abstained metrics
+    - Calculate weighted average
+    - Map to labels: excellent (85+), good (70-84), needs_improvement (50-69), poor (<50)
+
+    Args:
+        metrics: Dictionary of metric results with score_0_100 and confidence
+
+    Returns:
+        Overall score dictionary with score_0_100, label, and confidence
+    """
+    import numpy as np
+
+    weighted_scores = []
+    confidences = []
+
+    for metric_name, metric_data in metrics.items():
+        # Skip abstained metrics
+        if metric_data.get("abstained", False):
+            continue
+
+        score = metric_data.get("score_0_100")
+        confidence = metric_data.get("confidence", 0.0)
+
+        # Skip metrics without scores
+        if score is None:
+            continue
+
+        weighted_scores.append(score * confidence)
+        confidences.append(confidence)
+
+    # If no valid metrics, return unknown
+    if not confidences or sum(confidences) == 0:
+        return {
+            "score_0_100": 0,
+            "label": "unknown",
+            "confidence": 0.0,
+        }
+
+    # Calculate weighted average
+    overall_score = sum(weighted_scores) / sum(confidences)
+    overall_confidence = float(np.mean(confidences))
+
+    # Map score to label
+    if overall_score >= 85:
+        label = "excellent"
+    elif overall_score >= 70:
+        label = "good"
+    elif overall_score >= 50:
+        label = "needs_improvement"
+    else:
+        label = "poor"
+
+    return {
+        "score_0_100": int(round(overall_score)),
+        "label": label,
+        "confidence": round(overall_confidence, 2),
     }
 
 
@@ -336,11 +443,10 @@ def run_full_analysis(
         logger.error(error_msg, exc_info=True)
         raise RuntimeError(error_msg) from e
 
-    # 4) quality flags & overall score
+    # 4) quality flags
     try:
         logger.debug("Computing quality flags")
         quality_flags = _build_quality_flags(audio_json)
-        overall_score = _build_dummy_overall_score()
     except Exception as e:
         error_msg = f"Error computing quality flags: {e}"
         logger.error(error_msg, exc_info=True)
@@ -410,7 +516,15 @@ def run_full_analysis(
                 reason=f"metric_computation_failed: {str(e)}"
             )
 
-    # 6) model metadata: stubbed for now; fill with real versions later
+    # 6) overall score (computed from metrics)
+    try:
+        logger.debug("Computing overall score from metrics")
+        overall_score = compute_overall_score(metrics)
+    except Exception as e:
+        logger.warning(f"Error computing overall score: {e}")
+        overall_score = _build_dummy_overall_score()
+
+    # 7) model metadata: stubbed for now; fill with real versions later
     model_metadata = {
         "asr_model": "whisper-small",
         "vad_model": "silero-vad",
@@ -418,7 +532,7 @@ def run_full_analysis(
         "version": "dev-0.0.2",
     }
 
-    # 7) Build the final response dict that matches your
+    # 8) Build the final response dict that matches your
     #    GET /api/v1/presentations/{job_id}/full spec.
     try:
         input_block = job_input.to_dict()

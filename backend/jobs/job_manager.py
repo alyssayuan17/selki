@@ -12,7 +12,7 @@ from typing import Dict, Any, Optional
 from pathlib import Path
 import logging
 
-from analyzer.run_pipeline import run_full_analysis, PresentationJobInput
+from analyzer.run_pipeline import run_full_analysis
 
 logger = logging.getLogger(__name__)
 
@@ -74,15 +74,25 @@ class JobManager:
         logger.info(f"Job {job_id} started processing")
 
         try:
-            # Convert input to PresentationJobInput
+            # Get input data
             input_dict = job["input"]
-            job_input = PresentationJobInput.from_dict(input_dict)
+
+            # Extract audio URL and convert to Path
+            audio_url = input_dict["audio_url"]
+            # Handle file:// URLs
+            if audio_url.startswith("file://"):
+                audio_path = Path(audio_url.replace("file://", ""))
+            else:
+                # For now, assume it's a local path or we download it
+                # TODO: Add support for downloading from URLs
+                audio_path = Path(audio_url)
 
             # Run the analysis pipeline (this is the heavy computation)
             result = await asyncio.to_thread(
                 run_full_analysis,
                 job_id=job_id,
-                job_input=job_input,
+                audio_path=audio_path,
+                raw_input_payload=input_dict,
             )
 
             # Update job with results
