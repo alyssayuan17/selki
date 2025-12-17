@@ -2,7 +2,8 @@
 FastAPI endpoints for presentation analysis.
 
 Endpoints:
-- POST   /api/v1/presentations          - Submit audio for analysis
+- POST   /api/v1/presentations          - Submit audio URL for analysis
+- POST   /api/v1/presentations/upload   - Upload audio file for analysis
 - GET    /api/v1/presentations/{job_id} - Get analysis status
 - GET    /api/v1/presentations/{job_id}/full - Get full results
 - GET    /api/v1/presentations/{job_id}/transcript - Get transcript
@@ -11,8 +12,12 @@ Endpoints:
 
 from __future__ import annotations
 import asyncio
+import json
+import os
+import uuid
 from typing import Union
-from fastapi import APIRouter, HTTPException, BackgroundTasks, status
+from pathlib import Path
+from fastapi import APIRouter, HTTPException, BackgroundTasks, status, UploadFile, File, Form
 from datetime import datetime, timezone
 
 from api.v1.schemas import (
@@ -64,6 +69,100 @@ async def create_presentation(
     """
     # Create job
     input_dict = request.model_dump()
+    job_id = JobManager.create_job(input_dict)
+
+    # Start processing in background
+    background_tasks.add_task(JobManager.process_job, job_id)
+
+    # Return 201 response
+    job = JobManager.get_job(job_id)
+    return PresentationCreateResponse(
+        job_id=job_id,
+        status="queued",
+        created_at=job["created_at"],
+        input=InputBlock(**input_dict),
+    )
+
+
+# ============================================================================
+# POST /api/v1/presentations/upload
+# ============================================================================
+
+@router.post(
+    "/presentations/upload",
+    response_model=PresentationCreateResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_presentation_upload(
+    file: UploadFile = File(...),
+    language: str = Form("en"),
+    talk_type: str = Form(...),
+    audience_type: str = Form(...),
+    requested_metrics: str = Form('["pace", "pause_quality", "fillers", "intonation", "content_structure", "confidence_cv"]'),
+    user_metadata: str = Form("{}"),
+    background_tasks: BackgroundTasks = None,
+):
+    """
+    Submit audio file for presentation analysis.
+
+    Accepts multipart/form-data with audio file and metadata.
+
+    Returns:
+        201 Created with job_id and status
+    """
+    # Validate file type
+    allowed_extensions = {".wav", ".mp3", ".m4a", ".flac", ".ogg", ".webm"}
+    file_ext = Path(file.filename).suffix.lower()
+
+    if file_ext not in allowed_extensions:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid file type '{file_ext}'. Allowed: {', '.join(allowed_extensions)}"
+        )
+
+    # Create uploads directory if it doesn't exist
+    uploads_dir = Path(__file__).parent.parent.parent / "uploads"
+    uploads_dir.mkdir(exist_ok=True)
+
+    # Generate unique filename
+    unique_filename = f"{uuid.uuid4().hex}{file_ext}"
+    file_path = uploads_dir / unique_filename
+
+    # Save uploaded file
+    try:
+        with open(file_path, "wb") as f:
+            content = await file.read()
+            f.write(content)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to save uploaded file: {str(e)}"
+        )
+
+    # Parse JSON strings
+    try:
+        requested_metrics_list = json.loads(requested_metrics)
+        user_metadata_dict = json.loads(user_metadata)
+    except json.JSONDecodeError as e:
+        # Clean up uploaded file on error
+        file_path.unlink(missing_ok=True)
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid JSON in form fields: {str(e)}"
+        )
+
+    # Build input dict
+    input_dict = {
+        "audio_url": f"file://{file_path.absolute().as_posix()}",
+        "video_url": None,
+        "language": language,
+        "talk_type": talk_type,
+        "audience_type": audience_type,
+        "requested_metrics": requested_metrics_list,
+        "user_metadata": user_metadata_dict,
+    }
+
+    # Create job
     job_id = JobManager.create_job(input_dict)
 
     # Start processing in background
@@ -248,18 +347,22 @@ async def get_presentation_transcript(job_id: str):
     # Done - return detailed transcript
     result = job["result"]
 
-    # Get transcript from result
-    # Note: We'll need to enhance run_pipeline.py to include segments/tokens
-    # For now, return basic transcript
+    # Get transcript from result (now includes segments and tokens)
     transcript_data = result.get("transcript", {})
 
-    # TODO: Add segments and tokens to run_pipeline.py output
-    # For now, return minimal transcript
+    # Build detailed transcript with segments and tokens
+    segments = [
+        TranscriptSegment(**seg) for seg in transcript_data.get("segments", [])
+    ]
+    tokens = [
+        TranscriptToken(**tok) for tok in transcript_data.get("tokens", [])
+    ]
+
     detailed_transcript = TranscriptDetailed(
         full_text=transcript_data.get("full_text", ""),
         language=transcript_data.get("language", "en"),
-        segments=[],  # TODO: Add from audio_to_json
-        tokens=[],    # TODO: Add from audio_to_json
+        segments=segments,
+        tokens=tokens,
     )
 
     return PresentationTranscriptResponse(
