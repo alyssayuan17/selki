@@ -7,7 +7,9 @@ Rule-based "fillers" metric:
 - Computes:
     - total_fillers
     - filler_rate_per_min
-    - top_fillers
+    - fillers_per_100_words
+    - top_fillers (list of {token, count})
+    - filler_spikes (time spans where filler rate exceeds threshold)
 - Maps to labels:
     - "low_filler_rate"
     - "moderate_filler_rate"
@@ -19,7 +21,13 @@ Rule-based "fillers" metric:
       "label": "...",
       "confidence": ...,
       "abstained": False,
-      "details": {...},
+      "details": {
+        "filler_rate_per_min": float,
+        "fillers_per_100_words": float,
+        "total_fillers": int,
+        "top_fillers": [{token: str, count: int}],
+        "filler_spikes": [{start_sec: float, end_sec: float, filler_rate: float}]
+      },
       "feedback": [...]
     }
 """
@@ -63,6 +71,85 @@ def _normalize_token(text: str) -> str:
     return t
 
 
+def _detect_filler_spikes(
+    words: List[Dict[str, Any]],
+    window_sec: float = 30.0,
+    spike_threshold_per_min: float = 10.0
+) -> List[Dict[str, Any]]:
+    """
+    Detect time spans where filler rate spikes above threshold.
+
+    Uses a sliding window to compute filler rate per minute across the talk.
+    Returns time spans where the rate exceeds spike_threshold_per_min.
+
+    Args:
+        words: List of word dictionaries with 'text', 'start', 'end' fields
+        window_sec: Size of sliding window in seconds (default 30s)
+        spike_threshold_per_min: Filler rate threshold to consider a spike (default 10/min)
+
+    Returns:
+        List of spike segments: [{"start_sec": ..., "end_sec": ..., "filler_rate": ...}]
+    """
+    if not words:
+        return []
+
+    # Get time bounds
+    first_word_start = min(w.get("start", 0) for w in words if "start" in w)
+    last_word_end = max(w.get("end", 0) for w in words if "end" in w)
+    duration = last_word_end - first_word_start
+
+    if duration <= 0:
+        return []
+
+    # Create list of filler word timestamps
+    filler_times = []
+    for w in words:
+        text = w.get("text")
+        if not isinstance(text, str):
+            continue
+        norm = _normalize_token(text)
+        if norm in FILLER_TOKENS:
+            start_time = w.get("start", 0)
+            filler_times.append(start_time)
+
+    if not filler_times:
+        return []
+
+    # Slide window across talk, checking filler rate
+    spikes = []
+    step_sec = window_sec / 4.0  # 25% overlap for smoother detection
+    current_start = first_word_start
+
+    while current_start + window_sec <= last_word_end:
+        window_end = current_start + window_sec
+
+        # Count fillers in this window
+        fillers_in_window = sum(1 for t in filler_times if current_start <= t < window_end)
+
+        # Convert to rate per minute
+        window_duration_min = window_sec / 60.0
+        filler_rate = fillers_in_window / window_duration_min if window_duration_min > 0 else 0.0
+
+        # Check if this is a spike
+        if filler_rate >= spike_threshold_per_min:
+            # Check if we can merge with previous spike
+            if spikes and abs(spikes[-1]["end_sec"] - current_start) < step_sec:
+                # Extend previous spike
+                spikes[-1]["end_sec"] = window_end
+                spikes[-1]["filler_rate"] = max(spikes[-1]["filler_rate"], filler_rate)
+            else:
+                # New spike
+                spikes.append({
+                    "start_sec": current_start,
+                    "end_sec": window_end,
+                    "filler_rate": filler_rate,
+                })
+
+        current_start += step_sec
+
+    return spikes
+
+
 # ---------------------------------------------
 # Main filler metric
 # ---------------------------------------------
@@ -97,6 +184,10 @@ def compute_fillers_metric(words: List[Dict[str, Any]], duration_sec: float) -> 
         return _abstained("no_tokens")
 
     filler_rate_per_min = total_fillers / duration_min if duration_min > 0 else 0.0
+    fillers_per_100_words = (total_fillers / total_tokens * 100.0) if total_tokens > 0 else 0.0
+
+    # Detect filler spikes
+    filler_spikes = _detect_filler_spikes(words)
 
     # ---------------------------------------------
     # Map rate → label + score
@@ -163,6 +254,18 @@ def compute_fillers_metric(words: List[Dict[str, Any]], duration_sec: float) -> 
             "tip_type": "fillers",
         })
 
+    # Add feedback for specific filler spikes
+    for spike in filler_spikes:
+        feedback.append({
+            "start_sec": spike["start_sec"],
+            "end_sec": spike["end_sec"],
+            "message": (
+                f"High filler rate (~{spike['filler_rate']:.1f}/min) detected in this segment. "
+                "Practice pausing silently instead of saying 'um'."
+            ),
+            "tip_type": "fillers",
+        })
+
     return {
         "score_0_100": score,
         "label": label,
@@ -170,8 +273,10 @@ def compute_fillers_metric(words: List[Dict[str, Any]], duration_sec: float) -> 
         "abstained": False,
         "details": {
             "filler_rate_per_min": filler_rate_per_min,
+            "fillers_per_100_words": fillers_per_100_words,
             "total_fillers": total_fillers,
             "top_fillers": top_fillers,
+            "filler_spikes": filler_spikes,
         },
         "feedback": feedback,
     }
