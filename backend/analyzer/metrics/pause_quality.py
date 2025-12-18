@@ -4,25 +4,45 @@ analyzer/metrics/pause_quality.py
 Evaluates pauses using:
 - ASR word-based pauses (word_pauses)
 - VAD-based silence segments (vad_silence_segments)
+- Word context for helpful/awkward classification
 
 Outputs:
 - score_0_100
 - label ("too_many_pauses" / "too_few_pauses" / "good" / "abstained")
 - confidence
-- details
-- timeline entries for frontend visualization
+- details:
+    - total_pauses, average_pause_duration
+    - long_pauses, short_pauses, pause_rate
+    - helpful_ratio, awkward_ratio (NEW)
+    - helpful_count, awkward_count (NEW)
+- timeline entries with context classification (NEW: "helpful" or "awkward")
+- feedback with context-aware suggestions
 
 Algorithm:
 - Combines pauses from both ASR and VAD
 - When pauses overlap, VAD takes priority (more accurate)
 - Boundary silence (start/end) is filtered out
+- Classifies pauses as helpful (after sentences, signposts) or awkward (mid-phrase, too short/long)
 """
 
 from __future__ import annotations
 import logging
 from typing import List, Dict, Any, Tuple
+import re
 
 logger = logging.getLogger(__name__)
+
+# Signpost phrases that indicate good pause points
+SIGNPOST_PATTERNS = [
+    r'\b(first|second|third|next|then|finally|lastly)\b',
+    r'\b(however|therefore|thus|consequently|moreover|furthermore)\b',
+    r'\b(in summary|in conclusion|to conclude|to summarize)\b',
+    r'\b(for example|for instance|such as)\b',
+    r'\b(on the other hand|in contrast|alternatively)\b',
+]
+
+# Compile patterns for efficiency
+SIGNPOST_REGEX = [re.compile(p, re.IGNORECASE) for p in SIGNPOST_PATTERNS]
 
 
 # --------------------------------------------------------
@@ -36,6 +56,99 @@ def classify_pause(duration: float) -> str:
     if duration < 1.0:
         return "medium"
     return "long"
+
+
+# --------------------------------------------------------
+# Helper: classify pause as helpful or awkward
+# --------------------------------------------------------
+def _classify_pause_context(
+    pause: Dict[str, Any],
+    words: List[Dict[str, Any]]
+) -> str:
+    """
+    Classify a pause as 'helpful' or 'awkward' based on linguistic context.
+
+    Helpful pauses:
+    - After sentence-ending punctuation (. ! ?)
+    - Before/after signpost phrases (first, however, in conclusion, etc.)
+    - Between distinct clauses (after commas in long sentences)
+    - Medium duration (0.3-1.5s) that allows processing time
+
+    Awkward pauses:
+    - Mid-word or very short word gaps (< 0.2s)
+    - Very long pauses (> 2.0s) without clear reason
+    - In the middle of common phrases
+
+    Args:
+        pause: Pause dict with 'start', 'end', 'duration'
+        words: List of word dicts with 'text', 'start', 'end'
+
+    Returns:
+        'helpful' or 'awkward'
+    """
+    pause_start = pause["start"]
+    pause_duration = pause["duration"]
+
+    # Very short pauses are generally awkward (likely artifacts)
+    if pause_duration < 0.2:
+        return "awkward"
+
+    # Very long pauses (> 2.5s) are usually awkward unless at a major boundary
+    if pause_duration > 2.5:
+        # Could be helpful if after a sentence or before a signpost
+        # but default to awkward for very long pauses
+        pass  # Will check context below
+
+    # Find words immediately before and after the pause
+    word_before = None
+    word_after = None
+
+    for w in words:
+        w_end = w.get("end", 0)
+        w_start = w.get("start", 0)
+
+        # Word that ends just before pause
+        if w_end <= pause_start and (word_before is None or w_end > word_before.get("end", 0)):
+            word_before = w
+
+        # Word that starts just after pause
+        if w_start >= pause["end"] and (word_after is None or w_start < word_after.get("start", float('inf'))):
+            word_after = w
+
+    # Build context string for pattern matching
+    context_before = word_before.get("text", "") if word_before else ""
+    context_after = word_after.get("text", "") if word_after else ""
+
+    # Check if pause follows sentence-ending punctuation
+    if context_before and any(context_before.strip().endswith(p) for p in ['.', '!', '?']):
+        return "helpful"
+
+    # Check if pause is near a signpost phrase
+    context_text = f"{context_before} {context_after}".lower()
+    for pattern in SIGNPOST_REGEX:
+        if pattern.search(context_text):
+            return "helpful"
+
+    # Check if pause follows a comma (clause boundary)
+    if context_before and context_before.strip().endswith(','):
+        # Helpful if medium duration (0.3-1.2s)
+        if 0.3 <= pause_duration <= 1.2:
+            return "helpful"
+
+    # Medium-length pauses (0.4-1.5s) are generally helpful for processing
+    if 0.4 <= pause_duration <= 1.5:
+        return "helpful"
+
+    # Very long pauses without clear reason are awkward
+    if pause_duration > 2.0:
+        return "awkward"
+
+    # Short pauses (0.2-0.4s) without clear context are slightly awkward
+    if pause_duration < 0.4:
+        return "awkward"
+
+    # Default: neutral pauses are considered helpful
+    return "helpful"
 
 
 # --------------------------------------------------------
@@ -235,10 +348,17 @@ def compute_pause_quality_metric(
     word_pauses: List[Dict[str, Any]] | None,
     vad_silence_segments: List[Dict[str, Any]] | None,
     duration_sec: float,
+    words: List[Dict[str, Any]] | None = None,
 ) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
     """
     Returns:
       (metric_result, timeline_events)
+
+    Args:
+        word_pauses: List of pause dicts from ASR word gaps
+        vad_silence_segments: List of silence segments from VAD
+        duration_sec: Total duration of the audio
+        words: List of word dicts with 'text', 'start', 'end' (optional, for context analysis)
     """
 
     if duration_sec <= 0:
@@ -257,6 +377,35 @@ def compute_pause_quality_metric(
 
     # pauses per second
     pause_rate = len(combined) / duration_sec if duration_sec > 0 else 0.0
+
+    # Classify pauses as helpful or awkward if we have word context
+    helpful_count = 0
+    awkward_count = 0
+    pause_classifications = []
+
+    if words:
+        for p in combined:
+            context_class = _classify_pause_context(p, words)
+            pause_classifications.append(context_class)
+            if context_class == "helpful":
+                helpful_count += 1
+            else:
+                awkward_count += 1
+    else:
+        # Fallback: simple duration-based classification
+        for p in combined:
+            # Medium pauses (0.3-1.5s) are helpful, others are awkward
+            if 0.3 <= p["duration"] <= 1.5:
+                pause_classifications.append("helpful")
+                helpful_count += 1
+            else:
+                pause_classifications.append("awkward")
+                awkward_count += 1
+
+    # Compute ratios
+    total_pauses = len(combined)
+    helpful_ratio = helpful_count / total_pauses if total_pauses > 0 else 0.0
+    awkward_ratio = awkward_count / total_pauses if total_pauses > 0 else 0.0
 
     # ------------------------------------------
     # Heuristic scoring rules
@@ -277,19 +426,25 @@ def compute_pause_quality_metric(
     # Construct timeline
     # ------------------------------------------
     timeline: List[Dict[str, Any]] = []
-    for p in combined:
-        timeline.append({
+    for i, p in enumerate(combined):
+        timeline_entry = {
             "start_sec": p["start"],
             "end_sec": p["end"],
             "type": "pause",
             "quality": classify_pause(p["duration"]),
             "source": p["source"],
-        })
+        }
+        # Add helpful/awkward classification
+        if i < len(pause_classifications):
+            timeline_entry["context"] = pause_classifications[i]
+        timeline.append(timeline_entry)
 
     # ------------------------------------------
     # Feedback text
     # ------------------------------------------
     feedback: List[Dict[str, Any]] = []
+
+    # Overall pause rate feedback
     if label == "too_many_pauses":
         feedback.append({
             "start_sec": 0.0,
@@ -312,6 +467,44 @@ def compute_pause_quality_metric(
             "tip_type": "pause_quality",
         })
 
+    # Feedback about helpful vs awkward pauses
+    if awkward_ratio > 0.5:
+        feedback.append({
+            "start_sec": 0.0,
+            "end_sec": duration_sec,
+            "message": (
+                f"{awkward_ratio*100:.0f}% of your pauses are awkwardly placed. "
+                "Try pausing after complete thoughts or signpost phrases."
+            ),
+            "tip_type": "pause_quality",
+        })
+    elif helpful_ratio > 0.7:
+        feedback.append({
+            "start_sec": 0.0,
+            "end_sec": duration_sec,
+            "message": (
+                f"{helpful_ratio*100:.0f}% of your pauses are well-placed, "
+                "helping listeners process your ideas."
+            ),
+            "tip_type": "pause_quality",
+        })
+
+    # Specific feedback for awkward pauses
+    if words:
+        for i, p in enumerate(combined):
+            if i < len(pause_classifications) and pause_classifications[i] == "awkward":
+                # Only report very awkward ones (very short or very long)
+                if p["duration"] < 0.2 or p["duration"] > 2.5:
+                    feedback.append({
+                        "start_sec": p["start"],
+                        "end_sec": p["end"],
+                        "message": (
+                            f"Awkward {p['duration']:.1f}s pause. "
+                            f"{'This pause is too short.' if p['duration'] < 0.2 else 'This pause is too long - try to keep pauses under 2 seconds.'}"
+                        ),
+                        "tip_type": "pause_quality",
+                    })
+
     metric = {
         "score_0_100": score,
         "label": label,
@@ -323,6 +516,10 @@ def compute_pause_quality_metric(
             "long_pauses": len(long_pauses),
             "short_pauses": len(short_pauses),
             "pause_rate": pause_rate,
+            "helpful_ratio": helpful_ratio,
+            "awkward_ratio": awkward_ratio,
+            "helpful_count": helpful_count,
+            "awkward_count": awkward_count,
         },
         "feedback": feedback,
     }
