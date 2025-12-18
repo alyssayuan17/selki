@@ -19,21 +19,21 @@ def test_overall_score():
     print("\n=== Testing Overall Score Calculation ===")
 
     # Use existing audio file for testing
-    audio_path = Path(__file__).parent / "test_audio.wav"
+    audio_path = Path(__file__).parent / "harvard.wav"
     if not audio_path.exists():
         print(f"❌ Test audio file not found: {audio_path}")
-        print("   Please place a test audio file at backend/test_audio.wav")
+        print("   Please place a test audio file at backend/harvard.wav")
         return False
 
-    # Submit job
+    # Submit job with all metrics (same as manual test)
     response = requests.post(
         f"{BASE_URL}/api/v1/presentations",
         json={
             "audio_url": f"file://{audio_path.absolute().as_posix()}",
             "language": "en",
-            "talk_type": "presentation",
+            "talk_type": "test",
             "audience_type": "general",
-            "requested_metrics": ["pace", "fillers", "intonation"],
+            "requested_metrics": ["pace", "pause_quality", "fillers", "intonation", "content_structure", "confidence_cv"],
         },
     )
 
@@ -79,10 +79,10 @@ def test_file_upload():
     print("\n=== Testing File Upload ===")
 
     # Use existing audio file for testing
-    audio_path = Path(__file__).parent / "test_audio.wav"
+    audio_path = Path(__file__).parent / "harvard.wav"
     if not audio_path.exists():
         print(f"❌ Test audio file not found: {audio_path}")
-        print("   Please place a test audio file at backend/test_audio.wav")
+        print("   Please place a test audio file at backend/harvard.wav")
         return False
 
     # Upload file
@@ -129,10 +129,10 @@ def test_transcript_segments_tokens():
     print("\n=== Testing Transcript Segments/Tokens ===")
 
     # Use existing audio file for testing
-    audio_path = Path(__file__).parent / "test_audio.wav"
+    audio_path = Path(__file__).parent / "harvard.wav"
     if not audio_path.exists():
         print(f"❌ Test audio file not found: {audio_path}")
-        print("   Please place a test audio file at backend/test_audio.wav")
+        print("   Please place a test audio file at backend/harvard.wav")
         return False
 
     # Submit job
