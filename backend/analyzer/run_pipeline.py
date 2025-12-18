@@ -477,7 +477,8 @@ def run_full_analysis(
                 pause_metric, pause_timeline = compute_pause_quality_metric(
                     audio_json.get("word_pauses", []),
                     audio_json.get("vad_silence_segments", []),
-                    duration_sec
+                    duration_sec,
+                    words  # Pass words for context-aware pause classification
                 )
                 metrics["pause_quality"] = pause_metric
                 # Add pause timeline events to the main timeline
