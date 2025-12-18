@@ -547,10 +547,7 @@ def run_full_analysis(
             "metrics": metrics,
             "timeline": timeline,
             "model_metadata": model_metadata,
-            "transcript": {
-                "full_text": transcript_block["full_text"],
-                "language": transcript_block["language"],
-            },
+            "transcript": transcript_block,  # Already includes full_text, language, segments, tokens
         }
 
         logger.info(f"Analysis completed successfully for job_id={job_id}")

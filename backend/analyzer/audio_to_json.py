@@ -23,6 +23,7 @@ import numpy as np
 
 import librosa
 import whisper
+import whisper_timestamped as whisper_ts
 
 from analyzer.utils.vad import run_vad, vad_to_silence_segments
 
@@ -275,7 +276,7 @@ def run_whisper_word_timestamps(
 ) -> List[WordTiming]:
     """
     Run Whisper ASR and return a list of WordTiming objects.
-    Uses whisper's built-in word_timestamps.
+    Uses whisper_timestamped library which is more robust than built-in word_timestamps.
 
     Raises:
         RuntimeError: If Whisper fails to load or transcribe
@@ -288,72 +289,158 @@ def run_whisper_word_timestamps(
         logger.error(error_msg)
         raise RuntimeError(error_msg) from e
 
-    try:
-        # word_timestamps=True gives per-word timing info
-        result = model.transcribe(
-            audio_path.as_posix(),
-            word_timestamps=True,
-            verbose=False,
-            temperature=0.0, # no sampling randomness i.e. fully deterministic
-                             # could use 0.2 for "slightly more robust decoding in noisy conditions" ??? how does that make sense bruh
-
-            # compression_ratio_threshold=2.4, # if a particular speech segment is too hard to decode (has score higher than 2.4), skip it
-                                             # lower e.g. 2.0 = more aggressive skipping, higher e.g. 3.0 more tolerant of repetition/noise
-            # logprob_threshold=-1.0, # skip segments with avg logprob below this (i.e. very low confidence)
-                                    # e.g. -2 = more lenient, -0.5 = more aggressive skipping
-            #  no_speech_threshold=0.4, # no-speech prob threshold to skip segment
-                                     # lower = more aggressive skipping, higher = more tolerant
-        )
-    except Exception as e:
-        error_msg = f"Whisper transcription failed: {e}"
-        logger.error(error_msg)
-        raise RuntimeError(error_msg) from e
-
-    if not isinstance(result, dict):
-        error_msg = f"Unexpected Whisper result type: {type(result)}"
-        logger.error(error_msg)
-        raise RuntimeError(error_msg)
-
+    # Try word-level transcription first, fallback to segment-level if hooks fail
+    result = None
     words: List[WordTiming] = []
 
-    # Whisper result["segments"] each contain "words"
-    for segment in result.get("segments", []):
-        for w in segment.get("words", []):
-            # 1. Require mandatory fields
-            if "start" not in w or "end" not in w or "word" not in w:
+    try:
+        # Attempt word-level transcription with whisper_timestamped
+        logger.debug(f"Attempting word-level transcription with whisper_timestamped")
+        audio = whisper.load_audio(audio_path.as_posix())
+        result = whisper_ts.transcribe(
+            model,
+            audio,
+            language="en",
+            temperature=0.0,
+            vad=False,  # We use our own VAD
+            trust_whisper_timestamps=True,  # Avoid DTW alignment that causes hook issues
+            remove_empty_words=True,
+        )
+
+        if not isinstance(result, dict):
+            raise ValueError(f"Unexpected result type: {type(result)}")
+
+        # Process word-level data
+        segments = result.get("segments", [])
+        if segments is None:
+            segments = []
+
+        for segment in segments:
+            if segment is None:
                 continue
 
-            # Skip low-confidence words (GET RID OF GARBAGE HALLUCINATIONS)
-            prob = w.get("probability", None)
-            if prob is not None and prob < 0.2:
-                continue
+            words_in_segment = segment.get("words", [])
+            if words_in_segment is None:
+                words_in_segment = []
 
-            # Skip very short tokens (likely punctuation/artifacts)
-            if w["end"] - w["start"] < 0.03:
+            for w in words_in_segment:
+                # Skip if w is None or not a dict
+                if w is None or not isinstance(w, dict):
                     continue
 
-            text = w["word"].strip() #.strip(" ,.!?;:-\"'()[]{}") IF WANT TO ELIMINATE PUNCTUATION
+                # 1. Require mandatory fields
+                if "start" not in w or "end" not in w or "text" not in w:
+                    continue
 
-            # 2. Skip empty or garbage tokens
-            if not text:
-                continue
+                # Skip low-confidence words (GET RID OF GARBAGE HALLUCINATIONS)
+                # whisper_timestamped uses "confidence" instead of "probability"
+                conf = w.get("confidence", None)
+                if conf is not None and conf < 0.2:
+                    continue
 
-            # 3. Deduplicate tokens with same timestamps
-            if words and abs(words[-1].start - float(w["start"])) < 0.01:
-                continue
+                # Skip very short tokens (likely punctuation/artifacts)
+                if w["end"] - w["start"] < 0.03:
+                        continue
 
-            words.append(
-                WordTiming(
-                    start=float(w["start"]),
-                    end=float(w["end"]),
-                    text=text,
-                    probability=float(w.get("probability")) if "probability" in w else None,
+                text = w["text"].strip()
+
+                # 2. Skip empty or garbage tokens
+                if not text:
+                    continue
+
+                # 3. Deduplicate tokens with same timestamps
+                if words and abs(words[-1].start - float(w["start"])) < 0.01:
+                    continue
+
+                # Convert confidence to probability for consistency
+                probability = float(w["confidence"]) if "confidence" in w and w["confidence"] is not None else None
+
+                words.append(
+                    WordTiming(
+                        start=float(w["start"]),
+                        end=float(w["end"]),
+                        text=text,
+                        probability=probability,
+                    )
                 )
+
+        # If we successfully got words, return them
+        if words:
+            logger.info(f"Successfully extracted {len(words)} word-level timestamps")
+            return words
+        else:
+            logger.warning("No words extracted from whisper_timestamped, falling back to segment-level")
+            raise ValueError("No words extracted")
+
+    except Exception as e:
+        # Fallback to segment-level transcription when word-level fails
+        logger.warning(f"Word-level transcription failed ({e}), falling back to segment-level approximation")
+
+        try:
+            # Use standard Whisper without word_timestamps to avoid hook issues
+            result = model.transcribe(
+                audio_path.as_posix(),
+                language="en",
+                temperature=0.0,
+                word_timestamps=False,  # Disable word-level to avoid hooks
             )
 
-    # If word_timestamps is missing (e.g., older Whisper), you could fall back to segment-level timings.
+            if not isinstance(result, dict):
+                raise ValueError(f"Unexpected result type: {type(result)}")
 
-    return words
+            # Build approximate word timestamps from segment-level data
+            segments = result.get("segments", [])
+            if not segments:
+                raise ValueError("No segments in fallback transcription")
+
+            for segment in segments:
+                if segment is None:
+                    continue
+
+                segment_text = segment.get("text", "").strip()
+                if not segment_text:
+                    continue
+
+                # Split segment text into words
+                segment_words = segment_text.split()
+                if not segment_words:
+                    continue
+
+                # Get segment timing
+                segment_start = segment.get("start", 0.0)
+                segment_end = segment.get("end", segment_start)
+                segment_duration = segment_end - segment_start
+
+                # Estimate word timing by dividing segment duration evenly
+                word_duration = segment_duration / len(segment_words) if segment_words else 0
+
+                for i, word_text in enumerate(segment_words):
+                    word_start = segment_start + (i * word_duration)
+                    word_end = word_start + word_duration
+
+                    # Use segment's average confidence (inverted no_speech_prob)
+                    no_speech = segment.get("no_speech_prob", 0.0)
+                    probability = 1.0 - no_speech if no_speech is not None else None
+
+                    words.append(
+                        WordTiming(
+                            start=word_start,
+                            end=word_end,
+                            text=word_text.strip(),
+                            probability=probability,
+                        )
+                    )
+
+            if not words:
+                raise ValueError("No words extracted from fallback transcription")
+
+            logger.info(f"Fallback successful: extracted {len(words)} approximate word timestamps")
+            return words
+
+        except Exception as fallback_error:
+            error_msg = f"Both word-level and segment-level transcription failed: {fallback_error}"
+            logger.error(error_msg)
+            raise RuntimeError(error_msg) from fallback_error
 
 
 def derive_pauses_from_words(
