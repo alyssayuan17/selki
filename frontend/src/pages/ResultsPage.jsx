@@ -1,16 +1,22 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import QualityWarningsPanel from "../components/QualityWarningsPanel";
 import ScoreBadge from "../components/ScoreBadge";
 import MetricsGrid from "../components/MetricsGrid";
 import MetricDetailCard from "../components/MetricDetailCard";
+import Timeline from "../components/Timeline";
+import Transcript from "../components/Transcript";
 
 export default function ResultPage() {
     const { jobId } = useParams();
+    const navigate = useNavigate();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedMetric, setSelectedMetric] = useState(null);
+    const [transcriptView, setTranscriptView] = useState("full");
+    const [detailedTranscript, setDetailedTranscript] = useState(null);
+    const [loadingDetailedTranscript, setLoadingDetailedTranscript] = useState(false);
 
     useEffect(() => {
         fetch(`/api/v1/presentations/${jobId}/full`)
@@ -29,6 +35,29 @@ export default function ResultPage() {
             setLoading(false);
         });
     }, [jobId]);
+
+    // fetch detailed transcript when user switches to segments or tokens view
+    useEffect(() => {
+        if ((transcriptView === "segments" || transcriptView === "tokens") && !detailedTranscript && !loadingDetailedTranscript) {
+            setLoadingDetailedTranscript(true);
+
+            fetch(`/api/v1/presentations/${jobId}/transcript`)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Failed to fetch detailed transcript");
+                    }
+                    return response.json();
+                })
+                .then((result) => {
+                    setDetailedTranscript(result.transcript);
+                    setLoadingDetailedTranscript(false);
+                })
+                .catch((err) => {
+                    console.error("Error fetching detailed transcript:", err);
+                    setLoadingDetailedTranscript(false);
+                });
+        }
+    }, [transcriptView, jobId, detailedTranscript, loadingDetailedTranscript]);
 
     // build warnings array from quality_flags
     const buildWarnings = (qualityFlags) => {
@@ -80,6 +109,25 @@ export default function ResultPage() {
         }));
     };
 
+    // handle delete job
+    const handleDelete = async () => {
+        if (!confirm("Are you sure you want to delete this analysis?")) return;
+
+        try {
+            const response = await fetch(`/api/v1/presentations/${jobId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                navigate('/');
+            } else {
+                alert('Failed to delete job');
+            }
+        } catch (err) {
+            alert('Error deleting job: ' + err.message);
+        }
+    };
+
     if (loading) return <div className="page">Loading...</div>;
     if (error) return <div className="page">Error: {error}</div>;
     if (!data) return <div className="page">No data</div>;
@@ -91,6 +139,18 @@ export default function ResultPage() {
 
     return (
         <div className="page">
+            {/* Header with delete button */}
+            <div className="results-header">
+                <h2>Analysis Results</h2>
+                <button
+                    className="btn-delete"
+                    onClick={handleDelete}
+                    aria-label="Delete analysis"
+                >
+                    Delete
+                </button>
+            </div>
+
             <ScoreBadge score={score} initial={initial} />
             {warnings.length > 0 && <QualityWarningsPanel warnings={warnings} />}
 
@@ -137,6 +197,58 @@ export default function ResultPage() {
                         )}
                     </div>
                 </MetricDetailCard>
+            )}
+
+            {/* Timeline */}
+            <Timeline
+                events={data.timeline || []}
+                duration={data.input?.duration_sec || 0}
+                onSegmentClick={(segment) => console.log('Clicked segment:', segment)}
+            />
+
+            {/* Transcript with view mode toggle */}
+            <div className="transcript-section">
+                <div className="transcript-controls">
+                    <button
+                        className={transcriptView === "full" ? "active" : ""}
+                        onClick={() => setTranscriptView("full")}
+                    >
+                        Full Text
+                    </button>
+                    <button
+                        className={transcriptView === "segments" ? "active" : ""}
+                        onClick={() => setTranscriptView("segments")}
+                    >
+                        Segments
+                    </button>
+                    <button
+                        className={transcriptView === "tokens" ? "active" : ""}
+                        onClick={() => setTranscriptView("tokens")}
+                    >
+                        Words
+                    </button>
+                </div>
+                {loadingDetailedTranscript && (transcriptView === "segments" || transcriptView === "tokens") ? (
+                    <div className="transcript-loading">Loading detailed transcript...</div>
+                ) : (
+                    <Transcript
+                        transcript={transcriptView === "full" ? data.transcript : (detailedTranscript || data.transcript)}
+                        viewMode={transcriptView}
+                    />
+                )}
+            </div>
+
+            {/* Model Metadata Footer */}
+            {data.model_metadata && (
+                <div className="model-metadata">
+                    <h4>Model Information</h4>
+                    <div className="model-metadata__grid">
+                        <div><strong>ASR Model:</strong> {data.model_metadata.asr_model}</div>
+                        <div><strong>VAD Model:</strong> {data.model_metadata.vad_model}</div>
+                        <div><strong>Embedding Model:</strong> {data.model_metadata.embedding_model}</div>
+                        <div><strong>Version:</strong> {data.model_metadata.version}</div>
+                    </div>
+                </div>
             )}
         </div>
     );
