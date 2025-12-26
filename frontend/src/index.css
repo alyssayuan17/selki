@@ -5,10 +5,8 @@
   --surface-top: rgba(255, 255, 255, 0.96);
   --surface-bottom: rgba(233, 233, 233, 0.94);
   --surface-highlight: rgba(255, 255, 255, 0.75);
-  --surface-shadow: #85AACE;
+  --surface-shadow: #85AACE33;
   background: linear-gradient(180deg, #EBF3FE 0%, #C1D5EC 35%, #BDD3EB 100%);
-
-
 }
 
 a {
@@ -29,6 +27,31 @@ body {
   font-family: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
   font-size: var(--body-font-size, 1rem);
 }
+
+.btn {
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 25px;
+
+  box-shadow: 0 4px 10px #85AACE33;
+}
+
+.btn-primary {
+  background-color: linear-gradient(0deg, #88C7FD 0%, #266EBA 100%);
+  color: white;
+}
+
+.btn:hover {
+  box-shadow: 0 6px 10px #85AACE33;
+}
+
+.btn:active{
+  box-shadow: 0 2px 6px #85AACE33;
+  transform: translateY(1px);
+}
+
 
 
 
