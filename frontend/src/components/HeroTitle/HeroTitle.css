@@ -20,6 +20,40 @@
   gap: 1.2rem;
 }
 
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-200px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(200px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.hero__title {
+  animation: slideInLeft 1.5s ease-out;
+}
+
+.hero__subtitle {
+  animation: slideInLeft 1.5s ease-out 0.3s backwards;
+}
+
+.hero-logo-wrapper {
+  animation: slideInRight 1.5s ease-out 0.6s backwards;
+}
+
 .hero-logo-wrapper {
   position: relative;
   width: clamp(20rem, 10vw, 10rem);

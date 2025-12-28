@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import './Navbar.css'
 
 function Navbar() {
@@ -22,14 +23,14 @@ function Navbar() {
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="navbar-container">
         <div className="navbar-logo">
-          <a href="/">
+          <Link to="/">
             Selki
             <img src="/selki_logo_v2.svg" alt="Selki logo" className="logo-icon" />
-          </a>
+          </Link>
         </div>
         <ul className="navbar-menu">
-          <li><a href="/about">About</a></li>
-          <li><a href="/guide">Guide</a></li>
+          <li><Link to="/about">About</Link></li>
+          <li><Link to="/guide">Guide</Link></li>
         </ul>
       </div>
     </nav>
