@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar/Navbar";
+import Navbar from "../../components/Navbar/Navbar";
+import "./ProcessingPage.css";
 
 export default function ProcessingPage() {
     const { jobId } = useParams();
@@ -91,50 +92,20 @@ export default function ProcessingPage() {
 
     return (
         <>
-        <Navbar />
-        <div className="page processing-page">
-            <div className="processing-container">
-                <h2>Analyzing Your Presentation</h2>
-                <p>Please wait while we process your audio...</p>
-
-                {/* Progress bar */}
-                <div className="progress-bar">
-                    <div
-                        className="progress-bar__fill"
-                        style={{ width: `${progress}%` }}
-                    />
+            <Navbar />
+            {/* Processing Modal Overlay */}
+            <div className="processing-overlay" id="processingOverlay">
+                <div className="processing-popup" id="processingPopup">
+                    <h2>Processing...</h2>
+                    <div className="loader"></div>
+                    <p className="processing-status__text">
+                        {status === "queued" ? "Queued" : "Analyzing your presentation"}...
+                    </p>
+                    <p className="processing-note">
+                        Job ID: <code>{jobId}</code>
+                    </p>
                 </div>
-
-                <div className="processing-status">
-                    <span className="processing-status__text">
-                        {status === "queued" ? "Queued" : "Processing"}...
-                    </span>
-                    <span className="processing-status__percent">
-                        {Math.round(progress)}%
-                    </span>
-                </div>
-
-                {/* Loading animation */}
-                <div className="processing-steps">
-                    <div className="processing-step">
-                        <div className="processing-step__icon">🎤</div>
-                        <div className="processing-step__text">Transcribing audio</div>
-                    </div>
-                    <div className="processing-step">
-                        <div className="processing-step__icon">📊</div>
-                        <div className="processing-step__text">Analyzing metrics</div>
-                    </div>
-                    <div className="processing-step">
-                        <div className="processing-step__icon">💡</div>
-                        <div className="processing-step__text">Generating feedback</div>
-                    </div>
-                </div>
-
-                <p className="processing-note">
-                    Job ID: <code>{jobId}</code>
-                </p>
             </div>
-        </div>
         </>
     );
 }
