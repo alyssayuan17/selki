@@ -1,0 +1,37 @@
+.btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 1.5rem;
+  font-weight: 300;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(133, 170, 206, 0.5);
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.btn-primary {
+  background: linear-gradient(180deg, #88C7FD 0%, #266EBA 100%);
+  color: white;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #266EBA;
+}
+
+.btn-secondary:hover {
+  background: rgba(136, 199, 253, 0.1);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(133, 170, 206, 0.7);
+}
+
+.btn:active{
+  box-shadow: 0 3px 10px rgba(133, 170, 206, 0.4);
+  transform: translateY(1px);
+}

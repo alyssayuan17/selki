@@ -22,7 +22,10 @@ function Navbar() {
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="navbar-container">
         <div className="navbar-logo">
-          <a href="/">Selki</a>
+          <a href="/">
+            Selki
+            <img src="/selki_logo_v2.svg" alt="Selki logo" className="logo-icon" />
+          </a>
         </div>
         <ul className="navbar-menu">
           <li><a href="/about">About</a></li>

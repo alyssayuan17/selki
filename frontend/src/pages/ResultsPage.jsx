@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar/Navbar";
 import QualityWarningsPanel from "../components/QualityWarningsPanel";
 import ScoreBadge from "../components/ScoreBadge";
 import MetricsGrid from "../components/MetricsGrid";
@@ -128,9 +129,9 @@ export default function ResultPage() {
         }
     };
 
-    if (loading) return <div className="page">Loading...</div>;
-    if (error) return <div className="page">Error: {error}</div>;
-    if (!data) return <div className="page">No data</div>;
+    if (loading) return <><Navbar /><div className="page">Loading...</div></>;
+    if (error) return <><Navbar /><div className="page">Error: {error}</div></>;
+    if (!data) return <><Navbar /><div className="page">No data</div></>;
 
     const warnings = buildWarnings(data.quality_flags);
     const score = data.overall_score?.score_0_100 || 0;
@@ -138,6 +139,8 @@ export default function ResultPage() {
     const metricsArray = transformMetrics(data.metrics);
 
     return (
+        <>
+        <Navbar />
         <div className="page">
             {/* Header with delete button */}
             <div className="results-header">
@@ -251,5 +254,6 @@ export default function ResultPage() {
                 </div>
             )}
         </div>
+        </>
     );
 }
