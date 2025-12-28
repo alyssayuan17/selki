@@ -5,6 +5,8 @@ import HomePage from './pages/HomePage/HomePage'
 import UploadPage from './pages/UploadPage/UploadPage'
 import ProcessingPage from './pages/ProcessingPage'
 import ResultsPage from './pages/ResultsPage'
+import AboutPage from './pages/AboutPage/AboutPage'
+import GuidePage from './pages/GuidePage/GuidePage'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -15,6 +17,8 @@ function App() {
         <Route path="/upload" element={<UploadPage />} />
         <Route path="/processing/:jobId" element={<ProcessingPage />} />
         <Route path="/results/:jobId" element={<ResultsPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/guide" element={<GuidePage />} />
     </Routes>
   )
 }
