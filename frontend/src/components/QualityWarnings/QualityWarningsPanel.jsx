@@ -1,3 +1,5 @@
+import "./QualityWarningsPanel.css";
+
 export default function QualityWarnings({ warnings = [] }) {
     const hasWarnings = warnings.length > 0;
 
