@@ -1,0 +1,90 @@
+
+/* Wrap both lines in a vertical stack */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 5rem;
+  margin-left:6rem;
+}
+
+.hero-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.hero-logo-wrapper {
+  position: relative;
+  width: clamp(20rem, 10vw, 10rem);
+  height: clamp(20rem, 10vw, 10rem);
+}
+
+.hero-logo-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #88C7FD 0%,#266EBA 80%, #266EBA 100%);
+  mask-image: url('/selki_logo_v2.svg');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-image: url('/selki_logo_v2.svg');
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  opacity: 0.8;
+}
+
+.hero-logo {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Big "Seal" */
+.hero__title {
+  margin: 0;
+  font-family: Poppins, Arial, sans-serif;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+
+  /* responsive size so it doesn’t get weird on resize */
+  font-size: clamp(3.5rem, 10vw, 7.5rem);
+
+  background: linear-gradient(180deg, #88C7FD 0%,#266EBA 80%, #266EBA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
+  filter: drop-shadow(0 6px 12px #85AACE99);
+}
+
+/* Smaller "the Deal!" */
+.hero__subtitle {
+  margin: 0;
+  font-family: 'Poppins', Arial, sans-serif;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+
+  font-size: clamp(1.5rem, 4.6vw, 6rem);
+
+  background: linear-gradient(180deg, #88C7FD 0%,#266EBA 80%, #266EBA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
+  filter: drop-shadow(0 6px 12px #85AACE99);
+}

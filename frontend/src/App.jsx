@@ -1,10 +1,8 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import { Routes, Route } from 'react-router-dom'
-import HomePage from './pages/HomePage'
-import UploadPage from './pages/UploadPage'
+import HomePage from './pages/HomePage/HomePage'
+import UploadPage from './pages/UploadPage/UploadPage'
 import ProcessingPage from './pages/ProcessingPage'
 import ResultsPage from './pages/ResultsPage'
 

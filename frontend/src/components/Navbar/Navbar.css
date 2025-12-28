@@ -1,0 +1,79 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem 2rem;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+.navbar.scrolled {
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.navbar-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.navbar-logo a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: linear-gradient(180deg, #88C7FD 0%, #266EBA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 2px 4px #85AACE33);
+}
+
+.logo-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.navbar-logo a:hover {
+  filter: drop-shadow(0 4px 8px #85AACE66);
+  transform: scale(1.05) rotate(2deg);
+}
+
+.navbar-logo a:hover .logo-icon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.navbar-menu {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-menu li a {
+  color: #266EBA;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 300;
+  font-family: Poppins, Arial, sans-serif;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 2px 4px #85AACE33);
+}
+
+.navbar-menu li a:hover {
+  color: #88C7FD;
+  filter: drop-shadow(0 4px 8px #85AACE66);
+}
+
+

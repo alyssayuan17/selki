@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar/Navbar";
 
 export default function ProcessingPage() {
     const { jobId } = useParams();
@@ -70,6 +71,8 @@ export default function ProcessingPage() {
 
     if (status === "failed" || status === "error") {
         return (
+            <>
+            <Navbar />
             <div className="page processing-page">
                 <div className="processing-error">
                     <h2>Analysis Failed</h2>
@@ -82,10 +85,13 @@ export default function ProcessingPage() {
                     </button>
                 </div>
             </div>
+            </>
         );
     }
 
     return (
+        <>
+        <Navbar />
         <div className="page processing-page">
             <div className="processing-container">
                 <h2>Analyzing Your Presentation</h2>
@@ -129,5 +135,6 @@ export default function ProcessingPage() {
                 </p>
             </div>
         </div>
+        </>
     );
 }
