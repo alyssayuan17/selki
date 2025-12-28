@@ -147,7 +147,7 @@ export default function UploadPage() {
         <>
         <Navbar />
         <div className="page upload-page">
-            <h1 className="gradient-title">Upload Presentation</h1>
+            <h1 className="gradient-title">Present to Us!</h1>
             <p className="subtitle-text">Upload your audio file or provide a URL to get AI-powered feedback on your presentation</p>
 
             {/* Mode toggle */}
