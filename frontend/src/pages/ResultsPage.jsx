@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
-import QualityWarningsPanel from "../components/QualityWarningsPanel";
-import ScoreBadge from "../components/ScoreBadge";
-import MetricsGrid from "../components/MetricsGrid";
+import QualityWarningsPanel from "../components/QualityWarnings/QualityWarningsPanel";
+import ScoreBadge from "../components/ScoreBadge/ScoreBadge";
+import MetricsGrid from "../components/MetricsGrid/MetricsGrid";
 import MetricDetailCard from "../components/MetricDetailCard";
 import Timeline from "../components/Timeline";
 import Transcript from "../components/Transcript";

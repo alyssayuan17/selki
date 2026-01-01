@@ -1,0 +1,40 @@
+.score-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    text-align: center;
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
+.score-badge__circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.score-badge__score {
+    text-align: center;
+    color: #60a5fa;
+    font-size: 1.25rem;
+    line-height: 1.5;
+}
+
+.score-badge__number {
+    display: block;
+    font-size: 4rem;
+    font-weight: bold;
+    color: #3b82f6;
+    margin-top: 0.5rem;
+    line-height: 1;
+}

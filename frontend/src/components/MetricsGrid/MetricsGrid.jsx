@@ -1,4 +1,5 @@
-import MetricCard from "./MetricCard";
+import MetricCard from "../MetricCard/MetricCard";
+import "./MetricsGrid.css";
 
 export default function MetricsGrid({ metrics, onMetricClick }) {
     return (
