@@ -1,3 +1,5 @@
+import "./ScoreBadge.css";
+
 export default function ScoreBadge({score = 0, initial = "R"}) {
     return (
         <div className="score-badge">

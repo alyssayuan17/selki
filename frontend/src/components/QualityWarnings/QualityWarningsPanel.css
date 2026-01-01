@@ -1,0 +1,48 @@
+.qw {
+    max-width: 900px;
+    margin: 2rem auto;
+}
+
+.qw__title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #60a5fa;
+    margin-bottom: 1rem;
+}
+
+.qw__card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 248, 255, 0.8) 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15);
+    min-height: 100px;
+}
+
+.qw__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.qw__item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+    color: #374151;
+    font-size: 0.95rem;
+}
+
+.qw__item:last-child {
+    border-bottom: none;
+}
+
+.qw__item::before {
+    content: "⚠️";
+    margin-right: 0.5rem;
+}
+
+.qw__empty {
+    color: #9ca3af;
+    text-align: center;
+    font-size: 0.95rem;
+    margin: 0;
+}
