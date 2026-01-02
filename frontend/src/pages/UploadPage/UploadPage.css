@@ -63,7 +63,7 @@
   padding: 3rem 2rem;
   background: linear-gradient(180deg, #EBF3FE 0%, #E7F1FD 52%, #BDD3EB 100%);
   border-radius: 1rem;
-  box-shadow: 0 4px 12px rgba(133, 170, 206, 0.5);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
   width: 100%;
   margin-bottom: 2rem;
   gap: 1.5rem;
@@ -71,12 +71,12 @@
 }
 
 .upload-card:hover {
-  box-shadow: 0 6px 16px rgba(133, 170, 206, 0.7);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
 }
 
 .upload-card--dragging {
   border: 2px dashed #266EBA;
-  box-shadow: 0 8px 20px rgba(133, 170, 206, 0.9);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
   transform: scale(1.02);
 }
 
@@ -102,7 +102,7 @@
 .upload-subtitle {
   font-family: 'Poppins', sans-serif;
   font-weight: 300;
-  color: #5A9DD8;
+  color: #266EBA;
   font-size: 0.9rem;
   margin: 0;
   margin-top: -0.5rem;
@@ -111,7 +111,7 @@
 .file-types-hint {
   font-family: 'Poppins', sans-serif;
   font-weight: 300;
-  color: #7EB0DB;
+  color: #6b7280;
   font-size: 0.75rem;
   margin: 0;
   margin-top: 0.5rem;
@@ -120,7 +120,7 @@
 .error-message {
   font-family: 'Poppins', sans-serif;
   font-weight: 300;
-  color: #E57373;
+  color: #dc2626;
   font-size: 0.9rem;
   margin: 2rem 0 1rem 0;
   text-align: center;
@@ -166,12 +166,12 @@
   opacity: 0.4;
   cursor: not-allowed;
   transform: none !important;
-  box-shadow: 0 4px 12px rgba(133, 170, 206, 0.3) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
 }
 
 .form-group.button-group button:disabled:hover {
   transform: none !important;
-  box-shadow: 0 4px 12px rgba(133, 170, 206, 0.3) !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
 }
 
 .form-group label {
@@ -190,7 +190,7 @@
   color: #266EBA;
   border: none;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 12px rgba(133, 170, 206, 0.5);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
   font-family: 'Poppins', sans-serif;
   font-size: 1rem;
   font-weight: 300;
@@ -199,12 +199,12 @@
 }
 
 .form-control:hover {
-  box-shadow: 0 6px 16px rgba(133, 170, 206, 0.7);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
 }
 
 .form-control:focus {
   outline: none;
-  box-shadow: 0 6px 16px rgba(133, 170, 206, 0.8);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3);
 }
 
 .form-control option {
@@ -219,7 +219,7 @@
 .form-hint {
   display: block;
   margin-top: 0.5rem;
-  color: #5A9DD8;
+  color: #6b7280;
   font-size: 0.85rem;
 }
 

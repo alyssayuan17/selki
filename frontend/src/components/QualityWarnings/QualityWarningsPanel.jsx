@@ -5,7 +5,7 @@ export default function QualityWarnings({ warnings = [] }) {
 
     return (
         <section className="qw">
-            <h2 className="qw__title">Quality Warnings</h2>
+            <h2 className="qw__title gradient-title">Quality Warnings</h2>
 
             <div className="qw__card">
                 {hasWarnings ? (

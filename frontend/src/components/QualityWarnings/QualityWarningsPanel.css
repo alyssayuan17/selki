@@ -1,6 +1,6 @@
 .qw {
     max-width: 900px;
-    margin: 2rem auto;
+    margin: 0rem auto 2rem auto;
 }
 
 .qw__title {
@@ -8,13 +8,14 @@
     font-weight: 600;
     color: #60a5fa;
     margin-bottom: 1rem;
+    margin-top: 0rem;
 }
 
 .qw__card {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 248, 255, 0.8) 100%);
     border-radius: 20px;
     padding: 2rem;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
     min-height: 100px;
 }
 
@@ -27,7 +28,9 @@
 .qw__item {
     padding: 0.75rem 0;
     border-bottom: 1px solid rgba(59, 130, 246, 0.1);
-    color: #374151;
+    font-family: Poppins, Arial, sans-serif;
+    font-weight: 300;
+    color: #266EBA;
     font-size: 0.95rem;
 }
 
@@ -41,7 +44,9 @@
 }
 
 .qw__empty {
-    color: #9ca3af;
+    font-family: Poppins, Arial, sans-serif;
+    font-weight: 300;
+    color: #266EBA;
     text-align: center;
     font-size: 0.95rem;
     margin: 0;

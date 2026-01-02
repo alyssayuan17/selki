@@ -51,7 +51,7 @@ export default function Transcript({ transcript, viewMode = "full" }) {
     return (
         <div className="transcript">
             <div className="transcript__header">
-                <h3 className="transcript__title">Transcript</h3>
+                <h3 className="transcript__title gradient-title">Transcript</h3>
                 {language && (
                     <span className="transcript__language">{language.toUpperCase()}</span>
                 )}

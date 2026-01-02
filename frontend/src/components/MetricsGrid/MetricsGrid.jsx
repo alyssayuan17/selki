@@ -1,7 +1,7 @@
 import MetricCard from "../MetricCard/MetricCard";
 import "./MetricsGrid.css";
 
-export default function MetricsGrid({ metrics, onMetricClick }) {
+export default function MetricsGrid({ metrics, selectedMetricId, onMetricClick }) {
     return (
         <div className="metrics-grid">
             {metrics.map((m) => (
@@ -10,6 +10,8 @@ export default function MetricsGrid({ metrics, onMetricClick }) {
                     title={m.label}
                     value={m.value}
                     subtext={m.subtext}
+                    performanceMessage={m.performanceMessage}
+                    active={m.id === selectedMetricId}
                     onClick={() => onMetricClick?.(m)}
                 />
             ))}
