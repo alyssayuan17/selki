@@ -36,7 +36,7 @@
   background-clip: text;
   text-decoration: none;
   transition: all 0.3s ease;
-  filter: drop-shadow(0 2px 4px #85AACE33);
+  filter: drop-shadow(0 2px 4px rgba(133, 170, 206, 0.1));
 }
 
 .logo-icon {
@@ -45,7 +45,7 @@
 }
 
 .navbar-logo a:hover {
-  filter: drop-shadow(0 4px 8px #85AACE66);
+  filter: drop-shadow(0 4px 8px rgba(133, 170, 206, 0.2));
   transform: scale(1.05) rotate(2deg);
 }
 
@@ -68,12 +68,12 @@
   font-weight: 300;
   font-family: Poppins, Arial, sans-serif;
   transition: all 0.3s ease;
-  filter: drop-shadow(0 2px 4px #85AACE33);
+  filter: drop-shadow(0 2px 4px rgba(133, 170, 206, 0.1));
 }
 
 .navbar-menu li a:hover {
   color: #88C7FD;
-  filter: drop-shadow(0 4px 8px #85AACE66);
+  filter: drop-shadow(0 4px 8px rgba(133, 170, 206, 0.2));
 }
 
 
