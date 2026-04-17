@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
+import { authedFetch } from "../../utils/auth";
 import "./HistoryPage.css";
 
 const STATUS_LABEL = {
@@ -39,7 +40,7 @@ export default function HistoryPage() {
 
     useEffect(() => {
         setLoading(true);
-        fetch(`/api/v1/presentations?limit=${LIMIT}&offset=${page * LIMIT}`)
+        authedFetch(`/api/v1/presentations?limit=${LIMIT}&offset=${page * LIMIT}`)
             .then((r) => {
                 if (!r.ok) throw new Error("Failed to load history");
                 return r.json();
