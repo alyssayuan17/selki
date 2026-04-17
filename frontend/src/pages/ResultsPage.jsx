@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { authedFetch } from "./utils/auth";
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
     Cell, ReferenceLine, ResponsiveContainer
@@ -238,7 +239,7 @@ export default function ResultPage() {
     const [loadingDetailedTranscript, setLoadingDetailedTranscript] = useState(false);
 
     useEffect(() => {
-        fetch(`/api/v1/presentations/${jobId}/full`)
+        authedFetch(`/api/v1/presentations/${jobId}/full`)
         .then((response) => {
             if (!response.ok) {
             throw new Error("Failed to fetch results");
@@ -260,7 +261,7 @@ export default function ResultPage() {
         if ((transcriptView === "segments" || transcriptView === "tokens") && !detailedTranscript && !loadingDetailedTranscript) {
             setLoadingDetailedTranscript(true);
 
-            fetch(`/api/v1/presentations/${jobId}/transcript`)
+            authedFetch(`/api/v1/presentations/${jobId}/transcript`)
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error("Failed to fetch detailed transcript");
@@ -347,7 +348,7 @@ export default function ResultPage() {
         if (!confirm("Are you sure you want to delete this analysis?")) return;
 
         try {
-            const response = await fetch(`/api/v1/presentations/${jobId}`, {
+            const response = await authedFetch(`/api/v1/presentations/${jobId}`, {
                 method: 'DELETE'
             });
 

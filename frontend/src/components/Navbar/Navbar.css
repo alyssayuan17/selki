@@ -76,4 +76,18 @@
   filter: drop-shadow(0 4px 8px rgba(133, 170, 206, 0.2));
 }
 
+.navbar-logout {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #266EBA;
+  font-size: 1rem;
+  font-weight: 300;
+  font-family: Poppins, Arial, sans-serif;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
 
+.navbar-logout:hover {
+  color: #88C7FD;
+}

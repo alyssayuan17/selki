@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import FileDropzone from "../../components/FileDropzone";
 import Navbar from "../../components/Navbar/Navbar";
 import Button from "../../components/Button/Button";
+import { authedFetch } from "../../utils/auth";
 import "./UploadPage.css";
 
 export default function UploadPage() {
@@ -92,7 +93,7 @@ export default function UploadPage() {
                 ]));
                 uploadFormData.append("user_metadata", JSON.stringify({}));
 
-                response = await fetch("/api/v1/presentations/upload", {
+                response = await authedFetch("/api/v1/presentations/upload", {
                     method: "POST",
                     body: uploadFormData,
                 });
@@ -114,7 +115,7 @@ export default function UploadPage() {
                     user_metadata: {}
                 };
 
-                response = await fetch("/api/v1/presentations", {
+                response = await authedFetch("/api/v1/presentations", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
