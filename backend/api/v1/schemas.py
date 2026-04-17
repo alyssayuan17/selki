@@ -209,3 +209,25 @@ class PresentationTranscriptProcessing(BaseModel):
     """Transcript response while processing"""
     job_id: str
     status: str  # "processing"
+
+
+# ============================================================================
+# Response Schemas - GET /api/v1/presentations (list)
+# ============================================================================
+
+class JobSummary(BaseModel):
+    """Lightweight job summary for the history list"""
+    job_id: str
+    status: str
+    created_at: datetime
+    updated_at: datetime
+    talk_type: Optional[str] = None
+    audience_type: Optional[str] = None
+    score_value: Optional[int] = None
+    score_label: Optional[str] = None
+    duration_sec: Optional[float] = None
+
+
+class PresentationsListResponse(BaseModel):
+    jobs: List[JobSummary]
+    total: int

@@ -394,7 +394,7 @@ def run_full_analysis(
     # 1) low-level analysis (Whisper, librosa, etc.)
     try:
         logger.info("Running audio_to_json processing")
-        audio_json = audio_to_json(audio_path)
+        audio_json = audio_to_json(audio_path, language=job_input.language)
         logger.info("Audio processing completed successfully")
     except Exception as e:
         error_msg = f"Audio processing failed: {e}"
