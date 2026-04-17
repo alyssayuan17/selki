@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import './App.css'
 import { Routes, Route } from 'react-router-dom'
 import HomePage from './pages/HomePage/HomePage'
@@ -7,10 +6,9 @@ import ProcessingPage from './pages/ProcessingPage/ProcessingPage'
 import ResultsPage from './pages/ResultsPage'
 import AboutPage from './pages/AboutPage/AboutPage'
 import GuidePage from './pages/GuidePage/GuidePage'
+import HistoryPage from './pages/HistoryPage/HistoryPage'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <Routes>
         <Route path="/" element={<HomePage />} />
@@ -19,6 +17,7 @@ function App() {
         <Route path="/results/:jobId" element={<ResultsPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/guide" element={<GuidePage />} />
+        <Route path="/history" element={<HistoryPage />} />
     </Routes>
   )
 }

@@ -4,16 +4,27 @@ Main FastAPI application entry point.
 Run with: uvicorn main:app --reload
 """
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.v1.presentations import router as presentations_router
 from analyzer.logging_config import setup_logging
+import db
 
 # Setup logging
 setup_logging()
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    db.init_db()
+    yield
+
+
 # Create FastAPI app
 app = FastAPI(
+    lifespan=lifespan,
     title="Triple-TS Speaks API",
     description="Presentation analysis API for speech coaching",
     version="1.0.0",

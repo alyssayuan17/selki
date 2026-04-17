@@ -70,6 +70,7 @@ def audio_to_json(
     target_sr: int = 16000,
     min_pause_s: float = 0.25,
     enable_vad: bool = True,
+    language: str = "en",
 ) -> Dict[str, Any]:
     """
     High-level pipeline:
@@ -123,8 +124,8 @@ def audio_to_json(
 
     # 2) Run ASR to get word-level timings
     try:
-        logger.debug(f"Running Whisper ASR with model={whisper_model_name}")
-        words = run_whisper_word_timestamps(audio_path, model_name=whisper_model_name)
+        logger.debug(f"Running Whisper ASR with model={whisper_model_name}, language={language}")
+        words = run_whisper_word_timestamps(audio_path, model_name=whisper_model_name, language=language)
         logger.info(f"ASR completed: {len(words)} words detected")
 
         if len(words) == 0:
@@ -273,6 +274,7 @@ def load_audio(path: Path, target_sr: int = 16000) -> tuple[np.ndarray, int]:
 def run_whisper_word_timestamps(
     audio_path: Path,
     model_name: str = "small",
+    language: str = "en",
 ) -> List[WordTiming]:
     """
     Run Whisper ASR and return a list of WordTiming objects.
@@ -300,7 +302,7 @@ def run_whisper_word_timestamps(
         result = whisper_ts.transcribe(
             model,
             audio,
-            language="en",
+            language=language,
             temperature=0.0,
             vad=False,  # We use our own VAD
             trust_whisper_timestamps=True,  # Avoid DTW alignment that causes hook issues
@@ -380,7 +382,7 @@ def run_whisper_word_timestamps(
             # Use standard Whisper without word_timestamps to avoid hook issues
             result = model.transcribe(
                 audio_path.as_posix(),
-                language="en",
+                language=language,
                 temperature=0.0,
                 word_timestamps=False,  # Disable word-level to avoid hooks
             )

@@ -1,93 +1,71 @@
 """
-Simple in-memory job manager with async task execution.
-
-For production, replace with Celery + Redis or a database-backed solution.
+Job manager backed by SQLite persistence.
 """
-
 from __future__ import annotations
-import asyncio
-import uuid
-from datetime import datetime, timezone
-from typing import Dict, Any, Optional
-from pathlib import Path
-import logging
 
+import asyncio
+import logging
+import uuid
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
+import requests as http_requests
+
+import db
 from analyzer.run_pipeline import run_full_analysis
 
 logger = logging.getLogger(__name__)
 
-
-# In-memory job storage (replace with database in production)
-_JOBS: Dict[str, Dict[str, Any]] = {}
+UPLOADS_DIR = Path(__file__).parent.parent / "uploads"
 
 
 class JobManager:
-    """Manages job lifecycle and execution"""
+
+    # ------------------------------------------------------------------
+    # Create
+    # ------------------------------------------------------------------
 
     @staticmethod
     def create_job(input_data: Dict[str, Any]) -> str:
-        """
-        Create a new job and return job_id.
-
-        Args:
-            input_data: Request payload from POST /api/v1/presentations
-
-        Returns:
-            job_id
-        """
         job_id = f"pres_{uuid.uuid4().hex[:10]}"
 
-        now = datetime.now(timezone.utc)
+        # For file:// uploads, store the local path so we can clean up on delete
+        audio_url = input_data.get("audio_url", "")
+        audio_path: Optional[str] = None
+        if audio_url.startswith("file://"):
+            audio_path = audio_url.replace("file://", "")
 
-        _JOBS[job_id] = {
-            "job_id": job_id,
-            "status": "queued",
-            "created_at": now,
-            "updated_at": now,
-            "input": input_data,
-            "result": None,
-            "failure": None,
-        }
-
+        db.create_job(job_id, input_data, audio_path=audio_path)
         logger.info(f"Created job {job_id}, status=queued")
         return job_id
 
+    # ------------------------------------------------------------------
+    # Process (background task)
+    # ------------------------------------------------------------------
+
     @staticmethod
-    async def process_job(job_id: str):
-        """
-        Process a job asynchronously.
-
-        This runs the analysis pipeline and updates job status.
-
-        Args:
-            job_id: Job ID to process
-        """
-        if job_id not in _JOBS:
-            logger.error(f"Job {job_id} not found")
+    async def process_job(job_id: str) -> None:
+        job = db.get_job(job_id)
+        if not job:
+            logger.error(f"Job {job_id} not found in db")
             return
 
-        job = _JOBS[job_id]
-
-        # Update status to processing
-        job["status"] = "processing"
-        job["updated_at"] = datetime.now(timezone.utc)
+        db.update_job_status(job_id, "processing")
         logger.info(f"Job {job_id} started processing")
 
         try:
-            # Get input data
-            input_dict = job["input"]
+            input_dict = job["input_data"]
+            audio_url: str = input_dict["audio_url"]
 
-            # Extract audio URL and convert to Path
-            audio_url = input_dict["audio_url"]
-            # Handle file:// URLs
             if audio_url.startswith("file://"):
                 audio_path = Path(audio_url.replace("file://", ""))
             else:
-                # For now, assume it's a local path or we download it
-                # TODO: Add support for downloading from URLs
-                audio_path = Path(audio_url)
+                # Download remote audio to uploads directory
+                audio_path = await asyncio.to_thread(
+                    _download_audio, audio_url, job_id
+                )
+                db.set_audio_path(job_id, str(audio_path))
 
-            # Run the analysis pipeline (this is the heavy computation)
             result = await asyncio.to_thread(
                 run_full_analysis,
                 job_id=job_id,
@@ -95,68 +73,97 @@ class JobManager:
                 raw_input_payload=input_dict,
             )
 
-            # Update job with results
-            job["status"] = "done"
-            job["result"] = result
-            job["updated_at"] = datetime.now(timezone.utc)
+            db.update_job_result(job_id, result)
             logger.info(f"Job {job_id} completed successfully")
 
         except Exception as e:
-            # Handle failure
             logger.error(f"Job {job_id} failed: {e}", exc_info=True)
-            job["status"] = "failed"
-            job["failure"] = {
+            db.update_job_failure(job_id, {
                 "code": "analysis_error",
                 "message": str(e),
                 "details": {"error_type": type(e).__name__},
-            }
-            job["updated_at"] = datetime.now(timezone.utc)
+            })
+
+    # ------------------------------------------------------------------
+    # Read
+    # ------------------------------------------------------------------
 
     @staticmethod
     def get_job(job_id: str) -> Optional[Dict[str, Any]]:
-        """
-        Get job by ID.
-
-        Args:
-            job_id: Job ID
-
-        Returns:
-            Job dict or None if not found
-        """
-        return _JOBS.get(job_id)
+        row = db.get_job(job_id)
+        if not row:
+            return None
+        # Map db column names → legacy dict shape used by presentations.py
+        return {
+            "job_id": row["job_id"],
+            "status": row["status"],
+            "created_at": row["created_at"],
+            "updated_at": row["updated_at"],
+            "input": row.get("input_data") or {},
+            "result": row.get("result"),
+            "failure": row.get("failure"),
+        }
 
     @staticmethod
-    def get_job_status(job_id: str) -> Optional[str]:
-        """
-        Get job status.
+    def list_jobs(limit: int = 50, offset: int = 0) -> Tuple[List[Dict[str, Any]], int]:
+        return db.list_jobs(limit=limit, offset=offset)
 
-        Args:
-            job_id: Job ID
-
-        Returns:
-            Status string ("queued", "processing", "done", "failed") or None
-        """
-        job = _JOBS.get(job_id)
-        return job["status"] if job else None
+    # ------------------------------------------------------------------
+    # Delete
+    # ------------------------------------------------------------------
 
     @staticmethod
     def delete_job(job_id: str) -> bool:
-        """
-        Delete a job.
+        audio_path = db.delete_job(job_id)
+        if audio_path is None:
+            return False  # job not found
 
-        Args:
-            job_id: Job ID
+        # Clean up the audio file if it lives inside uploads/
+        if audio_path:
+            _delete_upload(audio_path)
 
-        Returns:
-            True if deleted, False if not found
-        """
-        if job_id in _JOBS:
-            del _JOBS[job_id]
-            logger.info(f"Deleted job {job_id}")
-            return True
-        return False
+        return True
 
-    @staticmethod
-    def list_jobs() -> list[str]:
-        """Get list of all job IDs"""
-        return list(_JOBS.keys())
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+def _download_audio(audio_url: str, job_id: str) -> Path:
+    """Download a remote audio URL into the uploads directory."""
+    UPLOADS_DIR.mkdir(exist_ok=True)
+
+    from urllib.parse import urlparse
+    parsed = urlparse(audio_url)
+    suffix = Path(parsed.path).suffix.lower()
+    if suffix not in {".wav", ".mp3", ".m4a", ".flac", ".ogg", ".webm"}:
+        suffix = ".mp3"
+
+    dest = UPLOADS_DIR / f"{job_id}{suffix}"
+
+    try:
+        response = http_requests.get(audio_url, stream=True, timeout=120)
+        response.raise_for_status()
+        with open(dest, "wb") as f:
+            for chunk in response.iter_content(chunk_size=65_536):
+                f.write(chunk)
+        logger.info(f"Downloaded audio to {dest} ({dest.stat().st_size} bytes)")
+        return dest
+    except Exception as e:
+        dest.unlink(missing_ok=True)
+        raise RuntimeError(f"Failed to download audio from {audio_url}: {e}") from e
+
+
+def _delete_upload(audio_path: str) -> None:
+    """Delete a file only if it's inside the uploads directory."""
+    p = Path(audio_path)
+    try:
+        if p.exists() and p.is_file():
+            # Safety: only delete files within uploads/
+            p.resolve().relative_to(UPLOADS_DIR.resolve())
+            p.unlink()
+            logger.info(f"Deleted upload file: {p}")
+    except ValueError:
+        logger.warning(f"Skipping deletion of file outside uploads dir: {p}")
+    except OSError as e:
+        logger.warning(f"Could not delete file {p}: {e}")
