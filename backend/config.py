@@ -1,7 +1,13 @@
 """
 Application configuration loaded from environment variables.
+Automatically reads a .env file in the project root if present.
 """
 import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load .env from project root (two levels up from backend/)
+load_dotenv(Path(__file__).parent.parent / ".env")
 
 # Password required to access the API.
 # Set AUTH_PASSWORD in your environment before deploying.
