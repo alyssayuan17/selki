@@ -1,5 +1,6 @@
 """
 Application configuration loaded from environment variables.
+
 Automatically reads a .env file in the project root if present.
 """
 import os

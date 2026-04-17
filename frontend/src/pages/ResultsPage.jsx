@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { authedFetch } from "./utils/auth";
+import { authedFetch } from "../utils/auth";
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
     Cell, ReferenceLine, ResponsiveContainer
