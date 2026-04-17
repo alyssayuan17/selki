@@ -31,5 +31,6 @@ export default function ScoreBadge({score = 0, initial = "R"}) {
                 <span className="score-badge__number gradient-title">{displayScore}%</span>
             </div>
         </div>
-    );
+
+);
 }
