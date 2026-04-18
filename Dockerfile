@@ -24,10 +24,19 @@ WORKDIR /app
 # Upgrade pip/setuptools first
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
-# Install all dependencies (CPU torch first so openai-whisper reuses it)
+# Install CPU-only PyTorch explicitly first.
+# Using --index-url (primary) guarantees the CPU wheel is chosen before
+# any downstream dep (silero-vad, whisper-timestamped) can pull in CUDA torch.
+RUN pip install --no-cache-dir \
+    --index-url https://download.pytorch.org/whl/cpu \
+    torch==2.6.0+cpu \
+    torchaudio==2.6.0+cpu
+
+# Install remaining dependencies (torch already present, so CPU version is kept)
 COPY backend/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt && \
-    apt-get purge -y gcc g++ && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /root/.cache
+    apt-get purge -y gcc g++ && apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/* /root/.cache /tmp/*
 
 # Copy backend source
 COPY backend/ ./

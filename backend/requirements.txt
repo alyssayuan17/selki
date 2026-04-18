@@ -12,10 +12,7 @@ soundfile==0.12.1
 numpy==1.26.4
 scipy==1.13.1
 
-# ML models
---extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.6.0+cpu
-torchaudio==2.6.0+cpu
+# ML models (torch/torchaudio installed separately in Dockerfile as CPU-only)
 openai-whisper==20250625
 whisper-timestamped==1.15.9
 silero-vad==5.1.2
