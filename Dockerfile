@@ -41,7 +41,6 @@ COPY --from=frontend-build /app/frontend/dist ./frontend/dist
 # Persistent data lives here — mount a volume to survive restarts
 RUN mkdir -p uploads data
 
-EXPOSE 8000
+EXPOSE 7860
 
-# Use $PORT if set (Railway), otherwise default to 8000
-CMD uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}
+CMD uvicorn main:app --host 0.0.0.0 --port 7860
