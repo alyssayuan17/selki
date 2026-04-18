@@ -10,18 +10,22 @@ from typing import List, Tuple
 import torch
 import numpy as np
 
-# Load Silero model once (heavy op)
-_model, utils = torch.hub.load(
-    repo_or_dir="snakers4/silero-vad",
-    model="silero_vad",
-    force_reload=False
-)
+# Lazy-loaded — populated on first call to run_vad()
+_model = None
+get_speech_timestamps = None
 
-(get_speech_timestamps,
- get_speech_prob,
- get_silero_audio,
- VADIterator,
- collect_chunks) = utils
+
+def _load_model():
+    global _model, get_speech_timestamps
+    if _model is not None:
+        return
+    model, utils = torch.hub.load(
+        repo_or_dir="snakers4/silero-vad",
+        model="silero_vad",
+        force_reload=False,
+    )
+    _model = model
+    (get_speech_timestamps, *_) = utils
 
 
 def run_vad(
@@ -39,6 +43,8 @@ def run_vad(
       - word gaps (ASR)
       - silence gaps (VAD)
     """
+
+    _load_model()
 
     # Convert numpy waveform → PyTorch tensor
     audio_t = torch.from_numpy(y).float().cpu()
