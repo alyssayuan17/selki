@@ -1,0 +1,27 @@
+.score-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    max-width: 600px;
+    margin: 2rem auto 0rem auto;
+}
+
+.score-badge__score {
+    text-align: center;
+    font-family: Poppins, Arial, sans-serif;
+    font-weight: 300;
+    font-size: 1.5rem;
+    color: #266EBA;
+    line-height: 1.5;
+}
+
+.score-badge__number {
+    display: block;
+    font-size: 4rem;
+    font-weight: bold;
+    color: #3b82f6;
+    margin-top: 0.5rem;
+    line-height: 1;
+}

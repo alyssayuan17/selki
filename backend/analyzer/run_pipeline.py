@@ -12,6 +12,7 @@ from analyzer.metrics.pause_quality import compute_pause_quality_metric
 from analyzer.metrics.fillers import compute_fillers_metric
 from analyzer.metrics.intonation import compute_intonation_metric
 from analyzer.metrics.content_structure import compute_content_structure_metric
+from analyzer.metrics.confidence_cv import compute_confidence_cv_metric
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -394,7 +395,7 @@ def run_full_analysis(
     # 1) low-level analysis (Whisper, librosa, etc.)
     try:
         logger.info("Running audio_to_json processing")
-        audio_json = audio_to_json(audio_path)
+        audio_json = audio_to_json(audio_path, language=job_input.language)
         logger.info("Audio processing completed successfully")
     except Exception as e:
         error_msg = f"Audio processing failed: {e}"
@@ -501,6 +502,17 @@ def run_full_analysis(
                 transcript_text = transcript_block.get("full_text", "")
                 metrics["content_structure"] = compute_content_structure_metric(
                     transcript_text
+                )
+
+            elif metric_name == "confidence_cv":
+                logger.debug("Computing confidence_cv metric")
+                audio_features = audio_json.get("audio_features", {})
+                pause_metric_result = metrics.get("pause_quality")
+                metrics["confidence_cv"] = compute_confidence_cv_metric(
+                    words,
+                    duration_sec,
+                    audio_features=audio_features,
+                    pause_metric=pause_metric_result,
                 )
 
             else:

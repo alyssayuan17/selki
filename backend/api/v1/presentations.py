@@ -17,7 +17,8 @@ import os
 import uuid
 from typing import Union
 from pathlib import Path
-from fastapi import APIRouter, HTTPException, BackgroundTasks, status, UploadFile, File, Form
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, status, UploadFile, File, Form
+from api.v1.deps import require_auth
 from datetime import datetime, timezone
 
 from api.v1.schemas import (
@@ -29,6 +30,8 @@ from api.v1.schemas import (
     PresentationFullResponse,
     PresentationTranscriptResponse,
     PresentationTranscriptProcessing,
+    PresentationsListResponse,
+    JobSummary,
     InputBlock,
     QualityFlags,
     OverallScore,
@@ -43,7 +46,29 @@ from api.v1.schemas import (
 )
 from jobs.job_manager import JobManager
 
-router = APIRouter(prefix="/api/v1", tags=["presentations"])
+router = APIRouter(prefix="/api/v1", tags=["presentations"], dependencies=[Depends(require_auth)])
+
+MAX_UPLOAD_BYTES = 100 * 1024 * 1024  # 100 MB
+
+
+# ============================================================================
+# GET /api/v1/presentations  (history list)
+# ============================================================================
+
+@router.get(
+    "/presentations",
+    response_model=PresentationsListResponse,
+)
+async def list_presentations(limit: int = 20, offset: int = 0):
+    """
+    List all past analysis jobs, newest first.
+    """
+    limit = min(limit, 100)  # cap to avoid accidental huge queries
+    jobs, total = JobManager.list_jobs(limit=limit, offset=offset)
+    return PresentationsListResponse(
+        jobs=[JobSummary(**j) for j in jobs],
+        total=total,
+    )
 
 
 # ============================================================================
@@ -128,11 +153,18 @@ async def create_presentation_upload(
     unique_filename = f"{uuid.uuid4().hex}{file_ext}"
     file_path = uploads_dir / unique_filename
 
-    # Save uploaded file
+    # Save uploaded file (with size check)
     try:
+        content = await file.read()
+        if len(content) > MAX_UPLOAD_BYTES:
+            raise HTTPException(
+                status_code=413,
+                detail="File too large (max 100 MB)",
+            )
         with open(file_path, "wb") as f:
-            content = await file.read()
             f.write(content)
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=500,

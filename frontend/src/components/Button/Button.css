@@ -1,0 +1,32 @@
+.btn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: Poppins, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 300;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(180deg, #88C7FD 0%, #266EBA 100%);
+  color: white;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #266EBA;
+}
+
+.btn-secondary:hover {
+  background: rgba(136, 199, 253, 0.1);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn:active{
+  transform: translateY(1px);
+}
