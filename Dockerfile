@@ -24,8 +24,8 @@ WORKDIR /app
 # Upgrade pip/setuptools first
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
-# Install openai-whisper separately with no build isolation so it sees our setuptools
-RUN pip install --no-cache-dir --no-build-isolation openai-whisper==20240930
+# Install openai-whisper separately (latest version has proper build system)
+RUN pip install --no-cache-dir openai-whisper==20250625
 
 # Install remaining dependencies
 COPY backend/requirements.txt ./
