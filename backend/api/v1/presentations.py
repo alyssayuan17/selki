@@ -17,8 +17,7 @@ import os
 import uuid
 from typing import Union
 from pathlib import Path
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, status, UploadFile, File, Form
-from api.v1.deps import require_auth
+from fastapi import APIRouter, HTTPException, BackgroundTasks, status, UploadFile, File, Form
 from datetime import datetime, timezone
 
 from api.v1.schemas import (
@@ -46,7 +45,7 @@ from api.v1.schemas import (
 )
 from jobs.job_manager import JobManager
 
-router = APIRouter(prefix="/api/v1", tags=["presentations"], dependencies=[Depends(require_auth)])
+router = APIRouter(prefix="/api/v1", tags=["presentations"])
 
 MAX_UPLOAD_BYTES = 100 * 1024 * 1024  # 100 MB
 

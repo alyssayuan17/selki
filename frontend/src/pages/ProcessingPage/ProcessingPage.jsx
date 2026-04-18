@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
-import { authedFetch } from "../../utils/auth";
 import "./ProcessingPage.css";
 
 export default function ProcessingPage() {
@@ -26,7 +25,7 @@ export default function ProcessingPage() {
         // poll status every 2 seconds
         const checkStatus = async () => {
             try {
-                const response = await authedFetch(`/api/v1/presentations/${jobId}`);
+                const response = await fetch(`/api/v1/presentations/${jobId}`);
 
                 if (!response.ok) {
                     throw new Error("Failed to check status");

@@ -1,16 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { clearToken } from '../../utils/auth'
+import { Link } from 'react-router-dom'
 import './Navbar.css'
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false)
-  const navigate = useNavigate()
-
-  const handleLogout = () => {
-    clearToken()
-    navigate('/login')
-  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,7 +32,6 @@ function Navbar() {
           <li><Link to="/history">History</Link></li>
           <li><Link to="/about">About</Link></li>
           <li><Link to="/guide">Guide</Link></li>
-          <li><button className="navbar-logout" onClick={handleLogout}>Sign out</button></li>
         </ul>
       </div>
     </nav>
