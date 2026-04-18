@@ -78,3 +78,8 @@ backend/jobs_data/
 # Runtime data
 backend/data/
 backend/uploads/
+
+# Test audio files
+backend/tests/audio/
+backend/tests/*.wav
+backend/tests/*.mp3
