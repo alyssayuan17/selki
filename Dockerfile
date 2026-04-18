@@ -21,10 +21,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
+# Upgrade pip/setuptools first (required for openai-whisper build)
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+
 # Install Python dependencies
 COPY backend/requirements.txt ./
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy backend source
 COPY backend/ ./
@@ -37,4 +39,5 @@ RUN mkdir -p uploads data
 
 EXPOSE 8000
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Use $PORT if set (Railway), otherwise default to 8000
+CMD uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}
