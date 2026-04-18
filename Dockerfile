@@ -9,7 +9,7 @@ RUN npm run build
 
 
 # ── Stage 2: production image ─────────────────────────────────────────────────
-FROM python:3.13-slim
+FROM python:3.11-slim
 
 # System deps needed by audio libraries (librosa, torch, etc.)
 RUN apt-get update && apt-get install -y --no-install-recommends \
