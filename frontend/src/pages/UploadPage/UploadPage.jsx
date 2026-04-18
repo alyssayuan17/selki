@@ -89,7 +89,8 @@ export default function UploadPage() {
                     "pause_quality",
                     "fillers",
                     "intonation",
-                    "content_structure"
+                    "content_structure",
+                    "confidence_cv"
                 ]));
                 uploadFormData.append("user_metadata", JSON.stringify({}));
 
@@ -110,7 +111,8 @@ export default function UploadPage() {
                         "pause_quality",
                         "fillers",
                         "intonation",
-                        "content_structure"
+                        "content_structure",
+                        "confidence_cv"
                     ],
                     user_metadata: {}
                 };
