@@ -21,10 +21,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# Upgrade pip/setuptools first (required for openai-whisper build)
+# Upgrade pip/setuptools first
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
-# Install Python dependencies
+# Install openai-whisper separately with no build isolation so it sees our setuptools
+RUN pip install --no-cache-dir --no-build-isolation openai-whisper==20240930
+
+# Install remaining dependencies
 COPY backend/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
