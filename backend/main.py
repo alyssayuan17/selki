@@ -17,7 +17,7 @@ from analyzer.logging_config import setup_logging
 import config
 import db
 
-FRONTEND_DIST = Path(__file__).parent.parent / "frontend" / "dist"
+FRONTEND_DIST = Path(__file__).parent / "frontend" / "dist"
 
 # Setup logging
 setup_logging()
