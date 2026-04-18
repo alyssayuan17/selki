@@ -24,10 +24,7 @@ WORKDIR /app
 # Upgrade pip/setuptools first
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
-# Install openai-whisper separately (latest version has proper build system)
-RUN pip install --no-cache-dir openai-whisper==20250625
-
-# Install remaining dependencies
+# Install all dependencies (CPU torch first so openai-whisper reuses it)
 COPY backend/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt && \
     apt-get purge -y gcc g++ && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /root/.cache
