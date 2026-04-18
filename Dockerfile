@@ -29,7 +29,8 @@ RUN pip install --no-cache-dir openai-whisper==20250625
 
 # Install remaining dependencies
 COPY backend/requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt && \
+    apt-get purge -y gcc g++ && apt-get autoremove -y && rm -rf /var/lib/apt/lists/* /root/.cache
 
 # Copy backend source
 COPY backend/ ./
