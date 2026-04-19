@@ -9,6 +9,10 @@ export default function AboutPage() {
                 <h1 className="gradient-title">About Selki</h1>
                 <p className="subtitle-text">AI-powered feedback for your presentations and speeches.</p>
 
+                <div className="about-banner">
+                    <img src="/about-banner.svg" alt="" aria-hidden="true" />
+                </div>
+
                 <div className="about-section">
                     <h2>What is Selki?</h2>
                     <p>

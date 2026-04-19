@@ -12,6 +12,18 @@
     margin-bottom: 2.5rem;
 }
 
+.about-banner {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-bottom: 2.5rem;
+    overflow: hidden;
+}
+
+.about-banner img {
+    width: 100%;
+    display: block;
+}
+
 .about-section {
     width: 100%;
     margin-bottom: 2.5rem;
