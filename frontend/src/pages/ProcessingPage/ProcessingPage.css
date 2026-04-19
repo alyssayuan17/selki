@@ -4,21 +4,46 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 9999;
+    animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 .processing-popup {
-    background: white;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     padding: 3rem;
-    border-radius: 12px;
-    border: 3px solid #3b82f6;
+    border-radius: 20px;
+    border: 1.5px solid rgba(255, 255, 255, 0.6);
     text-align: center;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.18),
+        0 2px 8px rgba(59, 130, 246, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
     min-width: 400px;
+    animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.88) translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 .processing-popup h2 {
@@ -31,7 +56,7 @@
     margin: 2rem auto;
     width: 50px;
     height: 50px;
-    border: 5px solid #e5e7eb;
+    border: 5px solid rgba(229, 231, 235, 0.6);
     border-top-color: #3b82f6;
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -54,7 +79,7 @@
 }
 
 .processing-note code {
-    background: #f3f4f6;
+    background: rgba(243, 244, 246, 0.7);
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     font-family: Poppins, Arial, sans-serif;
