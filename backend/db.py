@@ -49,6 +49,25 @@ def init_db() -> None:
                 failure       TEXT
             )
         """)
+        # Mark any jobs left in queued/processing as failed — they were
+        # interrupted by a restart and will never complete.
+        conn.execute(
+            """
+            UPDATE jobs
+            SET status    = 'failed',
+                updated_at = ?,
+                failure   = ?
+            WHERE status IN ('queued', 'processing')
+            """,
+            (
+                _now(),
+                json.dumps({
+                    "code": "interrupted",
+                    "message": "Job was interrupted by a server restart.",
+                    "details": {},
+                }),
+            ),
+        )
         conn.commit()
 
 

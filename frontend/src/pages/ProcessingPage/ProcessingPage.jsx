@@ -14,6 +14,14 @@ export default function ProcessingPage() {
         let intervalId;
         let progressIntervalId;
 
+        // Timeout after 10 minutes — job is likely stuck
+        const timeoutId = setTimeout(() => {
+            clearInterval(intervalId);
+            clearInterval(progressIntervalId);
+            setError("Analysis is taking too long. The job may have been interrupted — please try uploading again.");
+            setStatus("error");
+        }, 10 * 60 * 1000);
+
         // simulate progress animation
         progressIntervalId = setInterval(() => {
             setProgress((prev) => {
@@ -36,6 +44,7 @@ export default function ProcessingPage() {
                 if (data.status === "done") {
                     clearInterval(intervalId);
                     clearInterval(progressIntervalId);
+                    clearTimeout(timeoutId);
                     setProgress(100);
                     // wait briefly to show 100% before navigating
                     setTimeout(() => {
@@ -44,6 +53,7 @@ export default function ProcessingPage() {
                 } else if (data.status === "failed") {
                     clearInterval(intervalId);
                     clearInterval(progressIntervalId);
+                    clearTimeout(timeoutId);
                     setError(data.failure?.message || "Analysis failed");
                     setStatus("failed");
                 } else {
@@ -52,6 +62,7 @@ export default function ProcessingPage() {
             } catch (err) {
                 clearInterval(intervalId);
                 clearInterval(progressIntervalId);
+                clearTimeout(timeoutId);
                 setError(err.message);
                 setStatus("error");
             }
@@ -67,6 +78,7 @@ export default function ProcessingPage() {
         return () => {
             clearInterval(intervalId);
             clearInterval(progressIntervalId);
+            clearTimeout(timeoutId);
         };
     }, [jobId, navigate]);
 
