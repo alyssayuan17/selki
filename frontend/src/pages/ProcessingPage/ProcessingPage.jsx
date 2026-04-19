@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import "./ProcessingPage.css";
+import "../../components/Button/Button.css";
 
 export default function ProcessingPage() {
     const { jobId } = useParams();
@@ -91,7 +92,7 @@ export default function ProcessingPage() {
                     <h2>Analysis Failed</h2>
                     <p>{error || "An error occurred during analysis"}</p>
                     <button
-                        className="btn-primary"
+                        className="btn btn-primary"
                         onClick={() => navigate("/")}
                     >
                         Try Again

@@ -119,6 +119,6 @@
 .processing-error p {
     color: #6b7280;
     font-size: 1rem;
-    margin: 0 0 2rem 0;
+    margin: 0 auto 2rem;
     max-width: 320px;
 }
