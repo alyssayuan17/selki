@@ -86,13 +86,13 @@ export default function ProcessingPage() {
         return (
             <>
             <Navbar />
-            <div className="page processing-page">
+            <div className="processing-overlay">
                 <div className="processing-error">
                     <h2>Analysis Failed</h2>
                     <p>{error || "An error occurred during analysis"}</p>
                     <button
                         className="btn-primary"
-                        onClick={() => navigate("/upload")}
+                        onClick={() => navigate("/")}
                     >
                         Try Again
                     </button>
