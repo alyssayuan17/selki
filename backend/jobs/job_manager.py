@@ -76,6 +76,10 @@ class JobManager:
             db.update_job_result(job_id, result)
             logger.info(f"Job {job_id} completed successfully")
 
+            # Clean up upload file after successful analysis
+            if audio_url.startswith("file://"):
+                _delete_upload(audio_url.replace("file://", ""))
+
         except Exception as e:
             logger.error(f"Job {job_id} failed: {e}", exc_info=True)
             db.update_job_failure(job_id, {

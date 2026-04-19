@@ -114,8 +114,10 @@ def audio_to_json(
 
         if total_duration < 0.1:
             logger.warning(f"Audio is very short: {total_duration}s")
-        if total_duration > 7200:  # 2 hours
-            logger.warning(f"Audio is very long: {total_duration}s - processing may take a while")
+        if total_duration > 3600:  # 1 hour hard cap
+            raise ValueError(
+                f"Audio is too long ({total_duration / 60:.0f} min). Maximum allowed is 60 minutes."
+            )
 
     except Exception as e:
         error_msg = f"Failed to load audio file: {e}"

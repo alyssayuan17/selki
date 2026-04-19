@@ -10,8 +10,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-_DATA_DIR = Path(__file__).parent / "data"
-_DATA_DIR.mkdir(exist_ok=True)
+import os
+_DATA_DIR = Path(os.environ.get("DATA_DIR", Path(__file__).parent / "data"))
+_DATA_DIR.mkdir(parents=True, exist_ok=True)
 DB_PATH = _DATA_DIR / "jobs.db"
 
 
