@@ -213,12 +213,12 @@
     margin-right: 0;
   }
   .about-seals-row {
-    gap: 1.5rem;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
   }
   .about-seal-item img {
-    width: 75px;
+    width: 80px;
   }
   .about-metrics {
     grid-template-columns: 1fr;
