@@ -213,12 +213,20 @@
     margin-right: 0;
   }
   .about-seals-row {
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
+  }
+  .about-seal-item {
+    gap: 0;
   }
   .about-seal-item img {
-    width: 80px;
+    width: 55px;
+  }
+  .about-seal-item span {
+    font-size: 0.72rem;
+    padding: 0.25rem 0.6rem;
   }
   .about-metrics {
     grid-template-columns: 1fr;
