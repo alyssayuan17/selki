@@ -32,7 +32,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 2.5rem;
+    gap: 4rem;
     margin-top: 0.75rem;
     margin-bottom: 3rem;
     width: 100%;
@@ -42,7 +42,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.1rem;
 }
 
 .about-seal-item img {
