@@ -157,12 +157,18 @@
     gap: 0.5rem;
   }
   .hero-logo-wrapper {
-    width: clamp(7rem, 30vw, 10rem);
-    height: clamp(7rem, 30vw, 10rem);
+    width: clamp(7rem, 28vw, 10rem);
+    height: clamp(7rem, 28vw, 10rem);
     flex-shrink: 0;
   }
   .hero-text {
     gap: 0.5rem;
+  }
+  .hero__title {
+    font-size: clamp(2.8rem, 13vw, 5rem);
+  }
+  .hero__subtitle {
+    font-size: clamp(1.1rem, 5.5vw, 2rem);
   }
 }
 

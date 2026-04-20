@@ -2,6 +2,12 @@
   left: 47%;
 }
 
+@media (max-width: 640px) {
+  .home-page .navbar {
+    left: 50%;
+  }
+}
+
 @keyframes gradientShift {
   0%   { background-position: 0% 50%; }
   50%  { background-position: 100% 50%; }
@@ -141,4 +147,14 @@
   display: block;
   width: 200px;
   margin-left: -5rem;
+}
+
+@media (max-width: 640px) {
+  .home-scroll-cta {
+    width: auto;
+  }
+  .home-scroll-cta__label {
+    width: auto;
+    margin-left: 0;
+  }
 }
