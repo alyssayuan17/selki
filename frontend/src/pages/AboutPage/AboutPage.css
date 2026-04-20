@@ -15,6 +15,7 @@
 .about-banner {
     width: calc(100% + 8rem);
     margin-left: -4rem;
+    margin-right: -4rem;
     margin-bottom: 2.5rem;
 }
 
