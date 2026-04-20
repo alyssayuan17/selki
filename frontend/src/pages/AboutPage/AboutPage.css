@@ -121,3 +121,57 @@
     font-size: 0.875rem;
     color: #0369a1;
 }
+
+/* ── Seals section ─────────────────────────────────────────────────────────── */
+
+.about-seals {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin: 2rem 0 3rem;
+    width: 100%;
+}
+
+.about-seal-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.about-seal-img {
+    width: 120px;
+    flex-shrink: 0;
+}
+
+.about-speech-bubble {
+    position: relative;
+    background: #e8f4fd;
+    border: 2px solid #88C7FD;
+    border-radius: 16px;
+    padding: 0.5rem 1.2rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #266EBA;
+    white-space: nowrap;
+}
+
+.about-speech-bubble::before {
+    content: '';
+    position: absolute;
+    left: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-right-color: #88C7FD;
+}
+
+.about-speech-bubble::after {
+    content: '';
+    position: absolute;
+    left: -9px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 5px solid transparent;
+    border-right-color: #e8f4fd;
+}

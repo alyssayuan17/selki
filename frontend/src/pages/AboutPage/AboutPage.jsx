@@ -85,6 +85,21 @@ export default function AboutPage() {
                         Scores reflect observable delivery characteristics, not the quality of your ideas.
                     </p>
                 </div>
+
+                <div className="about-seals">
+                    <div className="about-seal-row">
+                        <img src="/seal-glasses.png" alt="seal with glasses" className="about-seal-img" />
+                        <div className="about-speech-bubble">from</div>
+                    </div>
+                    <div className="about-seal-row">
+                        <img src="/seal-flowers.png" alt="seal with flowers" className="about-seal-img" />
+                        <div className="about-speech-bubble">yours</div>
+                    </div>
+                    <div className="about-seal-row">
+                        <img src="/seal-stars.png" alt="seal with stars" className="about-seal-img" />
+                        <div className="about-speech-bubble">truly</div>
+                    </div>
+                </div>
             </div>
         </>
     );
