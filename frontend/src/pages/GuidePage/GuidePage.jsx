@@ -11,22 +11,44 @@ export default function GuidePage() {
 
                 <div className="guide-section">
                     <h2>Uploading a recording</h2>
-                    <ul className="guide-list">
-                        <li><strong>Supported formats:</strong> MP3, WAV, M4A, FLAC, OGG, WebM</li>
-                        <li><strong>Max file size:</strong> 100 MB</li>
-                        <li>You can also paste a direct URL to an audio file instead of uploading</li>
-                        <li>Set the <strong>talk type</strong> (lecture, pitch, interview, etc.) and <strong>audience</strong> for context-aware feedback</li>
-                    </ul>
+                    <p className="guide-section-sub">You upload, we handle the rest.</p>
+                    <div className="guide-cards">
+                        <div className="guide-card">
+                            <span className="guide-card-num">1</span>
+                            <strong>Supported formats</strong>
+                            <p>MP3, WAV, M4A, FLAC, OGG, WebM</p>
+                        </div>
+                        <div className="guide-card">
+                            <span className="guide-card-num">2</span>
+                            <strong>Max file size</strong>
+                            <p>100 MB per upload</p>
+                        </div>
+                        <div className="guide-card">
+                            <span className="guide-card-num">3</span>
+                            <strong>Audio URL</strong>
+                            <p>Paste a direct link to an audio file instead of uploading</p>
+                        </div>
+                        <div className="guide-card">
+                            <span className="guide-card-num">4</span>
+                            <strong>Talk type & audience</strong>
+                            <p>Set the talk type and audience for context-aware feedback</p>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="guide-section">
-                    <h2>Recording tips for best results</h2>
-                    <ul className="guide-list">
-                        <li>Use a headset or external microphone — laptop mics pick up too much room noise</li>
-                        <li>Record in a quiet space; Selki will warn you if background noise is high</li>
-                        <li>Aim for at least 60 seconds of speech — very short clips produce less reliable scores</li>
-                        <li>Avoid recordings with multiple overlapping speakers</li>
-                    </ul>
+                    <div className="guide-tips-card">
+                        <div className="guide-tips-left">
+                            <h2>Recording tips for best results</h2>
+                            <p>A better recording means better feedback.</p>
+                        </div>
+                        <ul className="guide-tips-list">
+                            <li><span className="guide-tip-check">✓</span>Use a headset or external microphone — laptop mics pick up too much room noise</li>
+                            <li><span className="guide-tip-check">✓</span>Record in a quiet space; Selki will warn you if background noise is high</li>
+                            <li><span className="guide-tip-check">✓</span>Aim for at least 60 seconds of speech — very short clips produce less reliable scores</li>
+                            <li><span className="guide-tip-check">✓</span>Avoid recordings with multiple overlapping speakers</li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div className="guide-section">
@@ -64,16 +86,25 @@ export default function GuidePage() {
 
                 <div className="guide-section">
                     <h2>Transcript views</h2>
-                    <ul className="guide-list">
-                        <li><strong>Full Text</strong> — plain transcript of everything said</li>
-                        <li><strong>Segments</strong> — transcript split by timed speech segments</li>
-                        <li><strong>Words</strong> — word-level view with filler words highlighted</li>
-                    </ul>
+                    <div className="guide-transcript-cards">
+                        <div className="guide-transcript-card">
+                            <strong>Full Text</strong>
+                            <p>Plain transcript of everything said</p>
+                        </div>
+                        <div className="guide-transcript-card">
+                            <strong>Segments</strong>
+                            <p>Transcript split by timed speech segments</p>
+                        </div>
+                        <div className="guide-transcript-card">
+                            <strong>Words</strong>
+                            <p>Word-level view with filler words highlighted</p>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="guide-section">
-                    <h2>Quality warnings</h2>
+                <div className="guide-section guide-section--note">
                     <p>
+                        <strong>Quality warnings: </strong>
                         If your recording has poor audio quality, low speech content, or excessive background noise,
                         Selki will display a warning panel. Some metrics may be abstained (N/A) in these cases.
                         Re-recording in a better environment will improve accuracy.

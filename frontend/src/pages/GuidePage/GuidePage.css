@@ -53,6 +53,183 @@
     color: #1f2937;
 }
 
+/* Upload cards */
+.guide-section-sub {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin: -0.4rem 0 0.75rem !important;
+}
+
+.guide-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.guide-card {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(136, 199, 253, 0.4);
+    border-radius: 14px;
+    padding: 1.75rem 1.25rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    position: relative;
+    box-shadow: 0 0 12px rgba(136, 199, 253, 0.25), 0 2px 8px rgba(0,0,0,0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: default;
+}
+
+.guide-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 24px rgba(136, 199, 253, 0.5), 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.guide-card-num {
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #88C7FD, #266EBA);
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+.guide-card strong {
+    font-size: 0.95rem;
+    color: #1f2937;
+}
+
+.guide-card p {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Tips card */
+.guide-tips-card {
+    display: flex;
+    gap: 2.5rem;
+    background: rgba(38, 110, 186, 0.18);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(136, 199, 253, 0.3);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 0 20px rgba(38, 110, 186, 0.2), 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: default;
+}
+
+.guide-tips-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 32px rgba(38, 110, 186, 0.35), 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.guide-tips-left {
+    flex: 0 0 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.guide-tips-left h2 {
+    font-size: 1.15rem !important;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin: 0 !important;
+}
+
+.guide-tips-left p {
+    font-size: 0.82rem;
+    color: #4b6fa0;
+    margin: 0;
+}
+
+.guide-tips-list {
+    flex: 1;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.guide-tips-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    font-size: 0.88rem;
+    color: #1e3a5f;
+    line-height: 1.5;
+}
+
+.guide-tip-check {
+    flex-shrink: 0;
+    width: 1.3rem;
+    height: 1.3rem;
+    background: #266EBA;
+    color: white;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.1rem;
+}
+
+/* Transcript cards */
+.guide-transcript-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+}
+
+.guide-transcript-card {
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(136, 199, 253, 0.4);
+    border-radius: 14px;
+    padding: 1.5rem 1.5rem;
+    aspect-ratio: 4 / 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    box-shadow: 0 0 12px rgba(136, 199, 253, 0.2), 0 2px 8px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: default;
+}
+
+.guide-transcript-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 24px rgba(136, 199, 253, 0.45), 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.guide-transcript-card strong {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #266EBA;
+}
+
+.guide-transcript-card p {
+    font-size: 0.82rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.5;
+}
+
 /* Score key */
 .guide-score-key {
     display: flex;
@@ -88,4 +265,20 @@
     font-size: 0.875rem;
     color: #6b7280;
     margin-top: 0.5rem !important;
+}
+
+.guide-section--note {
+    background: rgba(224, 242, 254, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(186, 230, 253, 0.5);
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.guide-section--note p {
+    font-size: 0.875rem;
+    color: #0369a1;
 }
