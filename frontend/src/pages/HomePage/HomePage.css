@@ -100,8 +100,8 @@
   opacity: 0.3;
 }
 
-/* Make sure content sits above orbs/grain (exclude navbar — it needs position: fixed) */
-.home-page > *:not(.orb):not(.navbar) {
+/* Make sure content sits above orbs/grain */
+.home-page > *:not(.orb) {
   position: relative;
   z-index: 1;
 }
@@ -150,6 +150,8 @@
 
 @media (max-width: 640px) {
   .home-page .navbar {
+    position: fixed;
+    z-index: 1000;
     left: 50%;
   }
   .home-page {
