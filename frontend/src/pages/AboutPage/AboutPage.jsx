@@ -9,20 +9,8 @@ export default function AboutPage() {
                 <h1 className="gradient-title">About Selki</h1>
                 <p className="subtitle-text">AI-powered feedback for your presentations and speeches.</p>
 
-                <div className="about-banner-grid">
-                    <img src="/about-banner.svg" alt="" aria-hidden="true" className="about-banner-img" />
-                    <div className="about-seal-float seal-left seal-top">
-                        <img src="/seal-glasses.png" alt="seal" />
-                        <span className="seal-word">from</span>
-                    </div>
-                    <div className="about-seal-float seal-right seal-mid">
-                        <span className="seal-word">yours</span>
-                        <img src="/seal-flowers.png" alt="seal" className="seal-flip" />
-                    </div>
-                    <div className="about-seal-float seal-left seal-bot">
-                        <img src="/seal-stars.png" alt="seal" />
-                        <span className="seal-word">truly</span>
-                    </div>
+                <div className="about-banner">
+                    <img src="/about-banner.svg" alt="" aria-hidden="true" />
                 </div>
 
                 <div className="about-section">
@@ -96,6 +84,21 @@ export default function AboutPage() {
                         Selki uses rule-based analysis — there is no large language model judging your content.
                         Scores reflect observable delivery characteristics, not the quality of your ideas.
                     </p>
+                </div>
+
+                <div className="about-seals-row">
+                    <div className="about-seal-item">
+                        <img src="/seal-glasses.png" alt="seal" />
+                        <span>from</span>
+                    </div>
+                    <div className="about-seal-item">
+                        <img src="/seal-flowers.png" alt="seal" />
+                        <span>yours</span>
+                    </div>
+                    <div className="about-seal-item">
+                        <img src="/seal-stars.png" alt="seal" />
+                        <span>truly</span>
+                    </div>
                 </div>
 
             </div>

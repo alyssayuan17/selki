@@ -12,56 +12,47 @@
     margin-bottom: 2.5rem;
 }
 
-/* ── Banner + floating seals ─────────────────────────────────────────────── */
+/* ── Banner ───────────────────────────────────────────────────────────────── */
 
-.about-banner-grid {
-    position: relative;
+.about-banner {
     width: calc(100% + 8rem);
     margin-left: -4rem;
     margin-right: -4rem;
     margin-bottom: 2.5rem;
 }
 
-.about-banner-img {
+.about-banner img {
     width: 100%;
     display: block;
 }
 
-.about-seal-float {
-    position: absolute;
+/* ── Seals row ────────────────────────────────────────────────────────────── */
+
+.about-seals-row {
     display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+    width: 100%;
+}
+
+.about-seal-item {
+    display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 0.4rem;
-    z-index: 2;
 }
 
-.about-seal-float img {
-    width: 110px;
+.about-seal-item img {
+    width: 120px;
 }
 
-.seal-flip {
-    transform: scaleX(-1);
-}
-
-.seal-word {
-    font-size: 1rem;
+.about-seal-item span {
+    font-size: 0.95rem;
     font-weight: 600;
     color: #266EBA;
-    background: rgba(255,255,255,0.85);
-    border: 1.5px solid #88C7FD;
-    border-radius: 12px;
-    padding: 0.3rem 0.8rem;
-    white-space: nowrap;
 }
-
-/* Left seals: image then word */
-.seal-left { left: 0; flex-direction: row; }
-/* Right seal: word then image (flipped) */
-.seal-right { right: 0; flex-direction: row-reverse; }
-
-.seal-top { top: 5%; }
-.seal-mid { top: 38%; }
-.seal-bot { bottom: 5%; }
 
 .about-section {
     width: 100%;
