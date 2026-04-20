@@ -27,10 +27,16 @@ body {
 }
 
 
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .page {
   background: transparent;
   min-height: 100vh;
   padding: 20px;
+  animation: pageFadeIn 0.65s ease-out;
 }
 
 .upload-page,
