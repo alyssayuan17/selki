@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import HeroTitle from "../../components/HeroTitle/HeroTitle";
-import Button from "../../components/Button/Button";
 import './HomePage.css';
 
 function HomePage() {
@@ -27,13 +26,18 @@ function HomePage() {
 
   return (
     <div className={`home-page ${leaving ? 'home-page--leaving' : ''}`}>
+      {/* Aurora orbs */}
+      <div className="orb orb--1" />
+      <div className="orb orb--2" />
+      <div className="orb orb--3" />
+
       <Navbar />
       <HeroTitle />
-      <p className="subtitle-text">AI-powered presentation coaching</p>
-      <Button variant="primary" onClick={goToUpload}>Get Started</Button>
-      <button className="home-arrow" onClick={goToUpload} aria-label="Scroll to upload">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="6 9 12 15 18 9" />
+      <p className="subtitle-text">AI-powered presentation coaching.</p>
+      <button className="home-scroll-cta" onClick={goToUpload} aria-label="Scroll to get started">
+        <span className="home-scroll-cta__label">scroll to get started</span>
+        <svg className="home-scroll-cta__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="4 8 12 16 20 8" />
         </svg>
       </button>
     </div>

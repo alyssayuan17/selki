@@ -1,34 +1,38 @@
 .navbar {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 1rem 2rem;
-  transition: all 0.3s ease;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  min-width: 320px;
+  padding: 0.6rem 1.75rem;
+  border-radius: 100px;
+  background: rgba(235, 243, 254, 0.72);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(136, 199, 253, 0.35);
+  box-shadow: 0 4px 20px rgba(38, 110, 186, 0.1);
   z-index: 1000;
-  background-color: transparent;
-  box-sizing: border-box;
+  transition: box-shadow 0.3s ease, background 0.3s ease;
 }
 
 .navbar.scrolled {
-  background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(235, 243, 254, 0.85);
+  box-shadow: 0 6px 28px rgba(38, 110, 186, 0.15);
 }
 
 .navbar-container {
-  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-sizing: border-box;
+  gap: 2.5rem;
 }
 
 .navbar-logo a {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: bold;
   background: linear-gradient(180deg, #88C7FD 0%, #266EBA 100%);
   -webkit-background-clip: text;
@@ -40,8 +44,8 @@
 }
 
 .logo-icon {
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
 }
 
 .navbar-logo a:hover {
@@ -49,14 +53,10 @@
   transform: scale(1.05) rotate(2deg);
 }
 
-.navbar-logo a:hover .logo-icon {
-  transform: scale(1.1) rotate(5deg);
-}
-
 .navbar-menu {
   display: flex;
   list-style: none;
-  gap: 2rem;
+  gap: 1.75rem;
   margin: 0;
   padding: 0;
 }
@@ -64,16 +64,14 @@
 .navbar-menu li a {
   color: #266EBA;
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 300;
   font-family: Poppins, Arial, sans-serif;
   transition: all 0.3s ease;
-  filter: drop-shadow(0 2px 4px rgba(133, 170, 206, 0.1));
 }
 
 .navbar-menu li a:hover {
   color: #88C7FD;
-  filter: drop-shadow(0 4px 8px rgba(133, 170, 206, 0.2));
 }
 
 .navbar-logout {
@@ -81,7 +79,7 @@
   border: none;
   padding: 0;
   color: #266EBA;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 300;
   font-family: Poppins, Arial, sans-serif;
   cursor: pointer;
@@ -94,15 +92,21 @@
 
 @media (max-width: 640px) {
   .navbar {
-    padding: 0.75rem 1rem;
+    min-width: unset;
+    width: calc(100% - 2rem);
+    padding: 0.55rem 1.1rem;
+    top: 0.6rem;
+  }
+  .navbar-container {
+    gap: 1rem;
   }
   .navbar-menu {
-    gap: 1.2rem;
+    gap: 1rem;
   }
   .navbar-menu li a {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
   }
   .navbar-logo a {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 }

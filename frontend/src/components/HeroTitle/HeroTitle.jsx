@@ -10,6 +10,8 @@ export default function HeroTitle() {
         </div>
         <div className="hero-logo-wrapper">
           <img src="/selki_logo_v2.svg" alt="Selki logo" className="hero-logo" />
+          <div className="hero-deco hero-deco--1" />
+          <div className="hero-deco hero-deco--2" />
         </div>
       </div>
     </section>
