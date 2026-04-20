@@ -202,3 +202,25 @@
     color: #0369a1;
 }
 
+@media (max-width: 640px) {
+  .about-banner {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .about-seals-row {
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .about-seal-item img {
+    width: 75px;
+  }
+  .about-metrics {
+    grid-template-columns: 1fr;
+  }
+  .about-steps {
+    gap: 0.75rem;
+  }
+}
+

@@ -105,6 +105,28 @@
   filter: drop-shadow(0 6px 12px rgba(133, 170, 206, 0.2));
 }
 
+@media (max-width: 640px) {
+  .hero {
+    margin-top: 6rem;
+    margin-left: 0;
+    padding: 0 1rem;
+  }
+  .hero-content {
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .hero-logo-wrapper {
+    width: clamp(10rem, 50vw, 14rem);
+    height: clamp(10rem, 50vw, 14rem);
+  }
+  .hero-text {
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+  }
+}
+
 /* Smaller "the Deal!" */
 .hero__subtitle {
   margin: 0;

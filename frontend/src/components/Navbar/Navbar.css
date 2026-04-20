@@ -91,3 +91,18 @@
 .navbar-logout:hover {
   color: #88C7FD;
 }
+
+@media (max-width: 640px) {
+  .navbar {
+    padding: 0.75rem 1rem;
+  }
+  .navbar-menu {
+    gap: 1.2rem;
+  }
+  .navbar-menu li a {
+    font-size: 0.85rem;
+  }
+  .navbar-logo a {
+    font-size: 1.2rem;
+  }
+}

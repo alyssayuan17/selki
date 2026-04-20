@@ -282,3 +282,24 @@
     font-size: 0.875rem;
     color: #0369a1;
 }
+
+@media (max-width: 640px) {
+  .guide-cards {
+    grid-template-columns: 1fr;
+  }
+  .guide-tips-card {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.25rem;
+  }
+  .guide-tips-left {
+    flex: unset;
+  }
+  .guide-transcript-cards {
+    grid-template-columns: 1fr;
+  }
+  .guide-transcript-card {
+    aspect-ratio: unset;
+    padding: 1.25rem;
+  }
+}
