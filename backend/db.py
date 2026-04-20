@@ -50,6 +50,21 @@ def init_db() -> None:
                 failure       TEXT
             )
         """)
+        # Migrate: add columns that may not exist in older DB schemas
+        for col, typedef in [
+            ("score_value", "INTEGER"),
+            ("score_label", "TEXT"),
+            ("duration_sec", "REAL"),
+            ("audio_path",   "TEXT"),
+            ("input_data",   "TEXT"),
+            ("result",       "TEXT"),
+            ("failure",      "TEXT"),
+        ]:
+            try:
+                conn.execute(f"ALTER TABLE jobs ADD COLUMN {col} {typedef}")
+            except Exception:
+                pass  # column already exists
+
         # Mark any jobs left in queued/processing as failed — they were
         # interrupted by a restart and will never complete.
         conn.execute(

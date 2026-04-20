@@ -70,7 +70,7 @@ export default function HistoryPage() {
                 {!loading && !error && jobs.length === 0 && (
                     <div className="history-empty">
                         <p>No analyses yet.</p>
-                        <Link to="/upload" className="btn-primary">Analyze a Presentation</Link>
+                        <Link to="/upload" className="history-empty__btn">Analyze a Presentation</Link>
                     </div>
                 )}
 
