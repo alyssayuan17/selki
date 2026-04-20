@@ -191,10 +191,14 @@
 
 /* Note */
 .about-section--note {
-    background: #f0f9ff;
-    border: 1px solid #bae6fd;
+    background: rgba(224, 242, 254, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(186, 230, 253, 0.5);
     border-radius: 0.75rem;
     padding: 1rem 1.25rem;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .about-section--note p {
@@ -221,6 +225,10 @@
   }
   .about-steps {
     gap: 0.75rem;
+  }
+  .about-section--note {
+    width: 100%;
+    box-sizing: border-box;
   }
 }
 
