@@ -159,31 +159,31 @@
     gap: 0.75rem;
   }
   .hero-logo-wrapper {
-    width: clamp(7rem, 26vw, 10rem);
-    height: clamp(7rem, 26vw, 10rem);
+    width: clamp(9rem, 30vw, 12rem);
+    height: clamp(9rem, 30vw, 12rem);
     flex-shrink: 0;
   }
   .hero-text {
     gap: 0.4rem;
   }
   .hero__title {
-    font-size: clamp(3.5rem, 14vw, 5rem);
+    font-size: clamp(4.2rem, 15vw, 5.5rem);
   }
   .hero__subtitle {
-    font-size: clamp(1.8rem, 8vw, 2.5rem);
+    font-size: clamp(2.2rem, 9vw, 3rem);
   }
-  /* Scale trapezoids proportionally for smaller logo (~35% of desktop) */
+  /* Scale trapezoids proportionally for smaller logo (~45% of desktop) */
   .hero-deco--1 {
-    width: 9px;
-    height: 19px;
-    top: 10px;
-    right: 29px;
+    width: 11px;
+    height: 24px;
+    top: 13px;
+    right: 37px;
   }
   .hero-deco--2 {
-    width: 9px;
-    height: 19px;
+    width: 12px;
+    height: 24px;
     top: 2px;
-    right: 39px;
+    right: 50px;
   }
 }
 

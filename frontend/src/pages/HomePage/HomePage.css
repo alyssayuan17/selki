@@ -160,7 +160,7 @@
   }
   .home-scroll-cta {
     width: auto;
-    margin-top: 0.5rem;
+    margin-top: 2.5rem;
   }
   .home-scroll-cta__arrow {
     animation: bounce-mobile 1.8s ease-in-out infinite;
