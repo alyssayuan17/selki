@@ -31,8 +31,8 @@
 .about-seals-row {
     display: flex;
     justify-content: center;
-    align-items: flex-end;
-    gap: 3rem;
+    align-items: center;
+    gap: 2.5rem;
     margin-top: 2rem;
     margin-bottom: 3rem;
     width: 100%;
@@ -40,13 +40,14 @@
 
 .about-seal-item {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 0.4rem;
+    gap: 1rem;
 }
 
 .about-seal-item img {
-    width: 120px;
+    width: 110px;
+    flex-shrink: 0;
 }
 
 .about-seal-item span {
@@ -57,27 +58,29 @@
     background: #e8f4fd;
     border: 1.5px solid #88C7FD;
     border-radius: 12px;
-    padding: 0.3rem 0.9rem;
+    padding: 0.35rem 1rem;
+    white-space: nowrap;
 }
 
+/* tail points left toward the seal */
 .about-seal-item span::before {
     content: '';
     position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 5px solid transparent;
-    border-bottom-color: #88C7FD;
+    left: -11px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 6px solid transparent;
+    border-right-color: #88C7FD;
 }
 
 .about-seal-item span::after {
     content: '';
     position: absolute;
-    top: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 4px solid transparent;
-    border-bottom-color: #e8f4fd;
+    left: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 5px solid transparent;
+    border-right-color: #e8f4fd;
 }
 
 .about-section {
