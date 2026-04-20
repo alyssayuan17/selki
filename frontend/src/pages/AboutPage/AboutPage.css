@@ -12,17 +12,56 @@
     margin-bottom: 2.5rem;
 }
 
-.about-banner {
+/* ── Banner + floating seals ─────────────────────────────────────────────── */
+
+.about-banner-grid {
+    position: relative;
     width: calc(100% + 8rem);
     margin-left: -4rem;
     margin-right: -4rem;
     margin-bottom: 2.5rem;
 }
 
-.about-banner img {
+.about-banner-img {
     width: 100%;
     display: block;
 }
+
+.about-seal-float {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    z-index: 2;
+}
+
+.about-seal-float img {
+    width: 110px;
+}
+
+.seal-flip {
+    transform: scaleX(-1);
+}
+
+.seal-word {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #266EBA;
+    background: rgba(255,255,255,0.85);
+    border: 1.5px solid #88C7FD;
+    border-radius: 12px;
+    padding: 0.3rem 0.8rem;
+    white-space: nowrap;
+}
+
+/* Left seals: image then word */
+.seal-left { left: 0; flex-direction: row; }
+/* Right seal: word then image (flipped) */
+.seal-right { right: 0; flex-direction: row-reverse; }
+
+.seal-top { top: 5%; }
+.seal-mid { top: 38%; }
+.seal-bot { bottom: 5%; }
 
 .about-section {
     width: 100%;
@@ -122,56 +161,3 @@
     color: #0369a1;
 }
 
-/* ── Seals section ─────────────────────────────────────────────────────────── */
-
-.about-seals {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.5rem;
-    margin: 2rem 0 3rem;
-    width: 100%;
-}
-
-.about-seal-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.about-seal-img {
-    width: 120px;
-    flex-shrink: 0;
-}
-
-.about-speech-bubble {
-    position: relative;
-    background: #e8f4fd;
-    border: 2px solid #88C7FD;
-    border-radius: 16px;
-    padding: 0.5rem 1.2rem;
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: #266EBA;
-    white-space: nowrap;
-}
-
-.about-speech-bubble::before {
-    content: '';
-    position: absolute;
-    left: -12px;
-    top: 50%;
-    transform: translateY(-50%);
-    border: 6px solid transparent;
-    border-right-color: #88C7FD;
-}
-
-.about-speech-bubble::after {
-    content: '';
-    position: absolute;
-    left: -9px;
-    top: 50%;
-    transform: translateY(-50%);
-    border: 5px solid transparent;
-    border-right-color: #e8f4fd;
-}
