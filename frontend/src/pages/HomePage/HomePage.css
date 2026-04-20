@@ -2,12 +2,6 @@
   left: 47%;
 }
 
-@media (max-width: 640px) {
-  .home-page .navbar {
-    left: 50%;
-  }
-}
-
 @keyframes gradientShift {
   0%   { background-position: 0% 50%; }
   50%  { background-position: 100% 50%; }
@@ -32,6 +26,11 @@
 @keyframes bounce {
   0%, 100% { transform: translateX(-50%) translateY(0); }
   50%       { transform: translateX(-50%) translateY(8px); }
+}
+
+@keyframes bounce-mobile {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(8px); }
 }
 
 .home-page {
@@ -150,8 +149,21 @@
 }
 
 @media (max-width: 640px) {
+  .home-page .navbar {
+    left: 50%;
+  }
+  .home-page {
+    justify-content: center;
+    padding-top: 4rem;
+    box-sizing: border-box;
+    gap: 0.5rem;
+  }
   .home-scroll-cta {
     width: auto;
+    margin-top: 0.5rem;
+  }
+  .home-scroll-cta__arrow {
+    animation: bounce-mobile 1.8s ease-in-out infinite;
   }
   .home-scroll-cta__label {
     width: auto;
