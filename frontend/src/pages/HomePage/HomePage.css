@@ -100,8 +100,8 @@
   opacity: 0.3;
 }
 
-/* Make sure content sits above orbs/grain */
-.home-page > *:not(.orb) {
+/* Make sure content sits above orbs/grain (exclude navbar — it needs position: fixed) */
+.home-page > *:not(.orb):not(.navbar) {
   position: relative;
   z-index: 1;
 }
