@@ -295,5 +295,13 @@
   .upload-mode-toggle {
     margin: 1rem 0;
   }
+  .url-form-group {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .form-control {
+    box-sizing: border-box;
+  }
 }
 

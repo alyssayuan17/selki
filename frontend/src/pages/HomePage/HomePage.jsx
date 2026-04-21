@@ -20,8 +20,19 @@ function HomePage() {
     const handleWheel = (e) => {
       if (e.deltaY > 0) goToUpload();
     };
+    let touchStartY = 0;
+    const handleTouchStart = (e) => { touchStartY = e.touches[0].clientY; };
+    const handleTouchEnd = (e) => {
+      if (touchStartY - e.changedTouches[0].clientY > 40) goToUpload();
+    };
     window.addEventListener('wheel', handleWheel, { passive: true });
-    return () => window.removeEventListener('wheel', handleWheel);
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
   }, []);
 
   return (
