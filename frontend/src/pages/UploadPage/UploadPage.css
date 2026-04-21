@@ -280,6 +280,17 @@
   }
   .upload-card {
     padding: 2rem 1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .upload-form {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 0.5rem;
+  }
+  .upload-page {
+    padding-left: 0;
+    padding-right: 0;
   }
   .upload-mode-toggle {
     margin: 1rem 0;
