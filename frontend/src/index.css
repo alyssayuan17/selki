@@ -1,5 +1,5 @@
 html {
-  background-color: #BDD3EB;
+  background-color: #c8defa;
 }
 
 :root {
@@ -22,11 +22,13 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #BDD3EB;
-  background-image: linear-gradient(180deg, #EBF3FE 0%, #C1D5EC 35%, #BDD3EB 100%);
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
+  background-color: #a8c8ef;
+  background-image:
+    radial-gradient(ellipse at 50% 50%, rgba(136, 199, 253, 0.35) 0%, rgba(235, 243, 254, 0.5) 60%, rgba(235, 243, 254, 0.75) 100%),
+    linear-gradient(rgba(38, 110, 186, 0.28) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(38, 110, 186, 0.28) 1px, transparent 1px);
+  background-size: 100% 100%, 20px 20px, 20px 20px;
+  background-attachment: fixed, fixed, fixed;
   font-family: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
   font-size: var(--body-font-size, 1rem);
 }

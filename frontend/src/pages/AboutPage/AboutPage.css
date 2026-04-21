@@ -4,7 +4,7 @@
     font-weight: 700;
     -webkit-text-fill-color: #1a3f6f;
     color: #1a3f6f;
-    margin-left: 0.18em;
+    margin-right: 0.20em;
 }
 
 .about-page {
@@ -19,6 +19,7 @@
 .about-page .subtitle-text {
     text-align: center;
     margin-bottom: 2.5rem;
+    font-size: 1.15rem;
 }
 
 /* ── Banner ───────────────────────────────────────────────────────────────── */

@@ -1,3 +1,16 @@
+.guide-page .gradient-title {
+    font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
+    font-style: italic;
+    font-weight: 700;
+    -webkit-text-fill-color: #1a3f6f;
+    color: #1a3f6f;
+    background: none;
+}
+
+.guide-page .subtitle-text {
+    font-size: 1.15rem;
+}
+
 .guide-page {
     display: flex;
     flex-direction: column;

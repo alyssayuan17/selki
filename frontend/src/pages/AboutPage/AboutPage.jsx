@@ -6,7 +6,7 @@ export default function AboutPage() {
         <>
             <Navbar />
             <div className="page about-page">
-                <h1 className="gradient-title">About&nbsp; <span className="about-title-serif">Selki</span></h1>
+                <h1 className="gradient-title"><span className="about-title-serif">About</span> Selki</h1>
                 <p className="subtitle-text">AI-powered feedback for your presentations and speeches.</p>
 
                 <div className="about-banner">
