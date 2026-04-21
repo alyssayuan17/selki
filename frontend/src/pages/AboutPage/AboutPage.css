@@ -47,8 +47,8 @@
 .about-seals-row {
     display: flex;
     justify-content: center;
-    align-items: center;
-    gap: 4rem;
+    align-items: flex-end;
+    gap: 0;
     margin-top: 0.75rem;
     margin-bottom: 3rem;
     width: 100%;
@@ -58,7 +58,9 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 0.1rem;
+    flex: 1;
+    max-width: 200px;
+    gap: 0.5rem;
 }
 
 .about-seal-item img {
@@ -73,36 +75,15 @@
 }
 
 .about-seal-item span {
-    position: relative;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #266EBA;
-    background: #e8f4fd;
-    border: 1.5px solid #88C7FD;
-    border-radius: 12px;
-    padding: 0.35rem 1rem;
+    font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1a3f6f;
+    background: none;
+    border: none;
+    padding: 0;
     white-space: nowrap;
-}
-
-/* tail points left toward the seal */
-.about-seal-item span::before {
-    content: '';
-    position: absolute;
-    left: -11px;
-    top: 50%;
-    transform: translateY(-50%);
-    border: 6px solid transparent;
-    border-right-color: #88C7FD;
-}
-
-.about-seal-item span::after {
-    content: '';
-    position: absolute;
-    left: -8px;
-    top: 50%;
-    transform: translateY(-50%);
-    border: 5px solid transparent;
-    border-right-color: #e8f4fd;
 }
 
 .about-section {
@@ -226,18 +207,14 @@
   .about-seals-row {
     flex-direction: row;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 0;
     flex-wrap: nowrap;
   }
-  .about-seal-item {
-    gap: 0;
-  }
   .about-seal-item img {
-    width: 55px;
+    width: 65px;
   }
   .about-seal-item span {
-    font-size: 0.72rem;
-    padding: 0.25rem 0.6rem;
+    font-size: 0.85rem;
   }
   .about-metrics {
     grid-template-columns: 1fr;
