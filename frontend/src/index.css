@@ -1,3 +1,7 @@
+html {
+  background-color: #BDD3EB;
+}
+
 :root {
   font-family: Poppins, Arial, sans-serif;
   --brand-primary: #256FB8;
@@ -18,9 +22,10 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: linear-gradient(180deg, #EBF3FE 0%, #C1D5EC 35%, #BDD3EB 100%);
-  background-repeat: no-repeat, repeat;
-  background-size: cover, 220px;
+  background-color: #BDD3EB;
+  background-image: linear-gradient(180deg, #EBF3FE 0%, #C1D5EC 35%, #BDD3EB 100%);
+  background-repeat: no-repeat;
+  background-size: cover;
   background-attachment: fixed;
   font-family: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
   font-size: var(--body-font-size, 1rem);

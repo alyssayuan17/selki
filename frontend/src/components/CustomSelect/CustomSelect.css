@@ -1,0 +1,88 @@
+.custom-select {
+  position: relative;
+  width: 100%;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 300;
+}
+
+.custom-select__trigger {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  background: rgba(220, 238, 255, 0.38);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(136, 199, 253, 0.45);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 16px rgba(136, 199, 253, 0.3), 0 0 20px rgba(136, 199, 253, 0.12);
+  color: #1a3f6f;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.custom-select__trigger:hover {
+  background: rgba(220, 238, 255, 0.52);
+  box-shadow: 0 6px 22px rgba(136, 199, 253, 0.45), 0 0 30px rgba(136, 199, 253, 0.2);
+}
+
+.custom-select__placeholder {
+  color: rgba(26, 63, 111, 0.45);
+}
+
+.custom-select__arrow {
+  width: 12px;
+  height: 8px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.custom-select--open .custom-select__arrow {
+  transform: rotate(180deg);
+}
+
+.custom-select__menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #cfe3f5;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid rgba(136, 199, 253, 0.45);
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 28px rgba(136, 199, 253, 0.4), 0 0 30px rgba(136, 199, 253, 0.15);
+  list-style: none;
+  margin: 0;
+  padding: 0.3rem;
+  z-index: 999;
+  overflow: hidden;
+}
+
+.custom-select__option {
+  padding: 0.55rem 0.9rem;
+  border-radius: 0.35rem;
+  color: #1a3f6f;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  font-size: 0.85rem;
+}
+
+.custom-select__option:hover {
+  background: rgba(136, 199, 253, 0.35);
+}
+
+.custom-select__option--selected {
+  background: rgba(136, 199, 253, 0.25);
+  font-weight: 500;
+}
+
+.custom-select__option--placeholder {
+  color: rgba(26, 63, 111, 0.45);
+}

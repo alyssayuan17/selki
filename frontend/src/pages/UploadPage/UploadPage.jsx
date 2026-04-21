@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Button from "../../components/Button/Button";
+import CustomSelect from "../../components/CustomSelect/CustomSelect";
 import "./UploadPage.css";
 
 export default function UploadPage() {
@@ -110,7 +111,7 @@ export default function UploadPage() {
         <>
             <Navbar />
             <div className="page upload-page">
-                <h1 className="gradient-title">Present to Us!</h1>
+                <h1 className="gradient-title upload-page__title">Present to Us!</h1>
                 <p className="subtitle-text">Upload your audio file or provide a URL to get AI-powered feedback on your presentation</p>
 
                 <div className="upload-mode-toggle">
@@ -142,7 +143,7 @@ export default function UploadPage() {
                             <p className="file-types-hint">Accepted: WAV, MP3, M4A, FLAC, OGG, WEBM</p>
                         </div>
                     ) : (
-                        <div className="form-group">
+                        <div className="form-group url-form-group">
                             <label htmlFor="audio_url">Audio URL *</label>
                             <input
                                 type="url"
@@ -160,35 +161,52 @@ export default function UploadPage() {
                     <div className="form-fields-row">
                         <div className="form-group">
                             <label htmlFor="talk_type">Presentation Type *</label>
-                            <select id="talk_type" className="form-control" value={formData.talk_type} onChange={(e) => setFormData({ ...formData, talk_type: e.target.value })} required>
-                                <option value="">Select type...</option>
-                                <option value="pitch">Pitch</option>
-                                <option value="lecture">Lecture</option>
-                                <option value="meeting">Meeting</option>
-                                <option value="interview">Interview</option>
-                                <option value="speech">Speech</option>
-                                <option value="other">Other</option>
-                            </select>
+                            <CustomSelect
+                                id="talk_type"
+                                value={formData.talk_type}
+                                onChange={(e) => setFormData({ ...formData, talk_type: e.target.value })}
+                                required
+                                options={[
+                                    { value: "", label: "Select type..." },
+                                    { value: "pitch", label: "Pitch" },
+                                    { value: "lecture", label: "Lecture" },
+                                    { value: "meeting", label: "Meeting" },
+                                    { value: "interview", label: "Interview" },
+                                    { value: "speech", label: "Speech" },
+                                    { value: "other", label: "Other" },
+                                ]}
+                            />
                         </div>
                         <div className="form-group">
                             <label htmlFor="audience_type">Audience Type *</label>
-                            <select id="audience_type" className="form-control" value={formData.audience_type} onChange={(e) => setFormData({ ...formData, audience_type: e.target.value })} required>
-                                <option value="">Select audience...</option>
-                                <option value="general">General</option>
-                                <option value="technical">Technical</option>
-                                <option value="executive">Executive</option>
-                                <option value="academic">Academic</option>
-                                <option value="students">Students</option>
-                            </select>
+                            <CustomSelect
+                                id="audience_type"
+                                value={formData.audience_type}
+                                onChange={(e) => setFormData({ ...formData, audience_type: e.target.value })}
+                                required
+                                options={[
+                                    { value: "", label: "Select audience..." },
+                                    { value: "general", label: "General" },
+                                    { value: "technical", label: "Technical" },
+                                    { value: "executive", label: "Executive" },
+                                    { value: "academic", label: "Academic" },
+                                    { value: "students", label: "Students" },
+                                ]}
+                            />
                         </div>
                         <div className="form-group">
                             <label htmlFor="language">Language</label>
-                            <select id="language" className="form-control" value={formData.language} onChange={(e) => setFormData({ ...formData, language: e.target.value })}>
-                                <option value="en">English</option>
-                                <option value="es">Spanish</option>
-                                <option value="fr">French</option>
-                                <option value="de">German</option>
-                            </select>
+                            <CustomSelect
+                                id="language"
+                                value={formData.language}
+                                onChange={(e) => setFormData({ ...formData, language: e.target.value })}
+                                options={[
+                                    { value: "en", label: "English" },
+                                    { value: "es", label: "Spanish" },
+                                    { value: "fr", label: "French" },
+                                    { value: "de", label: "German" },
+                                ]}
+                            />
                         </div>
                         <div className="form-group button-group">
                             <label>&nbsp;</label>

@@ -1,3 +1,12 @@
+.about-title-serif {
+    font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
+    font-style: italic;
+    font-weight: 700;
+    -webkit-text-fill-color: #1a3f6f;
+    color: #1a3f6f;
+    margin-left: 0.18em;
+}
+
 .about-page {
     display: flex;
     flex-direction: column;
