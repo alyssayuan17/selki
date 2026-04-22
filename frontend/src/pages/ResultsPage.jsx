@@ -11,6 +11,7 @@ import MetricsGrid from "../components/MetricsGrid/MetricsGrid";
 import Timeline from "../components/Timeline";
 import Transcript from "../components/Transcript";
 import Button from "../components/Button/Button";
+import "./ResultsPage.css";
 
 // ── Shared helpers ──────────────────────────────────────────────────────────
 
@@ -233,9 +234,20 @@ export default function ResultPage() {
     const [error, setError] = useState(null);
     const [selectedMetric, setSelectedMetric] = useState(null);
     const [selectedMetricName, setSelectedMetricName] = useState(null);
-    const [transcriptView, setTranscriptView] = useState("full");
+    const [viewIdx, setViewIdx] = useState(0);
+    const [animDir, setAnimDir] = useState("forward");
     const [detailedTranscript, setDetailedTranscript] = useState(null);
     const [loadingDetailedTranscript, setLoadingDetailedTranscript] = useState(false);
+
+    const VIEWS = [
+        { id: "full",     title: "Full Text", description: "Plain transcript of everything said" },
+        { id: "segments", title: "Segments",  description: "Transcript split by timed speech segments" },
+        { id: "tokens",   title: "Words",     description: "Word-level view with filler words highlighted" },
+    ];
+    const transcriptView = VIEWS[viewIdx].id;
+    const goNext = () => { setAnimDir("forward"); setViewIdx(i => i + 1); };
+    const goBack = () => { setAnimDir("back");    setViewIdx(i => i - 1); };
+    const goToIdx = (i) => { setAnimDir(i > viewIdx ? "forward" : "back"); setViewIdx(i); };
 
     useEffect(() => {
         fetch(`/api/v1/presentations/${jobId}/full`)
@@ -417,36 +429,43 @@ export default function ResultPage() {
                 onSegmentClick={(segment) => console.log('Clicked segment:', segment)}
             />
 
-            {/* Transcript with view mode toggle */}
-            <div className="transcript-section">
-                <div className="transcript-controls">
-                    <Button
-                        variant={transcriptView === "full" ? "primary" : "secondary"}
-                        onClick={() => setTranscriptView("full")}
-                    >
-                        Full Text
-                    </Button>
-                    <Button
-                        variant={transcriptView === "segments" ? "primary" : "secondary"}
-                        onClick={() => setTranscriptView("segments")}
-                    >
-                        Segments
-                    </Button>
-                    <Button
-                        variant={transcriptView === "tokens" ? "primary" : "secondary"}
-                        onClick={() => setTranscriptView("tokens")}
-                    >
-                        Words
-                    </Button>
+            {/* Transcript Carousel */}
+            <div className="transcript-carousel">
+                <div className="transcript-carousel__header">
+                    <span className="tc-title">Transcript Views</span>
+                    <div className="transcript-carousel__dots">
+                        {VIEWS.map((_, i) => (
+                            <button
+                                key={i}
+                                className={`tc-dot${i === viewIdx ? " tc-dot--active" : ""}`}
+                                onClick={() => goToIdx(i)}
+                                aria-label={VIEWS[i].title}
+                            />
+                        ))}
+                    </div>
                 </div>
-                {loadingDetailedTranscript && (transcriptView === "segments" || transcriptView === "tokens") ? (
-                    <div className="transcript-loading">Loading detailed transcript...</div>
-                ) : (
-                    <Transcript
-                        transcript={transcriptView === "full" ? data.transcript : (detailedTranscript || data.transcript)}
-                        viewMode={transcriptView}
-                    />
-                )}
+
+                <div className="transcript-carousel__info">
+                    <span className="tc-view-title">{VIEWS[viewIdx].title}</span>
+                    <span className="tc-view-desc">{VIEWS[viewIdx].description}</span>
+                </div>
+
+                <div className={`tc-content tc-content--${animDir}`} key={`${viewIdx}-${animDir}`}>
+                    {loadingDetailedTranscript && (transcriptView === "segments" || transcriptView === "tokens") ? (
+                        <div className="transcript-loading">Loading detailed transcript...</div>
+                    ) : (
+                        <Transcript
+                            transcript={transcriptView === "full" ? data.transcript : (detailedTranscript || data.transcript)}
+                            viewMode={transcriptView}
+                        />
+                    )}
+                </div>
+
+                <div className="tc-nav">
+                    <button onClick={goBack} disabled={viewIdx === 0} className="btn btn-secondary tc-nav-btn">← Back</button>
+                    <span className="tc-nav-counter">{viewIdx + 1} / {VIEWS.length}</span>
+                    <button onClick={goNext} disabled={viewIdx === VIEWS.length - 1} className="btn btn-primary tc-nav-btn">Next →</button>
+                </div>
             </div>
 
             {/* Model Metadata Footer */}

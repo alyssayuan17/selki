@@ -1,0 +1,156 @@
+.results-header {
+  display: flex;
+  justify-content: flex-end;
+  max-width: 1200px;
+  margin: 0 auto 1rem;
+}
+
+/* ── Transcript Carousel ─────────────────────────────────────── */
+
+.transcript-carousel {
+  background: rgba(220, 238, 255, 0.38);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(136, 199, 253, 0.4);
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(136, 199, 253, 0.35), 0 0 30px rgba(136, 199, 253, 0.12);
+  overflow: hidden;
+  max-width: 1200px;
+  margin: 2rem auto;
+}
+
+.transcript-carousel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem 0.9rem;
+  border-bottom: 1px solid rgba(136, 199, 253, 0.3);
+}
+
+.tc-title {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #1a3f6f;
+  margin: 0;
+}
+
+.transcript-carousel__dots {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.tc-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(136, 199, 253, 0.45);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.tc-dot--active {
+  background: #266EBA;
+  width: 22px;
+  border-radius: 4px;
+}
+
+.transcript-carousel__info {
+  padding: 0.75rem 1.5rem 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.tc-view-title {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: #1a3f6f;
+}
+
+.tc-view-desc {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 300;
+  font-size: 0.82rem;
+  color: #6b7280;
+}
+
+/* Content area + animations */
+
+@keyframes tcSlideInRight {
+  from { opacity: 0; transform: translateX(36px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes tcSlideInLeft {
+  from { opacity: 0; transform: translateX(-36px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.tc-content {
+  padding: 0.5rem 1.5rem 1rem;
+}
+
+.tc-content--forward {
+  animation: tcSlideInRight 0.28s ease-out;
+}
+
+.tc-content--back {
+  animation: tcSlideInLeft 0.28s ease-out;
+}
+
+/* Strip the inner Transcript card styles inside the carousel */
+.transcript-carousel .transcript {
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  max-width: 100%;
+}
+
+.transcript-carousel .transcript__header {
+  display: none;
+}
+
+/* Navigation bar */
+
+.tc-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.5rem 1.1rem;
+  border-top: 1px solid rgba(136, 199, 253, 0.3);
+}
+
+.tc-nav-counter {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 300;
+  font-size: 0.875rem;
+  color: #266EBA;
+}
+
+.tc-nav-btn {
+  padding: 0.45rem 1.2rem !important;
+  font-size: 0.85rem !important;
+}
+
+.tc-nav-btn:disabled {
+  opacity: 0.35 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.transcript-loading {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 300;
+  color: #266EBA;
+  font-size: 0.9rem;
+  padding: 1.5rem 0;
+  text-align: center;
+}

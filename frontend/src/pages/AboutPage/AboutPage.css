@@ -86,16 +86,20 @@
     white-space: nowrap;
 }
 
+
+
 .about-section {
     width: 100%;
     margin-bottom: 2.5rem;
 }
 
 .about-section h2 {
-    font-size: 1.15rem;
-    font-weight: 600;
+    font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 1.5rem;
     margin-bottom: 0.75rem;
-    color: #1f2937;
+    color: #1a3f6f;
 }
 
 .about-section p {
