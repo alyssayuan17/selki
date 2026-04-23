@@ -26,9 +26,9 @@
 /* ── Banner ───────────────────────────────────────────────────────────────── */
 
 .about-banner {
-    width: calc(100% + 8rem);
-    margin-left: -4rem;
-    margin-right: -4rem;
+    width: calc(100% + 12rem);
+    margin-left: -6rem;
+    margin-right: -6rem;
     margin-bottom: 2.5rem;
 }
 
@@ -90,7 +90,46 @@
 
 .about-section {
     width: 100%;
-    margin-bottom: 2.5rem;
+    margin-bottom: 5rem;
+    opacity: 0;
+    transform: translateY(36px);
+    transition: opacity 0.65s ease-out, transform 0.65s ease-out;
+}
+
+.about-section.revealed,
+.about-banner.revealed,
+.about-seals-row.revealed {
+    opacity: 1;
+    transform: none;
+}
+
+.about-banner {
+    opacity: 0;
+    transform: translateY(36px);
+    transition: opacity 0.65s ease-out, transform 0.65s ease-out;
+}
+
+.about-seals-row {
+    opacity: 0;
+    transform: translateY(36px);
+    transition: opacity 0.65s ease-out, transform 0.65s ease-out;
+}
+
+.about-section--wide {
+    width: calc(100% + 8rem);
+    margin-left: -4rem;
+    margin-right: -4rem;
+    box-sizing: border-box;
+    padding: 0 2rem;
+}
+
+@media (max-width: 640px) {
+  .about-section--wide {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0;
+  }
 }
 
 .about-section h2 {
@@ -102,6 +141,18 @@
     color: #1a3f6f;
 }
 
+.about-section-h2--centered {
+    text-align: center;
+    font-size: 9rem;
+}
+
+.about-section-sub {
+    text-align: center;
+    font-size: 0.95rem;
+    color: #6b7280;
+    margin: 0 0 2rem;
+}
+
 .about-section p {
     color: #4b5563;
     line-height: 1.65;
@@ -111,78 +162,212 @@
 /* Steps */
 .about-steps {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 1rem;
+    margin-top: 1.25rem;
+    width: calc(100% + 8rem);
+    margin-left: -4rem;
+    margin-right: -4rem;
 }
 
 .about-step {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
     display: flex;
-    align-items: flex-start;
-    gap: 1rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.75rem 2rem 2.25rem;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(136, 199, 253, 0.45);
+    border-radius: 0.85rem;
+    box-shadow: 0 0 18px rgba(136, 199, 253, 0.25), 0 4px 16px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.2s ease;
 }
 
-.about-step__num {
-    flex-shrink: 0;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #88C7FD, #266EBA);
-    color: white;
+.about-step:hover {
+    box-shadow: 0 0 30px rgba(136, 199, 253, 0.45), 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.about-step:last-child {
+    border-radius: 0.85rem;
+}
+
+.about-step:first-child {
+    border-radius: 0.85rem;
+}
+
+.about-step__label {
+    font-size: 0.7rem;
     font-weight: 700;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    letter-spacing: 0.12em;
+    color: #88C7FD;
+    text-transform: uppercase;
 }
 
 .about-step strong {
     display: block;
-    margin-bottom: 0.2rem;
+    font-size: 1.15rem;
     color: #1f2937;
+    font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
+    font-style: italic;
+    margin-top: 0.1rem;
 }
 
 .about-step p {
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     color: #6b7280;
+    line-height: 1.55;
 }
 
-/* Metric cards */
-.about-metrics {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+.about-step::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #88C7FD, #266EBA);
+}
+
+.about-step__ghost {
+    position: absolute;
+    bottom: -0.25rem;
+    right: 0.5rem;
+    font-size: 6rem;
+    font-weight: 900;
+    color: rgba(136, 199, 253, 0.28);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+}
+
+/* Metrics carousel */
+.about-metrics-carousel {
+    margin-top: 1.5rem;
+    width: calc(100% + 16rem);
+    margin-left: -8rem;
+    margin-right: -8rem;
+}
+
+.about-metrics-carousel__top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 1rem;
+    padding: 0 1.25rem;
+}
+
+.about-metrics-dots {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+}
+
+.about-metrics-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(136, 199, 253, 0.4);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: width 0.2s ease, border-radius 0.2s ease, background 0.2s ease;
+}
+
+.about-metrics-dot--active {
+    width: 22px;
+    border-radius: 4px;
+    background: #266EBA;
+}
+
+.about-metrics-counter {
+    position: absolute;
+    right: 1.25rem;
+    font-size: 0.8rem;
+    color: #9ca3af;
+}
+
+.about-metrics-body {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0 0.5rem;
+}
+
+.about-metrics-arrow {
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #266EBA;
+    filter: drop-shadow(0 0 6px rgba(136, 199, 253, 0.6));
+    transition: filter 0.2s ease;
+}
+
+.about-metrics-arrow:hover {
+    filter: drop-shadow(0 0 10px rgba(136, 199, 253, 0.9));
+}
+
+.about-metrics-arrow svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.about-metrics-content {
+    flex: 1;
+}
+
+@keyframes amSlideInRight {
+    from { opacity: 0; transform: translateX(48px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes amSlideInLeft {
+    from { opacity: 0; transform: translateX(-48px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+.about-metrics-content--forward { animation: amSlideInRight 0.3s ease forwards; }
+.about-metrics-content--back    { animation: amSlideInLeft  0.3s ease forwards; }
+
+.about-metric-flashcard {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(136, 199, 253, 0.45);
+    border-radius: 1rem;
+    padding: 2.5rem 2rem 2.5rem 4rem;
+    box-shadow: 0 0 24px rgba(136, 199, 253, 0.2), 0 4px 16px rgba(0,0,0,0.06);
+    min-height: 160px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     gap: 0.75rem;
 }
 
-.about-metric-card {
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(136, 199, 253, 0.4);
-    border-radius: 0.75rem;
-    padding: 1rem;
-    box-shadow: 0 0 12px rgba(136, 199, 253, 0.25), 0 2px 8px rgba(0,0,0,0.06);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    cursor: default;
-}
-
-.about-metric-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 24px rgba(136, 199, 253, 0.5), 0 8px 20px rgba(0,0,0,0.08);
-}
-
-.about-metric-card strong {
+.about-metric-flashcard strong {
+    font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
+    font-style: italic;
+    font-size: 1.25rem;
+    color: #1a3f6f;
     display: block;
-    margin-bottom: 0.35rem;
-    color: #1f2937;
-    font-size: 0.95rem;
 }
 
-.about-metric-card p {
-    font-size: 0.82rem;
-    color: #6b7280;
+.about-metric-flashcard p {
+    font-size: 1rem;
+    color: #4b5563;
+    line-height: 1.65;
     margin: 0;
-    line-height: 1.5;
 }
 
 /* Note */
@@ -194,7 +379,9 @@
     border-radius: 0.75rem;
     padding: 1rem 1.25rem;
     box-sizing: border-box;
-    width: 100%;
+    width: calc(100% + 10rem);
+    margin-left: -5rem;
+    margin-right: -5rem;
 }
 
 .about-section--note p {
@@ -203,9 +390,27 @@
 }
 
 @media (max-width: 640px) {
-  .about-banner {
+  .about-steps {
+    flex-direction: column;
+    gap: 0.75rem;
     width: 100%;
     margin-left: 0;
+    margin-right: 0;
+  }
+  .about-step,
+  .about-step:first-child,
+  .about-step:last-child {
+    border-radius: 0.85rem;
+  }
+  .about-step__ghost {
+    font-size: 4.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .about-banner {
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
     margin-right: 0;
   }
   .about-seals-row {
@@ -220,8 +425,13 @@
   .about-seal-item span {
     font-size: 0.85rem;
   }
-  .about-metrics {
-    grid-template-columns: 1fr;
+  .about-metrics-carousel {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .about-metric-flashcard {
+    padding: 1.75rem 1.25rem;
   }
   .about-steps {
     gap: 0.75rem;

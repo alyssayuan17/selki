@@ -1,7 +1,33 @@
+import { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar/Navbar";
 import "./AboutPage.css";
 
+const METRICS = [
+    { title: "Pace",             desc: "Words per minute across your full talk and in 30-second segments. Optimal range is 110–170 WPM." },
+    { title: "Fillers",          desc: 'Frequency of filler words (\u201Cum\u201D, \u201Cuh\u201D, \u201Clike\u201D, \u201Cyou know\u201D) and where they cluster.' },
+    { title: "Pause Quality",    desc: "Distinguishing purposeful pauses (emphasis, transitions) from hesitation gaps." },
+    { title: "Intonation",       desc: "Pitch variation, range, and energy — the expressiveness of your voice." },
+    { title: "Content Structure",desc: "Sentence clarity, average length, and use of signpost phrases that guide your audience." },
+    { title: "Confidence",       desc: "A composite signal of filler rate, pace consistency, vocal variety, and pause behavior." },
+];
+
 export default function AboutPage() {
+    const [mIdx, setMIdx] = useState(0);
+    const [mDir, setMDir] = useState("forward");
+
+    useEffect(() => {
+        const sections = document.querySelectorAll(".about-section, .about-banner, .about-seals-row");
+        const observer = new IntersectionObserver(
+            (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("revealed"); }),
+            { threshold: 0.08 }
+        );
+        sections.forEach(s => observer.observe(s));
+        return () => observer.disconnect();
+    }, []);
+
+    const mNext = () => { setMDir("forward"); setMIdx(i => (i + 1) % METRICS.length); };
+    const mBack = () => { setMDir("back");    setMIdx(i => (i - 1 + METRICS.length) % METRICS.length); };
+
     return (
         <>
             <Navbar />
@@ -13,7 +39,7 @@ export default function AboutPage() {
                     <img src="/about-banner.svg" alt="" aria-hidden="true" />
                 </div>
 
-                <div className="about-section">
+                <div className="about-section about-section--wide">
                     <h2>What is Selki?</h2>
                     <p>
                         Selki analyzes audio recordings of presentations, lectures, and speeches
@@ -22,59 +48,69 @@ export default function AboutPage() {
                     </p>
                 </div>
 
-                <div className="about-section">
-                    <h2>How it works</h2>
+                <div className="about-section about-section--wide">
+                    <h2 className="about-section-h2--centered">How it works</h2>
+                    <p className="about-section-sub">Three steps to better presentations.</p>
                     <div className="about-steps">
-                        <div className="about-step">
-                            <span className="about-step__num">1</span>
-                            <div>
-                                <strong>Upload your recording</strong>
-                                <p>Drop an audio file or paste a URL. Supports MP3, WAV, M4A, and more.</p>
-                            </div>
+                        <div className="about-step about-step--first">
+                            <span className="about-step__label">STEP 1</span>
+                            <strong>Upload your recording</strong>
+                            <p>Drop an audio file or paste a URL. Supports MP3, WAV, M4A, and more.</p>
+                            <span className="about-step__ghost">1</span>
                         </div>
                         <div className="about-step">
-                            <span className="about-step__num">2</span>
-                            <div>
-                                <strong>Automated analysis</strong>
-                                <p>Selki transcribes your speech with Whisper ASR, detects pauses with Silero VAD, and extracts pitch and energy features.</p>
-                            </div>
+                            <span className="about-step__label">STEP 2</span>
+                            <strong>Automated analysis</strong>
+                            <p>Selki transcribes your speech with Whisper ASR, detects pauses with Silero VAD, and extracts pitch and energy features.</p>
+                            <span className="about-step__ghost">2</span>
                         </div>
                         <div className="about-step">
-                            <span className="about-step__num">3</span>
-                            <div>
-                                <strong>Get your results</strong>
-                                <p>View scores, a timeline of key moments, detailed per-metric breakdowns, and actionable feedback.</p>
-                            </div>
+                            <span className="about-step__label">STEP 3</span>
+                            <strong>Get your results</strong>
+                            <p>View scores, a timeline of key moments, detailed per-metric breakdowns, and actionable feedback.</p>
+                            <span className="about-step__ghost">3</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="about-section">
-                    <h2>What we measure</h2>
-                    <div className="about-metrics">
-                        <div className="about-metric-card">
-                            <strong>Pace</strong>
-                            <p>Words per minute across your full talk and in 30-second segments. Optimal range is 110–170 WPM.</p>
+                <div className="about-section about-section--wide">
+                    <h2 className="about-section-h2--centered">What we measure</h2>
+                    <p className="about-section-sub">Six dimensions of delivery, scored objectively.</p>
+
+                    <div className="about-metrics-carousel">
+                        <div className="about-metrics-carousel__top">
+                            <div className="about-metrics-dots">
+                                {METRICS.map((_, i) => (
+                                    <button
+                                        key={i}
+                                        className={`about-metrics-dot${i === mIdx ? " about-metrics-dot--active" : ""}`}
+                                        onClick={() => { setMDir(i > mIdx ? "forward" : "back"); setMIdx(i); }}
+                                        aria-label={METRICS[i].title}
+                                    />
+                                ))}
+                            </div>
+                            <span className="about-metrics-counter">{mIdx + 1} / {METRICS.length}</span>
                         </div>
-                        <div className="about-metric-card">
-                            <strong>Fillers</strong>
-                            <p>Frequency of filler words ("um", "uh", "like", "you know") and where they cluster.</p>
-                        </div>
-                        <div className="about-metric-card">
-                            <strong>Pause Quality</strong>
-                            <p>Distinguishing purposeful pauses (emphasis, transitions) from hesitation gaps.</p>
-                        </div>
-                        <div className="about-metric-card">
-                            <strong>Intonation</strong>
-                            <p>Pitch variation, range, and energy — the expressiveness of your voice.</p>
-                        </div>
-                        <div className="about-metric-card">
-                            <strong>Content Structure</strong>
-                            <p>Sentence clarity, average length, and use of signpost phrases that guide your audience.</p>
-                        </div>
-                        <div className="about-metric-card">
-                            <strong>Confidence</strong>
-                            <p>A composite signal of filler rate, pace consistency, vocal variety, and pause behavior.</p>
+
+                        <div className="about-metrics-body">
+                            <button onClick={mBack} className="about-metrics-arrow" aria-label="Previous">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="15 18 9 12 15 6" />
+                                </svg>
+                            </button>
+
+                            <div className={`about-metrics-content about-metrics-content--${mDir}`} key={`${mIdx}-${mDir}`}>
+                                <div className="about-metric-flashcard">
+                                    <strong>{METRICS[mIdx].title}</strong>
+                                    <p>{METRICS[mIdx].desc}</p>
+                                </div>
+                            </div>
+
+                            <button onClick={mNext} className="about-metrics-arrow" aria-label="Next">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="9 18 15 12 9 6" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </div>
