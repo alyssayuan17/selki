@@ -55,11 +55,12 @@ export default function AuthPage() {
         <div className="auth-page">
             {/* Left panel — branding */}
             <div className="auth-page__left">
-                <Link to="/" className="auth-page__back">← Back to home</Link>
-
-                <div className="auth-page__brand">
-                    <span className="auth-page__brand-name">Selki</span>
-                    <img src="/selki_logo_v2.svg" alt="Selki" className="auth-page__brand-logo" />
+                <div className="auth-page__top">
+                    <Link to="/" className="auth-page__back">← Back to home</Link>
+                    <div className="auth-page__brand">
+                        <span className="auth-page__brand-name">Selki</span>
+                        <img src="/selki_logo_v2.svg" alt="Selki" className="auth-page__brand-logo" />
+                    </div>
                 </div>
 
                 <div className="auth-page__tagline">
