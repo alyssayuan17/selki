@@ -126,9 +126,6 @@ export default function ProcessingPage() {
                         <div className="processing-progress-bar" style={{ width: `${Math.min(progress, 100)}%` }} />
                     </div>
 
-                    <p className="processing-note">
-                        Job ID: <code>{jobId}</code>
-                    </p>
                 </div>
             </div>
         </>
