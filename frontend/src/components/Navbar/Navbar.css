@@ -55,6 +55,7 @@
 
 .navbar-menu {
   display: flex;
+  align-items: center;
   list-style: none;
   gap: 1.75rem;
   margin: 0;
@@ -97,26 +98,26 @@
 }
 
 .navbar-signin-btn {
-  background: rgba(26, 63, 111, 0.55);
+  background: rgba(15, 40, 80, 0.72);
   color: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(136, 199, 253, 0.25);
   border-radius: 999px;
-  padding: 0.18rem 0.9rem;
+  padding: 0.22rem 1rem;
   font-size: 0.95rem;
   font-weight: 300;
   font-family: Poppins, Arial, sans-serif;
   cursor: pointer;
-  line-height: inherit;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 0 12px rgba(38, 110, 186, 0.3), 0 2px 8px rgba(15, 40, 80, 0.25);
   transition: background 0.22s ease, border-color 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
 }
 
 .navbar-signin-btn:hover {
-  background: rgba(38, 110, 186, 0.65);
-  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(20, 55, 110, 0.82);
+  border-color: rgba(136, 199, 253, 0.45);
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(38, 110, 186, 0.25);
+  box-shadow: 0 0 20px rgba(136, 199, 253, 0.4), 0 4px 14px rgba(15, 40, 80, 0.3);
 }
 
 .navbar-user-btn {
