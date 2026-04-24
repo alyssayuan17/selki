@@ -4,18 +4,32 @@ import Navbar from "../../components/Navbar/Navbar";
 import "./ProcessingPage.css";
 import "../../components/Button/Button.css";
 
+const STATUS_MESSAGES = [
+    "Transcribing your speech…",
+    "Detecting pauses and fillers…",
+    "Analyzing pitch and energy…",
+    "Measuring pace and rhythm…",
+    "Scoring your delivery…",
+    "Almost there…",
+];
+
 export default function ProcessingPage() {
     const { jobId } = useParams();
     const navigate = useNavigate();
     const [status, setStatus] = useState("processing");
     const [error, setError] = useState(null);
     const [progress, setProgress] = useState(0);
+    const [msgIdx, setMsgIdx] = useState(0);
+
+    useEffect(() => {
+        const msgId = setInterval(() => setMsgIdx(i => (i + 1) % STATUS_MESSAGES.length), 2800);
+        return () => clearInterval(msgId);
+    }, []);
 
     useEffect(() => {
         let intervalId;
         let progressIntervalId;
 
-        // Timeout after 10 minutes — job is likely stuck
         const timeoutId = setTimeout(() => {
             clearInterval(intervalId);
             clearInterval(progressIntervalId);
@@ -23,7 +37,6 @@ export default function ProcessingPage() {
             setStatus("error");
         }, 10 * 60 * 1000);
 
-        // simulate progress animation
         progressIntervalId = setInterval(() => {
             setProgress((prev) => {
                 if (prev >= 90) return prev;
@@ -31,15 +44,10 @@ export default function ProcessingPage() {
             });
         }, 500);
 
-        // poll status every 2 seconds
         const checkStatus = async () => {
             try {
                 const response = await fetch(`/api/v1/presentations/${jobId}`);
-
-                if (!response.ok) {
-                    throw new Error("Failed to check status");
-                }
-
+                if (!response.ok) throw new Error("Failed to check status");
                 const data = await response.json();
 
                 if (data.status === "done") {
@@ -47,10 +55,7 @@ export default function ProcessingPage() {
                     clearInterval(progressIntervalId);
                     clearTimeout(timeoutId);
                     setProgress(100);
-                    // wait briefly to show 100% before navigating
-                    setTimeout(() => {
-                        navigate(`/results/${jobId}`);
-                    }, 500);
+                    setTimeout(() => navigate(`/results/${jobId}`), 500);
                 } else if (data.status === "failed") {
                     clearInterval(intervalId);
                     clearInterval(progressIntervalId);
@@ -69,13 +74,9 @@ export default function ProcessingPage() {
             }
         };
 
-        // check immediately
         checkStatus();
-
-        // then poll every 2 seconds
         intervalId = setInterval(checkStatus, 2000);
 
-        // cleanup
         return () => {
             clearInterval(intervalId);
             clearInterval(progressIntervalId);
@@ -86,19 +87,19 @@ export default function ProcessingPage() {
     if (status === "failed" || status === "error") {
         return (
             <>
-            <Navbar />
-            <div className="processing-overlay">
-                <div className="processing-error">
-                    <h2>Analysis Failed</h2>
-                    <p>{error || "An error occurred during analysis"}</p>
-                    <button
-                        className="btn btn-primary"
-                        onClick={() => navigate("/")}
-                    >
-                        Try Again
-                    </button>
+                <Navbar />
+                <div className="processing-overlay">
+                    <div className="processing-popup processing-popup--error">
+                        <div className="processing-error-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                        </div>
+                        <h2 className="processing-error-title">Analysis Failed</h2>
+                        <p className="processing-error-msg">{error || "An error occurred during analysis"}</p>
+                        <button className="btn btn-primary" onClick={() => navigate("/")}>Try Again</button>
+                    </div>
                 </div>
-            </div>
             </>
         );
     }
@@ -106,14 +107,25 @@ export default function ProcessingPage() {
     return (
         <>
             <Navbar />
-            {/* Processing Modal Overlay */}
-            <div className="processing-overlay" id="processingOverlay">
-                <div className="processing-popup" id="processingPopup">
-                    <h2>Processing...</h2>
-                    <div className="loader"></div>
-                    <p className="processing-status__text">
-                        {status === "queued" ? "Queued" : "Analyzing your presentation"}...
+            <div className="processing-overlay">
+                <div className="processing-popup">
+                    <div className="processing-spinner-wrap">
+                        <div className="processing-spinner" />
+                        <div className="processing-spinner-inner" />
+                    </div>
+
+                    <h2 className="processing-title">
+                        <span className="processing-title-serif">Analyzing</span> your recording
+                    </h2>
+
+                    <p className="processing-status__text" key={msgIdx}>
+                        {STATUS_MESSAGES[msgIdx]}
                     </p>
+
+                    <div className="processing-progress-track">
+                        <div className="processing-progress-bar" style={{ width: `${Math.min(progress, 100)}%` }} />
+                    </div>
+
                     <p className="processing-note">
                         Job ID: <code>{jobId}</code>
                     </p>
