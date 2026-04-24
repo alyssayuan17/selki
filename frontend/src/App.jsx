@@ -7,9 +7,11 @@ import ResultsPage from './pages/ResultsPage'
 import AboutPage from './pages/AboutPage/AboutPage'
 import GuidePage from './pages/GuidePage/GuidePage'
 import HistoryPage from './pages/HistoryPage/HistoryPage'
+import { AuthProvider } from './context/AuthContext'
 
 function App() {
   return (
+    <AuthProvider>
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/upload" element={<UploadPage />} />
@@ -19,6 +21,7 @@ function App() {
       <Route path="/guide" element={<GuidePage />} />
       <Route path="/history" element={<HistoryPage />} />
     </Routes>
+    </AuthProvider>
   )
 }
 

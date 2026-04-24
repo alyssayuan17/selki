@@ -23,7 +23,7 @@
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #88C7FD;
+    color: #266EBA;
 }
 
 .score-badge__eyebrow::before,
@@ -32,11 +32,11 @@
     display: block;
     width: 36px;
     height: 1px;
-    background: linear-gradient(90deg, transparent, #88C7FD);
+    background: linear-gradient(90deg, transparent, #266EBA);
 }
 
 .score-badge__eyebrow::after {
-    background: linear-gradient(90deg, #88C7FD, transparent);
+    background: linear-gradient(90deg, #266EBA, transparent);
 }
 
 .score-badge__label {
@@ -55,9 +55,12 @@
     font-style: italic;
     font-weight: 700;
     font-size: 6rem;
-    color: #1a3f6f;
     line-height: 1;
-    text-shadow: 0 2px 24px rgba(26, 63, 111, 0.15);
+    background: linear-gradient(180deg, #256FB8, #266EBA, #88C7FD);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 12px rgba(136, 199, 253, 0.35));
 }
 
 .score-badge__rule {

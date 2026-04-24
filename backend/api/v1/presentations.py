@@ -17,7 +17,7 @@ import os
 import uuid
 from typing import Union
 from pathlib import Path
-from fastapi import APIRouter, HTTPException, BackgroundTasks, status, UploadFile, File, Form
+from fastapi import APIRouter, HTTPException, BackgroundTasks, status, UploadFile, File, Form, Depends
 from datetime import datetime, timezone
 
 from api.v1.schemas import (
@@ -44,6 +44,7 @@ from api.v1.schemas import (
     MetricFeedback,
 )
 from jobs.job_manager import JobManager
+from api.v1.auth import require_user, optional_user
 
 router = APIRouter(prefix="/api/v1", tags=["presentations"])
 
@@ -412,17 +413,74 @@ async def get_presentation_transcript(job_id: str):
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_presentation(job_id: str):
-    """
-    Delete a presentation job.
-
-    Returns:
-        204 No Content
-
-    Raises:
-        404: Job not found
-    """
     deleted = JobManager.delete_job(job_id)
     if not deleted:
         raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+    return None
 
-    return None  # 204 No Content
+
+# ============================================================================
+# POST /api/v1/presentations/{job_id}/save
+# ============================================================================
+
+@router.post("/presentations/{job_id}/save", status_code=status.HTTP_200_OK)
+async def save_presentation(job_id: str, user: dict = Depends(require_user)):
+    job = JobManager.get_job(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+    import db as _db
+    _db.save_job(job_id, user["sub"])
+    return {"saved": True}
+
+
+# ============================================================================
+# DELETE /api/v1/presentations/{job_id}/save
+# ============================================================================
+
+@router.delete("/presentations/{job_id}/save", status_code=status.HTTP_200_OK)
+async def unsave_presentation(job_id: str, user: dict = Depends(require_user)):
+    import db as _db
+    _db.unsave_job(job_id, user["sub"])
+    return {"saved": False}
+
+
+# ============================================================================
+# GET /api/v1/presentations/{job_id}/save-status
+# ============================================================================
+
+@router.get("/presentations/{job_id}/save-status")
+async def get_save_status(job_id: str, user: dict | None = Depends(optional_user)):
+    import db as _db
+    info = _db.get_job_save_status(job_id)
+    saved = info["saved"] and user and info["user_id"] == user.get("sub")
+    return {"saved": bool(saved)}
+
+
+# ============================================================================
+# GET /api/v1/history  — saved analyses for current user
+# ============================================================================
+
+@router.get("/history")
+async def get_history(
+    limit: int = 20,
+    offset: int = 0,
+    user: dict = Depends(require_user),
+):
+    import db as _db
+    jobs, total = _db.list_saved_jobs(user["sub"], limit=min(limit, 100), offset=offset)
+    return {
+        "jobs": [
+            {
+                "job_id": j["job_id"],
+                "status": j["status"],
+                "created_at": j["created_at"].isoformat() if j.get("created_at") else None,
+                "talk_type": j.get("talk_type"),
+                "audience_type": j.get("audience_type"),
+                "score_value": j.get("score_value"),
+                "score_label": j.get("score_label"),
+                "duration_sec": j.get("duration_sec"),
+            }
+            for j in jobs
+        ],
+        "total": total,
+    }

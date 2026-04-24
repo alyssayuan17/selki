@@ -90,6 +90,44 @@
   color: #88C7FD;
 }
 
+.navbar-signin-btn {
+  background: linear-gradient(135deg, #266EBA, #88C7FD);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: Poppins, Arial, sans-serif;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(38, 110, 186, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.navbar-signin-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(38, 110, 186, 0.4);
+}
+
+.navbar-user-btn {
+  background: rgba(136, 199, 253, 0.2);
+  color: #266EBA;
+  border: 1px solid rgba(136, 199, 253, 0.4);
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: Poppins, Arial, sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.navbar-user-btn:hover {
+  background: rgba(254, 242, 242, 0.7);
+  border-color: rgba(252, 165, 165, 0.5);
+  color: #991b1b;
+}
+
 @media (max-width: 640px) {
   .navbar {
     min-width: unset;

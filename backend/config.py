@@ -18,5 +18,9 @@ AUTH_PASSWORD: str | None = os.environ.get("AUTH_PASSWORD")
 # Comma-separated list of allowed CORS origins.
 # Example: "https://selki.example.com,https://www.selki.example.com"
 # Defaults to "*" if unset (dev mode).
+JWT_SECRET: str = os.environ.get("JWT_SECRET", "selki-dev-secret-change-in-prod")
+JWT_ALGORITHM: str = "HS256"
+JWT_EXPIRE_DAYS: int = 30
+
 _cors_raw = os.environ.get("CORS_ORIGINS", "https://selki.us")
 CORS_ORIGINS: list[str] = [o.strip() for o in _cors_raw.split(",") if o.strip()] or ["https://selki.us"]

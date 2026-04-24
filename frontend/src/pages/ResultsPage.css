@@ -1,8 +1,68 @@
 .results-header {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
   max-width: 900px;
   margin: 0 auto 1rem;
+}
+
+.results-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.results-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.results-btn__icon {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.results-btn--save {
+  background: linear-gradient(135deg, #266EBA, #88C7FD);
+  color: white;
+  box-shadow: 0 4px 14px rgba(38, 110, 186, 0.35);
+}
+
+.results-btn--save:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(38, 110, 186, 0.45);
+}
+
+.results-btn--unsave {
+  background: rgba(209, 250, 229, 0.7);
+  color: #065f46;
+  border: 1px solid rgba(52, 211, 153, 0.5);
+  box-shadow: 0 2px 10px rgba(52, 211, 153, 0.2);
+}
+
+.results-btn--unsave:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(52, 211, 153, 0.35);
+}
+
+.results-btn--delete {
+  background: rgba(254, 242, 242, 0.7);
+  color: #991b1b;
+  border: 1px solid rgba(252, 165, 165, 0.5);
+}
+
+.results-btn--delete:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
 /* ── Metric Detail Card ──────────────────────────────────────── */

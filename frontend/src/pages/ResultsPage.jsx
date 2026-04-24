@@ -10,7 +10,8 @@ import ScoreBadge from "../components/ScoreBadge/ScoreBadge";
 import MetricsGrid from "../components/MetricsGrid/MetricsGrid";
 import Timeline from "../components/Timeline";
 import Transcript from "../components/Transcript";
-import Button from "../components/Button/Button";
+import AuthModal from "../components/AuthModal/AuthModal";
+import { useAuth } from "../context/AuthContext";
 import "./ResultsPage.css";
 
 // ── Shared helpers ──────────────────────────────────────────────────────────
@@ -220,6 +221,7 @@ function MetricDetailCard({ metricId, metricName, data }) {
 export default function ResultPage() {
     const { jobId } = useParams();
     const navigate = useNavigate();
+    const { isLoggedIn, authedFetch } = useAuth();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -229,6 +231,9 @@ export default function ResultPage() {
     const [animDir, setAnimDir] = useState("forward");
     const [detailedTranscript, setDetailedTranscript] = useState(null);
     const [loadingDetailedTranscript, setLoadingDetailedTranscript] = useState(false);
+    const [saved, setSaved] = useState(false);
+    const [saveLoading, setSaveLoading] = useState(false);
+    const [showAuthModal, setShowAuthModal] = useState(false);
 
     const VIEWS = [
         { id: "full",     title: "Full Text", description: "Plain transcript of everything said" },
@@ -280,6 +285,33 @@ export default function ResultPage() {
                 });
         }
     }, [transcriptView, jobId, detailedTranscript, loadingDetailedTranscript]);
+
+    // fetch save status
+    useEffect(() => {
+        fetch(`/api/v1/presentations/${jobId}/save-status`)
+            .then((r) => r.ok ? r.json() : { saved: false })
+            .then((d) => setSaved(d.saved))
+            .catch(() => {});
+    }, [jobId]);
+
+    const handleSave = async () => {
+        if (!isLoggedIn) { setShowAuthModal(true); return; }
+        setSaveLoading(true);
+        try {
+            const res = await authedFetch(`/api/v1/presentations/${jobId}/save`, { method: "POST" });
+            if (res.ok) setSaved(true);
+        } catch {}
+        setSaveLoading(false);
+    };
+
+    const handleUnsave = async () => {
+        setSaveLoading(true);
+        try {
+            const res = await authedFetch(`/api/v1/presentations/${jobId}/save`, { method: "DELETE" });
+            if (res.ok) setSaved(false);
+        } catch {}
+        setSaveLoading(false);
+    };
 
     // build warnings array from quality_flags
     const buildWarnings = (qualityFlags) => {
@@ -376,15 +408,22 @@ export default function ResultPage() {
     return (
         <>
         <Navbar />
+        {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
         <div className="page">
-            {/* Header with delete button */}
+            {/* Header with action buttons */}
             <div className="results-header">
-                <Button
-                    variant="secondary"
-                    onClick={handleDelete}
-                >
-                    Delete
-                </Button>
+                {saved ? (
+                    <button className="results-btn results-btn--unsave" onClick={handleUnsave} disabled={saveLoading}>
+                        <span className="results-btn__icon">✓</span> Saved
+                    </button>
+                ) : (
+                    <button className="results-btn results-btn--save" onClick={handleSave} disabled={saveLoading}>
+                        <span className="results-btn__icon">＋</span> Save Analysis
+                    </button>
+                )}
+                <button className="results-btn results-btn--delete" onClick={handleDelete}>
+                    Delete Analysis
+                </button>
             </div>
 
             <ScoreBadge score={score} initial={initial} />
