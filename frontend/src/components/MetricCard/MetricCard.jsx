@@ -58,6 +58,11 @@ export default function MetricCard({
             className={`mcard mcard--${level} ${active ? "mcard--active" : ""}`}
             onClick={onClick}
         >
+            <div className="mcard__macbar">
+                <span className="mcard__dot mcard__dot--red" />
+                <span className="mcard__dot mcard__dot--yellow" />
+                <span className="mcard__dot mcard__dot--green" />
+            </div>
             <div className="mcard__title">{title}</div>
             <div className="mcard__value gradient-title">{displayValue}</div>
             {subtext && <div className="mcard__sub">{subtext}</div>}

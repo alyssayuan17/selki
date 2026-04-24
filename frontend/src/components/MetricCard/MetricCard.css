@@ -4,7 +4,7 @@
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(136, 199, 253, 0.4);
     border-radius: 1rem;
-    padding: 1.75rem 1.5rem 1rem;
+    padding: 0 1.5rem 1rem;
     min-height: 160px;
     box-shadow: 0 0 16px rgba(136, 199, 253, 0.18), 0 4px 16px rgba(0,0,0,0.05);
     cursor: pointer;
@@ -22,6 +22,30 @@
     transform: translateY(-5px);
     box-shadow: 0 0 28px rgba(136, 199, 253, 0.38), 0 8px 24px rgba(0,0,0,0.08);
 }
+
+/* ── Macwindow bar ─────────────────────────────────────────── */
+
+.mcard__macbar {
+    display: flex;
+    gap: 0.35rem;
+    align-items: center;
+    padding: 0.55rem 0;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(136, 199, 253, 0.2);
+    width: 100%;
+}
+
+.mcard__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.mcard__dot--red    { background: #ff5f57; }
+.mcard__dot--yellow { background: #febc2e; }
+.mcard__dot--green  { background: #28c840; }
 
 /* ── Score level tints ─────────────────────────────────────── */
 
@@ -62,15 +86,25 @@
     font-size: 2.25rem;
     font-weight: 700;
     margin-bottom: 0.2rem;
-    font-family: 'Poppins', Arial, sans-serif;
-    font-style: normal;
+    font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
+    font-style: italic;
+    color: #1a3f6f;
+    -webkit-text-fill-color: #1a3f6f;
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
     transition: transform 0.25s ease;
 }
 
 .mcard__sub {
-    font-size: 0.7rem;
-    color: #9ca3af;
-    margin-top: 0.3rem;
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: #266EBA;
+    background: rgba(224, 242, 254, 0.55);
+    border: 1px solid rgba(136, 199, 253, 0.35);
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+    margin-top: 0.4rem;
 }
 
 .mcard__performance {
@@ -78,10 +112,13 @@
     color: #4b5563;
     margin-top: 0.85rem;
     padding-top: 0.85rem;
+    padding-left: 0.65rem;
     border-top: 1px solid rgba(136, 199, 253, 0.2);
-    line-height: 1.45;
+    border-left: 3px solid rgba(136, 199, 253, 0.5);
+    line-height: 1.5;
     text-align: left;
     width: 100%;
+    font-style: italic;
 }
 
 /* ── Score bar ─────────────────────────────────────────────── */
