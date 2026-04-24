@@ -165,8 +165,13 @@ export default function Timeline({ events = [], duration = 0, selectedMetric = n
                 <p className="timeline__empty">No timeline events for this metric</p>
             ) : (
                 <>
-            {/* visual timeline bar */}
             <div className="timeline__container">
+                <div className="timeline__macbar">
+                    <span className="timeline__mac-dot timeline__mac-dot--red" />
+                    <span className="timeline__mac-dot timeline__mac-dot--yellow" />
+                    <span className="timeline__mac-dot timeline__mac-dot--green" />
+                </div>
+                {/* visual timeline bar */}
                 <div className="timeline__bar">
                     {/* render segments */}
                     {segments.map((segment, i) => {

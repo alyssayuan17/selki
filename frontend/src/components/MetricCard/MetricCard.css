@@ -1,18 +1,18 @@
 .mcard {
-    background: rgba(255, 255, 255, 0.55);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.58);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     border: 1px solid rgba(136, 199, 253, 0.4);
     border-radius: 1rem;
-    padding: 0 1.5rem 1rem;
-    min-height: 160px;
+    padding: 0 1.5rem 1.25rem;
+    min-height: 200px;
     box-shadow: 0 0 16px rgba(136, 199, 253, 0.18), 0 4px 16px rgba(0,0,0,0.05);
     cursor: pointer;
     transition: all 0.25s ease;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -23,6 +23,30 @@
     box-shadow: 0 0 28px rgba(136, 199, 253, 0.38), 0 8px 24px rgba(0,0,0,0.08);
 }
 
+/* ── Score level tints ─────────────────────────────────────── */
+
+.mcard--excellent { border-color: rgba(34, 197, 94, 0.4); }
+.mcard--good      { border-color: rgba(245, 158, 11, 0.4); }
+.mcard--needs     { border-color: rgba(249, 115, 22, 0.4); }
+.mcard--poor      { border-color: rgba(239, 68, 68, 0.4);  }
+
+.mcard--excellent:hover { box-shadow: 0 0 28px rgba(34, 197, 94, 0.25), 0 8px 24px rgba(0,0,0,0.07); }
+.mcard--good:hover      { box-shadow: 0 0 28px rgba(245, 158, 11, 0.25), 0 8px 24px rgba(0,0,0,0.07); }
+.mcard--needs:hover     { box-shadow: 0 0 28px rgba(249, 115, 22, 0.25), 0 8px 24px rgba(0,0,0,0.07); }
+.mcard--poor:hover      { box-shadow: 0 0 28px rgba(239, 68, 68, 0.25), 0 8px 24px rgba(0,0,0,0.07); }
+
+/* ── Active state ──────────────────────────────────────────── */
+
+.mcard--active {
+    background: rgba(224, 242, 254, 0.58);
+    border-color: rgba(38, 110, 186, 0.55);
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(136, 199, 253, 0.45), 0 6px 20px rgba(0,0,0,0.08);
+}
+
+.mcard--active .mcard__title { color: #266EBA; }
+.mcard--active .mcard__value { transform: scale(1.04); }
+
 /* ── Macwindow bar ─────────────────────────────────────────── */
 
 .mcard__macbar {
@@ -30,8 +54,8 @@
     gap: 0.35rem;
     align-items: center;
     padding: 0.55rem 0;
-    margin-bottom: 0.75rem;
-    border-bottom: 1px solid rgba(136, 199, 253, 0.2);
+    margin-bottom: 0.6rem;
+    border-bottom: 1px solid rgba(136, 199, 253, 0.18);
     width: 100%;
 }
 
@@ -47,29 +71,22 @@
 .mcard__dot--yellow { background: #febc2e; }
 .mcard__dot--green  { background: #28c840; }
 
-/* ── Score level tints ─────────────────────────────────────── */
+/* ── Ghost number ──────────────────────────────────────────── */
 
-.mcard--excellent { border-color: rgba(34, 197, 94, 0.35); }
-.mcard--good      { border-color: rgba(245, 158, 11, 0.35); }
-.mcard--needs     { border-color: rgba(249, 115, 22, 0.35); }
-.mcard--poor      { border-color: rgba(239, 68, 68, 0.35);  }
-
-.mcard--excellent:hover { box-shadow: 0 0 28px rgba(34, 197, 94, 0.25), 0 8px 24px rgba(0,0,0,0.07); }
-.mcard--good:hover      { box-shadow: 0 0 28px rgba(245, 158, 11, 0.25), 0 8px 24px rgba(0,0,0,0.07); }
-.mcard--needs:hover     { box-shadow: 0 0 28px rgba(249, 115, 22, 0.25), 0 8px 24px rgba(0,0,0,0.07); }
-.mcard--poor:hover      { box-shadow: 0 0 28px rgba(239, 68, 68, 0.25), 0 8px 24px rgba(0,0,0,0.07); }
-
-/* ── Active state ──────────────────────────────────────────── */
-
-.mcard--active {
-    background: rgba(224, 242, 254, 0.55);
-    border-color: rgba(38, 110, 186, 0.55);
-    transform: translateY(-2px);
-    box-shadow: 0 0 30px rgba(136, 199, 253, 0.45), 0 6px 20px rgba(0,0,0,0.08);
+.mcard::before {
+    content: attr(data-score);
+    position: absolute;
+    bottom: -0.5rem;
+    right: 0.25rem;
+    font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
+    font-style: italic;
+    font-size: 5.5rem;
+    font-weight: 900;
+    color: rgba(26, 63, 111, 0.06);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
 }
-
-.mcard--active .mcard__title { color: #266EBA; }
-.mcard--active .mcard__value { transform: scale(1.04); }
 
 /* ── Content ───────────────────────────────────────────────── */
 
@@ -78,21 +95,17 @@
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.5rem;
     color: #88C7FD;
 }
 
 .mcard__value {
-    font-size: 2.25rem;
+    font-size: 2.5rem;
     font-weight: 700;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.15rem;
     font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
     font-style: italic;
     color: #1a3f6f;
-    -webkit-text-fill-color: #1a3f6f;
-    background: none;
-    -webkit-background-clip: unset;
-    background-clip: unset;
     transition: transform 0.25s ease;
 }
 
@@ -129,7 +142,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background: rgba(136, 199, 253, 0.15);
+    background: rgba(136, 199, 253, 0.12);
 }
 
 .mcard__bar {
@@ -142,4 +155,4 @@
 .mcard--good      .mcard__bar { background: linear-gradient(90deg, #fde68a, #f59e0b); }
 .mcard--needs     .mcard__bar { background: linear-gradient(90deg, #fdba74, #f97316); }
 .mcard--poor      .mcard__bar { background: linear-gradient(90deg, #fca5a5, #ef4444); }
-.mcard--na        .mcard__bar { background: rgba(156, 163, 175, 0.4); width: 100% !important; }
+.mcard--na        .mcard__bar { background: rgba(156, 163, 175, 0.3); width: 100% !important; }

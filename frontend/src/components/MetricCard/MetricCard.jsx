@@ -56,6 +56,7 @@ export default function MetricCard({
         <button
             type="button"
             className={`mcard mcard--${level} ${active ? "mcard--active" : ""}`}
+            data-score={isNaN(parseInt(value)) ? "" : parseInt(value)}
             onClick={onClick}
         >
             <div className="mcard__macbar">
@@ -64,7 +65,7 @@ export default function MetricCard({
                 <span className="mcard__dot mcard__dot--green" />
             </div>
             <div className="mcard__title">{title}</div>
-            <div className="mcard__value gradient-title">{displayValue}</div>
+            <div className="mcard__value">{displayValue}</div>
             {subtext && <div className="mcard__sub">{subtext}</div>}
             {performanceMessage && (
                 <div className="mcard__performance">{performanceMessage}</div>
