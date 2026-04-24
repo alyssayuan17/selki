@@ -152,7 +152,7 @@ export default function Timeline({ events = [], duration = 0, selectedMetric = n
 
     return (
         <div className="timeline">
-            <h2 className="timeline__title gradient-title">
+            <h2 className="timeline__title">
                 Timeline
                 {selectedMetric && (
                     <span className="timeline__filter-badge">

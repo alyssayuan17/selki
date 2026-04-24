@@ -1,6 +1,15 @@
 import { useState, useEffect } from "react";
 import "./MetricCard.css";
 
+function scoreLevel(value) {
+    const n = parseInt(value);
+    if (isNaN(n)) return "na";
+    if (n >= 75) return "excellent";
+    if (n >= 50) return "good";
+    if (n >= 30) return "needs";
+    return "poor";
+}
+
 export default function MetricCard({
     title,
     value,
@@ -10,9 +19,11 @@ export default function MetricCard({
     active = false,
 }) {
     const [displayValue, setDisplayValue] = useState(value);
+    const [barWidth, setBarWidth] = useState(0);
+
+    const level = scoreLevel(value);
 
     useEffect(() => {
-        // Extract numeric value for animation
         const match = value?.toString().match(/^(\d+)%?$/);
         if (match) {
             const targetValue = parseInt(match[1], 10);
@@ -26,22 +37,25 @@ export default function MetricCard({
                 current += increment;
                 if (current >= targetValue) {
                     setDisplayValue(value);
+                    setBarWidth(targetValue);
                     clearInterval(timer);
                 } else {
                     setDisplayValue(`${Math.round(current)}%`);
+                    setBarWidth(Math.round(current));
                 }
             }, stepDuration);
 
             return () => clearInterval(timer);
         } else {
             setDisplayValue(value);
+            setBarWidth(0);
         }
     }, [value]);
 
     return (
         <button
             type="button"
-            className={`mcard ${active ? "mcard--active" : ""}`}
+            className={`mcard mcard--${level} ${active ? "mcard--active" : ""}`}
             onClick={onClick}
         >
             <div className="mcard__title">{title}</div>
@@ -50,6 +64,9 @@ export default function MetricCard({
             {performanceMessage && (
                 <div className="mcard__performance">{performanceMessage}</div>
             )}
+            <div className="mcard__bar-track">
+                <div className="mcard__bar" style={{ width: `${barWidth}%` }} />
+            </div>
         </button>
     );
 }

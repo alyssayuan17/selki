@@ -112,9 +112,9 @@
 }
 
 .model-metadata__grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.25rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 2rem;
   font-size: 0.78rem;
   color: #6b7280;
 }
@@ -140,23 +140,27 @@
 .transcript-carousel__header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  position: relative;
   padding: 1.25rem 1.5rem 0.9rem;
   border-bottom: 1px solid rgba(136, 199, 253, 0.3);
 }
 
-.tc-title {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: #1a3f6f;
-  margin: 0;
-}
-
 .transcript-carousel__dots {
+  position: absolute;
+  right: 1.5rem;
   display: flex;
   gap: 0.45rem;
   align-items: center;
+}
+
+.tc-title {
+  font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #1a3f6f;
+  margin: 0;
 }
 
 .tc-dot {
