@@ -10,7 +10,6 @@ import ScoreBadge from "../components/ScoreBadge/ScoreBadge";
 import MetricsGrid from "../components/MetricsGrid/MetricsGrid";
 import Timeline from "../components/Timeline";
 import Transcript from "../components/Transcript";
-import AuthModal from "../components/AuthModal/AuthModal";
 import { useAuth } from "../context/AuthContext";
 import "./ResultsPage.css";
 
@@ -233,7 +232,6 @@ export default function ResultPage() {
     const [loadingDetailedTranscript, setLoadingDetailedTranscript] = useState(false);
     const [saved, setSaved] = useState(false);
     const [saveLoading, setSaveLoading] = useState(false);
-    const [showAuthModal, setShowAuthModal] = useState(false);
 
     const VIEWS = [
         { id: "full",     title: "Full Text", description: "Plain transcript of everything said" },
@@ -295,7 +293,7 @@ export default function ResultPage() {
     }, [jobId]);
 
     const handleSave = async () => {
-        if (!isLoggedIn) { setShowAuthModal(true); return; }
+        if (!isLoggedIn) { navigate(`/auth?returnTo=/results/${jobId}`); return; }
         setSaveLoading(true);
         try {
             const res = await authedFetch(`/api/v1/presentations/${jobId}/save`, { method: "POST" });
@@ -408,7 +406,6 @@ export default function ResultPage() {
     return (
         <>
         <Navbar />
-        {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
         <div className="page">
             {/* Header with action buttons */}
             <div className="results-header">

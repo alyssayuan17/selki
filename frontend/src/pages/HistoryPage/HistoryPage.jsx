@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
-import AuthModal from "../../components/AuthModal/AuthModal";
 import { useAuth } from "../../context/AuthContext";
 import "./HistoryPage.css";
 
@@ -36,13 +35,12 @@ function ScoreCircle({ value, label }) {
 
 export default function HistoryPage() {
     const { isLoggedIn, user, authedFetch, logout } = useAuth();
+    const navigate = useNavigate();
     const [jobs, setJobs] = useState([]);
     const [total, setTotal] = useState(0);
     const [page, setPage] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showAuthModal, setShowAuthModal] = useState(false);
-    const [authModalTab, setAuthModalTab] = useState("login");
 
     const LIMIT = 20;
 
@@ -67,13 +65,9 @@ export default function HistoryPage() {
 
     const totalPages = Math.ceil(total / LIMIT);
 
-    const openLogin = () => { setAuthModalTab("login"); setShowAuthModal(true); };
-    const openRegister = () => { setAuthModalTab("register"); setShowAuthModal(true); };
-
     return (
         <>
             <Navbar />
-            {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} defaultTab={authModalTab} />}
 
             <div className="page history-page">
                 <div className="history-header">
@@ -98,10 +92,10 @@ export default function HistoryPage() {
                                 Sign in to view your saved analyses and track your progress over time.
                             </p>
                             <div className="history-auth-prompt__btns">
-                                <button className="history-auth-btn history-auth-btn--primary" onClick={openLogin}>
+                                <button className="history-auth-btn history-auth-btn--primary" onClick={() => navigate('/auth?returnTo=/history')}>
                                     Sign In
                                 </button>
-                                <button className="history-auth-btn history-auth-btn--secondary" onClick={openRegister}>
+                                <button className="history-auth-btn history-auth-btn--secondary" onClick={() => navigate('/auth?tab=register&returnTo=/history')}>
                                     Create Account
                                 </button>
                             </div>

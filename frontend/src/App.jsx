@@ -7,6 +7,7 @@ import ResultsPage from './pages/ResultsPage'
 import AboutPage from './pages/AboutPage/AboutPage'
 import GuidePage from './pages/GuidePage/GuidePage'
 import HistoryPage from './pages/HistoryPage/HistoryPage'
+import AuthPage from './pages/AuthPage/AuthPage'
 import { AuthProvider } from './context/AuthContext'
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
       <Route path="/about" element={<AboutPage />} />
       <Route path="/guide" element={<GuidePage />} />
       <Route path="/history" element={<HistoryPage />} />
+      <Route path="/auth" element={<AuthPage />} />
     </Routes>
     </AuthProvider>
   )
