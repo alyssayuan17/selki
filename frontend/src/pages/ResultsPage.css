@@ -94,33 +94,38 @@
 .model-metadata {
   max-width: 900px;
   margin: 1.5rem auto 2rem;
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(224, 242, 254, 0.35);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(136, 199, 253, 0.25);
+  border: 1px solid rgba(186, 230, 253, 0.5);
   border-radius: 0.75rem;
-  padding: 1rem 1.25rem;
+  padding: 0.85rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .model-metadata h4 {
-  font-size: 0.75rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #9ca3af;
-  margin: 0 0 0.6rem;
+  margin: 0;
 }
 
 .model-metadata__grid {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0.25rem 2rem;
   font-size: 0.78rem;
-  color: #6b7280;
+  color: #0369a1;
 }
 
 .model-metadata__grid strong {
-  color: #4b5563;
+  color: #0369a1;
 }
 
 /* ── Transcript Carousel ─────────────────────────────────────── */
