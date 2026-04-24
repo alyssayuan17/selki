@@ -97,22 +97,26 @@
 }
 
 .navbar-signin-btn {
-  background: #1a3f6f;
-  color: white;
-  border: none;
+  background: rgba(26, 63, 111, 0.55);
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 999px;
-  padding: 0.32rem 1rem;
+  padding: 0.18rem 0.9rem;
   font-size: 0.95rem;
   font-weight: 300;
   font-family: Poppins, Arial, sans-serif;
   cursor: pointer;
-  transition: background 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
+  line-height: inherit;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background 0.22s ease, border-color 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
 }
 
 .navbar-signin-btn:hover {
-  background: #266EBA;
+  background: rgba(38, 110, 186, 0.65);
+  border-color: rgba(255, 255, 255, 0.35);
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(38, 110, 186, 0.3);
+  box-shadow: 0 4px 14px rgba(38, 110, 186, 0.25);
 }
 
 .navbar-user-btn {
