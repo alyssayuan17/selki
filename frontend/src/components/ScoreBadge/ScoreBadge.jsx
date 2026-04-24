@@ -5,7 +5,7 @@ export default function ScoreBadge({score = 0, initial = "R"}) {
     const [displayScore, setDisplayScore] = useState(0);
 
     useEffect(() => {
-        const duration = 1500; // 1.5 seconds
+        const duration = 1500;
         const steps = 60;
         const increment = score / steps;
         const stepDuration = duration / steps;
@@ -27,8 +27,10 @@ export default function ScoreBadge({score = 0, initial = "R"}) {
     return (
         <div className="score-badge">
             <div className="score-badge__score">
-                <span className="score-badge__label">Your score is</span>
+                <span className="score-badge__eyebrow">your result</span>
+                <span className="score-badge__label">Overall score</span>
                 <span className="score-badge__number">{displayScore}%</span>
+                <div className="score-badge__rule" />
             </div>
         </div>
     );

@@ -114,8 +114,8 @@ export default function ProcessingPage() {
                         <div className="processing-spinner-inner" />
                     </div>
 
-                    <h2 className="processing-title">
-                        <span className="processing-title-serif">Analyzing</span> your recording
+                    <h2 className="processing-title processing-title-serif">
+                        Analyzing your recording
                     </h2>
 
                     <p className="processing-status__text" key={msgIdx}>
