@@ -58,8 +58,8 @@ export default function AuthPage() {
                 <Link to="/" className="auth-page__back">← Back to home</Link>
 
                 <div className="auth-page__brand">
+                    <span className="auth-page__brand-name">Selki</span>
                     <img src="/selki_logo_v2.svg" alt="Selki" className="auth-page__brand-logo" />
-                    <span className="auth-page__brand-name">selki</span>
                 </div>
 
                 <div className="auth-page__tagline">
