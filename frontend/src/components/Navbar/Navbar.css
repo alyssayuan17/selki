@@ -61,16 +61,22 @@
   padding: 0;
 }
 
-.navbar-menu li a {
+.navbar-menu li a,
+.navbar-menu-btn {
   color: #266EBA;
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 300;
   font-family: Poppins, Arial, sans-serif;
   transition: all 0.3s ease;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
-.navbar-menu li a:hover {
+.navbar-menu li a:hover,
+.navbar-menu-btn:hover {
   color: #88C7FD;
 }
 

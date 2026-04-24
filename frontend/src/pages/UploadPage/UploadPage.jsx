@@ -1,12 +1,15 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../../components/Navbar/Navbar";
 import Button from "../../components/Button/Button";
 import CustomSelect from "../../components/CustomSelect/CustomSelect";
+import { useAuth } from "../../context/AuthContext";
 import "./UploadPage.css";
 
 export default function UploadPage() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const { isLoggedIn } = useAuth();
     const [uploadMode, setUploadMode] = useState("file");
     const [file, setFile] = useState(null);
     const [audioUrl, setAudioUrl] = useState("");
@@ -51,6 +54,7 @@ export default function UploadPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!isLoggedIn) { navigate(`/auth?returnTo=${encodeURIComponent(location.pathname)}`); return; }
         if (uploadMode === "file" && !file) { setError("Please select an audio file"); return; }
         if (uploadMode === "url" && !audioUrl) { setError("Please enter an audio URL"); return; }
         if (!formData.talk_type || !formData.audience_type) { setError("Please fill in all required fields"); return; }
