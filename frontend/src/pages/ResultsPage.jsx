@@ -422,6 +422,11 @@ export default function ResultPage() {
 
             {/* Transcript Carousel */}
             <div className="transcript-carousel">
+                <div className="transcript-carousel__macbar">
+                    <span className="transcript-carousel__dot transcript-carousel__dot--red" />
+                    <span className="transcript-carousel__dot transcript-carousel__dot--yellow" />
+                    <span className="transcript-carousel__dot transcript-carousel__dot--green" />
+                </div>
                 <div className="transcript-carousel__header">
                     <span className="tc-title">Transcript Views</span>
                     <div className="transcript-carousel__dots">

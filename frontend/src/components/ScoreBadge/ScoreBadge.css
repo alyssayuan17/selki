@@ -24,8 +24,8 @@
 
 .score-badge__number {
     display: block;
-    font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
-    font-style: italic;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-style: normal;
     font-size: 5rem;
     font-weight: 700;
     line-height: 1;

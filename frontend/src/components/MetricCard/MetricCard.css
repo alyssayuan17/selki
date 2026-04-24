@@ -62,8 +62,8 @@
     font-size: 2.25rem;
     font-weight: 700;
     margin-bottom: 0.2rem;
-    font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
-    font-style: italic;
+    font-family: 'Poppins', Arial, sans-serif;
+    font-style: normal;
     transition: transform 0.25s ease;
 }
 
