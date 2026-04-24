@@ -55,13 +55,7 @@ export default function AuthPage() {
         <div className="auth-page">
             {/* Left panel — branding */}
             <div className="auth-page__left">
-                <div className="auth-page__top">
-                    <Link to="/" className="auth-page__back">← Back to home</Link>
-                    <div className="auth-page__brand">
-                        <span className="auth-page__brand-name">Selki</span>
-                        <img src="/selki_logo_v2.svg" alt="Selki" className="auth-page__brand-logo" />
-                    </div>
-                </div>
+                <Link to="/" className="auth-page__back">← Back to home</Link>
 
                 <div className="auth-page__tagline">
                     <h2 className="auth-page__tagline-h">Your voice,<br />perfected.</h2>
@@ -85,6 +79,10 @@ export default function AuthPage() {
                     </div>
 
                     <div className="auth-card__inner">
+                        <div className="auth-card__logo">
+                            <span className="auth-card__logo-name">Selki</span>
+                            <img src="/selki_logo_v2.svg" alt="Selki" className="auth-card__logo-img" />
+                        </div>
                         <h1 className="auth-card__title">
                             {tab === "login" ? "Welcome back" : "Join Selki"}
                         </h1>
