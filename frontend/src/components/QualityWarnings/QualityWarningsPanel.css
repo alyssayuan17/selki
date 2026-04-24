@@ -1,53 +1,59 @@
 .qw {
     max-width: 900px;
-    margin: 0rem auto 2rem auto;
+    margin: 0 auto 2rem;
 }
 
 .qw__title {
+    font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
+    font-style: italic;
+    font-weight: 700;
     font-size: 1.5rem;
-    font-weight: 600;
-    color: #60a5fa;
-    margin-bottom: 1rem;
-    margin-top: 0rem;
+    color: #1a3f6f;
+    margin-bottom: 0.75rem;
+    margin-top: 0;
 }
 
 .qw__card {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 248, 255, 0.8) 100%);
-    border-radius: 20px;
-    padding: 2rem;
-    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
-    min-height: 100px;
+    background: rgba(255, 248, 220, 0.45);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(251, 191, 36, 0.35);
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 0 16px rgba(251, 191, 36, 0.15), 0 4px 12px rgba(0,0,0,0.05);
 }
 
 .qw__list {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .qw__item {
-    padding: 0.75rem 0;
-    border-bottom: 1px solid rgba(59, 130, 246, 0.1);
-    font-family: Poppins, Arial, sans-serif;
-    font-weight: 300;
-    color: #266EBA;
-    font-size: 0.95rem;
-}
-
-.qw__item:last-child {
-    border-bottom: none;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+    color: #92400e;
+    padding: 0.5rem 0.75rem;
+    background: rgba(254, 243, 199, 0.6);
+    border-radius: 0.5rem;
+    border-left: 3px solid #f59e0b;
 }
 
 .qw__item::before {
-    content: "⚠️";
-    margin-right: 0.5rem;
+    content: "⚠";
+    font-size: 0.85rem;
+    flex-shrink: 0;
 }
 
 .qw__empty {
-    font-family: Poppins, Arial, sans-serif;
-    font-weight: 300;
-    color: #266EBA;
+    font-size: 0.9rem;
+    color: #6b7280;
     text-align: center;
-    font-size: 0.95rem;
     margin: 0;
+    padding: 0.5rem 0;
 }

@@ -181,18 +181,13 @@ function MetricDetailCard({ metricId, metricName, data }) {
     if (!data) return null;
     const feedback = data.feedback || [];
     return (
-        <div style={{
-            background: "white", border: "1px solid #e5e7eb", borderRadius: "0.75rem",
-            padding: "1.25rem", marginTop: "1rem"
-        }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem" }}>
-                <h3 style={{ margin: 0, fontSize: "1rem", fontWeight: 600 }}>{metricName}</h3>
+        <div className="metric-detail-card">
+            <div className="metric-detail-card__header">
+                <h3 className="metric-detail-card__name">{metricName}</h3>
                 {!data.abstained && (
                     <>
-                        <span style={{ fontWeight: 700, fontSize: "1.1rem", color: "#2563eb" }}>
-                            {data.score_0_100}%
-                        </span>
-                        <span style={{ fontSize: "0.8rem", color: "#6b7280", background: "#f3f4f6", padding: "0.15rem 0.5rem", borderRadius: 999 }}>
+                        <span className="metric-detail-card__score">{data.score_0_100}%</span>
+                        <span className="metric-detail-card__badge">
                             {data.label} · {Math.round(data.confidence * 100)}% confidence
                         </span>
                     </>
@@ -202,16 +197,12 @@ function MetricDetailCard({ metricId, metricName, data }) {
             <MetricDetails metricId={metricId} data={data} />
 
             {feedback.length > 0 && (
-                <div style={{ marginTop: "1rem" }}>
-                    <p style={{ fontSize: "0.8rem", color: "#6b7280", marginBottom: "0.5rem" }}>Feedback</p>
+                <div className="metric-detail-card__feedback-section">
+                    <p className="metric-detail-card__feedback-label">Feedback</p>
                     {feedback.map((fb, idx) => (
-                        <div key={idx} style={{
-                            fontSize: "0.875rem", color: "#374151",
-                            padding: "0.4rem 0.6rem", borderLeft: "3px solid #93c5fd",
-                            marginBottom: "0.4rem", background: "#f0f9ff"
-                        }}>
+                        <div key={idx} className="metric-detail-card__feedback-item">
                             {fb.start_sec != null && (
-                                <span style={{ fontSize: "0.75rem", color: "#6b7280", marginRight: "0.5rem" }}>
+                                <span className="metric-detail-card__feedback-time">
                                     {fb.start_sec.toFixed(1)}s
                                 </span>
                             )}

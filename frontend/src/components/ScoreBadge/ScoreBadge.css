@@ -2,26 +2,32 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: 2.5rem 2rem 1rem;
     text-align: center;
     max-width: 600px;
-    margin: 2rem auto 0rem auto;
+    margin: 0 auto;
 }
 
 .score-badge__score {
     text-align: center;
-    font-family: Poppins, Arial, sans-serif;
+    line-height: 1.4;
+}
+
+.score-badge__label {
+    font-size: 1rem;
     font-weight: 300;
-    font-size: 1.5rem;
-    color: #266EBA;
-    line-height: 1.5;
+    color: #6b7280;
+    display: block;
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.02em;
 }
 
 .score-badge__number {
     display: block;
-    font-size: 4rem;
-    font-weight: bold;
-    color: #3b82f6;
-    margin-top: 0.5rem;
+    font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
+    font-style: italic;
+    font-size: 5rem;
+    font-weight: 700;
     line-height: 1;
+    margin-top: 0.1rem;
 }

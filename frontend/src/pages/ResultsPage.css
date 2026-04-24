@@ -1,8 +1,126 @@
 .results-header {
   display: flex;
   justify-content: flex-end;
-  max-width: 1200px;
+  max-width: 900px;
   margin: 0 auto 1rem;
+}
+
+/* ── Metric Detail Card ──────────────────────────────────────── */
+
+.metric-detail-card {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(136, 199, 253, 0.4);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin: 0 auto 1.5rem;
+  max-width: 900px;
+  box-shadow: 0 0 20px rgba(136, 199, 253, 0.2), 0 4px 16px rgba(0,0,0,0.05);
+  animation: fadeUp 0.3s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.metric-detail-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.metric-detail-card__name {
+  margin: 0;
+  font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
+  font-style: italic;
+  font-size: 1.1rem;
+  color: #1a3f6f;
+}
+
+.metric-detail-card__score {
+  font-weight: 700;
+  font-size: 1.1rem;
+  background: linear-gradient(135deg, #266EBA, #88C7FD);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.metric-detail-card__badge {
+  font-size: 0.78rem;
+  color: #6b7280;
+  background: rgba(224, 242, 254, 0.5);
+  border: 1px solid rgba(136, 199, 253, 0.3);
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+.metric-detail-card__feedback-section {
+  margin-top: 1rem;
+}
+
+.metric-detail-card__feedback-label {
+  font-size: 0.78rem;
+  color: #9ca3af;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 0.5rem;
+}
+
+.metric-detail-card__feedback-item {
+  font-size: 0.875rem;
+  color: #374151;
+  padding: 0.5rem 0.75rem;
+  border-left: 3px solid #88C7FD;
+  margin-bottom: 0.4rem;
+  background: rgba(224, 242, 254, 0.35);
+  border-radius: 0 0.4rem 0.4rem 0;
+  line-height: 1.5;
+}
+
+.metric-detail-card__feedback-time {
+  font-size: 0.72rem;
+  color: #88C7FD;
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+/* ── Model Metadata ──────────────────────────────────────────── */
+
+.model-metadata {
+  max-width: 900px;
+  margin: 1.5rem auto 2rem;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(136, 199, 253, 0.25);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+}
+
+.model-metadata h4 {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  margin: 0 0 0.6rem;
+}
+
+.model-metadata__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.25rem 1.5rem;
+  font-size: 0.78rem;
+  color: #6b7280;
+}
+
+.model-metadata__grid strong {
+  color: #4b5563;
 }
 
 /* ── Transcript Carousel ─────────────────────────────────────── */
