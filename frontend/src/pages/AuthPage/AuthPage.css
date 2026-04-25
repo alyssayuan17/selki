@@ -34,22 +34,22 @@
     flex-direction: column;
     padding: 2.5rem 3.5rem 3rem;
     overflow: hidden;
-    background: linear-gradient(150deg, #d4e8f8 0%, #b8d3f0 45%, #9fbde8 100%);
+    background: linear-gradient(150deg, #0a1f3d 0%, #0e2a52 45%, #112d5e 100%);
     animation: authLeftIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .auth-page__back {
     font-size: 0.82rem;
-    color: #3a6fa6;
+    color: rgba(136, 199, 253, 0.7);
     text-decoration: none;
     font-weight: 500;
-    opacity: 0.65;
-    transition: opacity 0.2s ease;
+    opacity: 1;
+    transition: color 0.2s ease;
     width: fit-content;
     letter-spacing: 0.01em;
 }
 
-.auth-page__back:hover { opacity: 1; }
+.auth-page__back:hover { color: rgba(136, 199, 253, 1); }
 
 .auth-page__tagline {
     margin: auto 0;
@@ -62,14 +62,14 @@
     font-weight: 700;
     font-size: 3.75rem;
     line-height: 1.12;
-    color: #1a3f6f;
+    color: #e8f4fe;
     margin: 0 0 1.1rem;
     letter-spacing: -0.01em;
 }
 
 .auth-page__tagline-sub {
     font-size: 1.05rem;
-    color: #3d6a9a;
+    color: rgba(136, 199, 253, 0.75);
     line-height: 1.65;
     max-width: 340px;
     margin: 0;
@@ -86,30 +86,30 @@
 }
 
 .auth-page__orb--1 {
-    width: 320px;
-    height: 320px;
-    background: radial-gradient(circle, rgba(136,199,253,0.55), transparent 68%);
-    bottom: -80px;
-    right: -80px;
-    opacity: 0.8;
+    width: 380px;
+    height: 380px;
+    background: radial-gradient(circle, rgba(38,110,186,0.45), transparent 68%);
+    bottom: -100px;
+    right: -100px;
+    opacity: 1;
 }
 
 .auth-page__orb--2 {
-    width: 200px;
-    height: 200px;
-    background: radial-gradient(circle, rgba(38,110,186,0.35), transparent 68%);
-    top: 28%;
-    right: 6%;
-    opacity: 0.7;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(136,199,253,0.2), transparent 68%);
+    top: 25%;
+    right: 4%;
+    opacity: 1;
 }
 
 .auth-page__orb--3 {
-    width: 140px;
-    height: 140px;
-    background: radial-gradient(circle, rgba(136,199,253,0.45), transparent 68%);
-    top: 8%;
-    right: 28%;
-    opacity: 0.6;
+    width: 160px;
+    height: 160px;
+    background: radial-gradient(circle, rgba(136,199,253,0.15), transparent 68%);
+    top: 6%;
+    right: 25%;
+    opacity: 1;
 }
 
 /* ── Right panel ─────────────────────────────────────────────── */
