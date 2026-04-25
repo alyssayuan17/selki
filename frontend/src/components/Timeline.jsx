@@ -160,6 +160,12 @@ export default function Timeline({ events = [], duration = 0, selectedMetric = n
                     </span>
                 )}
             </h2>
+            <p className="timeline__subtitle">
+                A visual map of your presentation — segments, pauses, and feedback moments across time.
+                {selectedMetric
+                    ? ` Filtered to show ${selectedMetric.replace(/_/g, ' ')} events.`
+                    : " Click a metric card above to filter."}
+            </p>
 
             {selectedMetric && (segments.length === 0 && pauses.length === 0 && feedbackItems.length === 0) ? (
                 <p className="timeline__empty">No timeline events for this metric</p>

@@ -3,7 +3,7 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
     max-width: 900px;
-    margin: 2rem auto;
+    margin: 3rem auto 3.5rem;
 }
 
 /* Make last 2 cards span properly if only 5 items */

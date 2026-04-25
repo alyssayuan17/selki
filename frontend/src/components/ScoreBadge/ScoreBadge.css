@@ -56,28 +56,12 @@
     font-weight: 700;
     font-size: 6rem;
     line-height: 1;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
-/* Score level colors — number */
-.score-badge__number--excellent {
-    background: linear-gradient(180deg, #059669, #34d399);
-    filter: drop-shadow(0 2px 12px rgba(52, 211, 153, 0.35));
-}
-.score-badge__number--good {
-    background: linear-gradient(180deg, #1e40af, #3b82f6);
-    filter: drop-shadow(0 2px 12px rgba(59, 130, 246, 0.35));
-}
-.score-badge__number--needs {
-    background: linear-gradient(180deg, #b45309, #f59e0b);
-    filter: drop-shadow(0 2px 12px rgba(245, 158, 11, 0.35));
-}
-.score-badge__number--poor {
-    background: linear-gradient(180deg, #991b1b, #ef4444);
-    filter: drop-shadow(0 2px 12px rgba(239, 68, 68, 0.35));
-}
+.score-badge__number--excellent { color: #059669; text-shadow: 0 2px 20px rgba(5, 150, 105, 0.35); }
+.score-badge__number--good      { color: #2563eb; text-shadow: 0 2px 20px rgba(37, 99, 235, 0.35); }
+.score-badge__number--needs     { color: #d97706; text-shadow: 0 2px 20px rgba(217, 119, 6, 0.35); }
+.score-badge__number--poor      { color: #dc2626; text-shadow: 0 2px 20px rgba(220, 38, 38, 0.35); }
 
 .score-badge__rule {
     width: 60px;
@@ -86,8 +70,7 @@
     margin-top: 0.5rem;
 }
 
-/* Score level colors — rule */
 .score-badge__rule--excellent { background: linear-gradient(90deg, #34d399, #059669); box-shadow: 0 0 10px rgba(52, 211, 153, 0.5); }
-.score-badge__rule--good      { background: linear-gradient(90deg, #3b82f6, #1e40af); box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
-.score-badge__rule--needs     { background: linear-gradient(90deg, #f59e0b, #b45309); box-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
-.score-badge__rule--poor      { background: linear-gradient(90deg, #ef4444, #991b1b); box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
+.score-badge__rule--good      { background: linear-gradient(90deg, #3b82f6, #2563eb); box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
+.score-badge__rule--needs     { background: linear-gradient(90deg, #f59e0b, #d97706); box-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
+.score-badge__rule--poor      { background: linear-gradient(90deg, #ef4444, #dc2626); box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }

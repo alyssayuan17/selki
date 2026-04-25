@@ -1,6 +1,6 @@
 .timeline {
     max-width: 900px;
-    margin: 1rem auto 2.5rem;
+    margin: 1rem auto 3.5rem;
 }
 
 /* ── Title ─────────────────────────────────────────────────── */
@@ -41,14 +41,22 @@
 
 /* ── Container ─────────────────────────────────────────────── */
 
+.timeline__subtitle {
+    font-size: 0.85rem;
+    color: #7ba3c4;
+    margin: -0.5rem 0 1.25rem;
+    font-style: italic;
+    line-height: 1.5;
+}
+
 .timeline__container {
-    background: rgba(255, 255, 255, 0.45);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(136, 199, 253, 0.35);
+    background: rgba(255, 255, 255, 0.52);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(136, 199, 253, 0.45);
     border-radius: 1rem;
-    padding: 0 1.75rem 1.25rem;
-    box-shadow: 0 0 20px rgba(136, 199, 253, 0.15), 0 4px 16px rgba(0,0,0,0.04);
+    padding: 0 2rem 1.75rem;
+    box-shadow: 0 0 32px rgba(136, 199, 253, 0.3), 0 4px 20px rgba(0,0,0,0.05);
     overflow: hidden;
 }
 
@@ -78,13 +86,13 @@
 
 .timeline__bar {
     position: relative;
-    height: 4px;
+    height: 6px;
     background: linear-gradient(90deg, rgba(26,63,111,0.15), #88C7FD 40%, #266EBA 70%, rgba(26,63,111,0.15));
-    border-radius: 2px;
-    margin: 2rem 0 0.5rem;
+    border-radius: 3px;
+    margin: 2.5rem 0 0.75rem;
     overflow: visible;
     pointer-events: none;
-    box-shadow: 0 0 8px rgba(136, 199, 253, 0.5);
+    box-shadow: 0 0 14px rgba(136, 199, 253, 0.7);
 }
 
 /* endpoint dots */
