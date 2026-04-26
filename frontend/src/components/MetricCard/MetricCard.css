@@ -101,9 +101,9 @@
 
 .mcard__value {
     font-size: 2.5rem;
-    font-weight: 700;
+    font-weight: 400;
     margin-bottom: 0.15rem;
-    font-family: 'Georgia', 'Palatino Linotype', 'Book Antiqua', serif;
+    font-family: 'Palatino Linotype', 'Book Antiqua', 'Palatino', Georgia, serif;
     font-style: italic;
     color: #1a3f6f;
     transition: transform 0.25s ease;
